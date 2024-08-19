@@ -1,0 +1,62 @@
+{%- extends 'mypv_base.html' -%}
+
+{%- block content -%}
+
+
+<main role="main">
+  <div class="container">
+    <div class="row">
+      <div class="col text-center" style="font-size: 50px">
+        404 Page Not Found
+      </div>
+    </div>
+    <div class="row">
+      <div class="col text-center">
+        <p id="total_gen" class="d-none mt-3"></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+  const showTotalGeneration = () => {
+    const data = new FormData();
+    data.append("data", JSON.stringify({
+      day: (new Date()).toISOString().substr(0,10),
+      IncludeTseries: false,
+      timezone: "local",
+      devices: {
+        Project: {
+          series: [],
+          measures: ["PVGenerationTOTAL"],
+          properties: []
+        }
+      }
+    }));
+
+    fetch("/getkpisday", {
+      method: 'POST',
+      body: data
+    })
+    .catch(res => {})
+    .then(res => res.ok ? res.json() : null)
+    .then(res => {
+      if (!res) { return; }
+
+      const kwh = res?.answer?.Devices?.Project?.PVGenerationTOTAL || null;
+      if (!kwh) { return; }
+
+      const totalGen = document.getElementById("total_gen");
+      totalGen.textContent = `But on the bright side, your plant has generated ${kwh} kWh!`;
+      totalGen.classList.toggle("d-none");
+    });
+  }
+
+  try { showTotalGeneration(); } catch {}
+})();
+</script>
+
+{%- endblock -%}
+
+

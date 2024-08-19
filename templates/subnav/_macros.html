@@ -1,0 +1,10 @@
+
+
+{% macro subnav_link(href, text='', id=none, perm_check=true) -%}
+  {% if perm_check -%}
+  {%- set id = "dt_" ~ href.split('/')[-1] ~ "_subnav" if not id else id -%}
+<a id="{{ id }}" class="acu-subnav-link" href="{{ href }}">{{ text | e }}</a>
+  {% endif -%}
+{% endmacro -%}
+
+

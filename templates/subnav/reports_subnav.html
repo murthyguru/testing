@@ -1,0 +1,13 @@
+{%- from '/subnav/_macros.html' import subnav_link -%}
+
+<div class="d-flex acu-subnav">
+  <div class="mr-auto acu-subnav-header">Reports</div>
+  <div>
+    {{ subnav_link(href='/reports', text='Reports') }}
+  </div>
+  {% if plant_config.get('plant_type', None) and plant_config['plant_type'].get('capacity_testing', None) %}
+  <div>
+    {{ subnav_link(href='/capacity', text='PV Capacity Testing') }}
+  </div>
+  {% endif %}
+</div>

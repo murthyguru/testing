@@ -1,0 +1,152 @@
+
+{#- Signals to included template(s) not to include certain things -#}
+{%- set noauth = true -%}
+
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title> Acuity </title>
+  <link rel='icon' href="{{ url_for('static', filename='aderis_favicon.ico') }}" type='image/x-icon'>
+
+  {% if plant_config.get('mode') == "offline" -%}
+
+  {# JQuery -#}
+  <script src="{{ url_for('static', filename='lib/jquery/1.12.1/jquery-1.12.1.min.js') }}"></script>
+
+  {# Bootstrap CSS -#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap/4.1.3/bootstrap.min.css') }}">
+
+  {# Bundled Popper.js and Bootstrap JS -#}
+  <script src="{{ url_for('static', filename='lib/bootstrap/4.1.3/bootstrap.bundle.min.js') }}"></script>
+
+  {%- else -%}
+
+  {# JQuery -#}
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+
+  {# Bootstrap CSS -#}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+  {# Bundled Popper.js and Bootstrap JS -#}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=" crossorigin="anonymous"></script>
+
+  {%- endif %}
+
+
+  {# Acuity Style Reference Style Sheet -#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='myPV-Style-Reference/style.css') | lmt_bust_cache }}">
+
+  {# Acuity Global Styles -#}
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/acuity.css') | lmt_bust_cache }}">
+
+  {# Acuity Config Pages Styles -#}
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='mypv_config_style.css') | lmt_bust_cache }}">
+
+  <style>
+    .login-form {
+      margin: 0 auto;
+      max-width: 40%;
+    }
+    @media only screen and (max-width: 992px) {
+      .login-form {
+        max-width: 540px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  {% include 'navbar.partial.html' -%}
+
+  <script>
+    /** @praam {number|string} num */
+    function zeroPad(num, width=2) {
+      return `${num}`.padStart(width, "0");
+    }
+
+    var DtHelper = (() => {
+      
+      /** @param {Date|number|string} [d] */
+      const toDate = (d=undefined) => {
+        const _d = (d == undefined) ? new Date() : new Date(d);
+        if (isFinite(_d)) {
+          return _d;
+        }
+        throw Error(`could not parse arg to a valid Date, arg value: ${d}`)
+      }
+
+      /** @param {Date} d  @returns {[number, number, number]}*/
+      const _ymd = (d, utc=true) => {
+        if (!utc) {
+          return [d.getFullYear(), d.getMonth()+1, d.getDate()];
+        }
+        return [d.getUTCFullYear(), d.getUTCMonth()+1, d.getUTCDate()];
+      }
+      /** @param {Date} d  @returns {[number, number, number]}*/
+      const _hms = (d, utc=true) => {
+        if (!utc) {
+          return [d.getHours(), d.getMinutes(), d.getSeconds()];
+        }
+        return [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()];
+      }
+
+      /** @param {Date|number|string} [d] */
+      const ymd = (d=undefined) => _ymd(toDate(d), false);
+      /** @param {Date|number|string} [d] */
+      const hms = (d=undefined) => _hms(toDate(d), false);
+
+      /** @param {Date|number|string} [d] */
+      const ymdUTC = (d=undefined) => _ymd(toDate(d));
+      /** @param {Date|number|string} [d] */
+      const hmsUTC = (d=undefined) => _hms(toDate(d));
+
+      /** @param {Date|number|string} [d] */
+      const isoDate = (d=undefined) => {
+        return ymdUTC(d).map(n => zeroPad(n)).join("-");
+      }
+
+      /** @param {Date|number|string} [d] */
+      const isoTime = (d=undefined) => {
+        return hmsUTC(d).map(n => zeroPad(n)).join(':');
+      }
+
+      /** @param {Date|number|string} [d]  @param {string} sep */
+      const isoDatetime = (d=undefined, sep=" ") => {
+        return `${isoDate(d)}${sep}${isoTime(d)}`;
+      }
+
+      // expands to { toDate: toDate, isoDate: isoDate, etc. }
+      return { toDate, isoDate, isoTime, isoDatetime, ymd, ymdUTC, hms, hmsUTC };
+    })();
+
+    $(document).ready(() => {
+      // const updateNavbarDatetime = (() => {
+      //   const dateDiv = document.getElementById("date_div"),
+      //         timeDiv = document.getElementById("time_div");
+
+      //   return () => {
+      //     const now = new Date();
+      //     dateDiv.innerHTML = DtHelper.isoDate(now);
+      //     timeDiv.innerHTML = DtHelper.isoTime(now);
+      //     window.navPlantDtTimeout = setTimeout(updateNavbarDatetime, 500);
+      //   }
+      // })();
+
+      // updateNavbarDatetime();
+    });
+  </script>
+
+  {% block content -%}{% endblock -%}
+
+  {% include 'footer.partial.html' -%}
+
+</body>
+</html>
+
+

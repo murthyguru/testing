@@ -1,0 +1,401 @@
+
+{#- This will be true if being included by 'base_noauth.html' -#}
+{% set noauth = noauth | default(false) -%}
+
+{#- Check if there is no current_user, i.e. login page, etc. -#}
+{%- if not noauth -%}
+
+  {%- set user_is_aderis = current_user.is_aderis_user | default(false) -%}
+  {%- set user_is_owner = current_user.is_owner | default(false) -%}
+  {%- set user_is_owner_or_admin = current_user.is_owner_or_admin | default(false) -%}
+
+{%- endif -%}
+
+{% macro dd_item(href, text='') -%}
+<li><a class="dropdown-item" href="{{ href }}"><span class="ml-1">{{ text|e }}</span></a></li>
+{%- endmacro -%}
+
+{% macro dd_item_redirect(href, text='') -%}
+<li><a class="dropdown-item" href="{{ href }}" target="_blank"><span class="ml-1">{{ text|e }}</span></a></li>
+{%- endmacro -%}
+
+{#- Inline dropdown submenu styles, so they work before page is fully loaded. -#}
+<style>
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
+.dropdown-submenu a::after {
+  position: absolute;
+  top: .8em;
+  right: 6px;
+  transform: rotate(-90deg);
+}
+.version-easter-egg {
+  position:absolute;font-size:10px; top: 0;left:50px;color:white;display: none;
+}
+.version-easter-egg:hover {
+  position:absolute;font-size:10px; top: 0;left:50px;color:white;display: flex;z-index: 1000;
+}
+.plant-title:hover + .version-easter-egg{
+  position:absolute;font-size:10px; top: 0;left:50px;color:white;display: flex;
+}
+</style>
+
+
+<header id="acuity_header" class="fixed-top bg-darkest-blue" style="background-color: var(--darkest-blue, #1b1f22);">
+  <nav id="acuity_navbar" class="navbar navbar-expand-md navbar-dark bg-darkest-blue" style="padding:unset!important;">
+
+ 
+    <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='Aderis-Wiretap-REVERSE.svg') }}" height="50px" width="200px"></a>
+
+    <!-- <a class="navbar-brand" href="/" style="font-size: 24px;font-weight: 600;">Aderis WireTap</a> -->
+   
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#acuity_navbar_items"
+      aria-controls="acuity_navbar_items" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div id="acuity_navbar_items" class="collapse navbar-collapse">
+      <ul class="navbar-nav align-items-center" style = "width: 100%">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Wiretap
+          </a>
+
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <!-- {{ dd_item(href='/', text='Wiretap') }}
+            {{ dd_item(href='/', text='Hide Wiretap') }}
+            {{ dd_item(href='/', text='Hide Others') }}
+            {{ dd_item(href='/', text='Show All') }} -->
+            <a class="dropdown-item" href="#" id="quit-wiretap">Quit Wiretap</a>
+          </ul> 
+        </li>
+
+        <li class="nav-item dropdown" style="display: none;">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            File
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {{ dd_item(href='/', text='File') }}
+            {{ dd_item(href='/', text='New') }}
+            {{ dd_item(href='/', text='Open') }}
+            {{ dd_item(href='/', text='Open Recent') }}
+            {{ dd_item(href='/', text='Close') }}
+            {{ dd_item(href='/', text='Save') }}
+            {{ dd_item(href='/', text='Save As') }}
+            {{ dd_item(href='/', text='Share') }}
+            {{ dd_item(href='/', text='Print') }}
+          </ul> 
+        </li>
+
+      
+        <li class="nav-item">
+          <a class="nav-link" href="/home">Home</a>
+        </li>
+
+        <li class="nav-item" style="display: none;">
+          <a class="nav-link" href="/">Logging</a>
+        </li>
+
+        <li class="nav-item" style="display: none;">
+          <a class="nav-link" href="/">Interfaces</a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown6" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Help
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <!-- {{ dd_item(href='/', text='Help') }} -->
+            {{ dd_item(href='mailto:sales@aderisenergy.com?subject=Wiretap feedback', text='Send Wiretap Feedback') }}
+            {{ dd_item_redirect(href='https://www.aderisenergy.com/wiretap-user-manual', text='Wiretap Help') }}
+            {{ dd_item(href='/release_details', text='What’s New in Wiretap') }}
+            {{ dd_item(href='mailto:help@aderisenergy.com?subject=Wiretap help request', text='aderis Service & Support') }}
+          </ul> 
+        </li>
+
+
+
+        <li class="nav-item dropdown ml-auto" style="display: none;">
+          <a id="acuity_navbar_profile_dropdown" class="nav-link dropdown-toggle text-nowrap" href="#" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            {{ icons.get("white_user") }}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="acuity_navbar_profile_dropdown" style="display: none;">
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/">(My Account)
+            </a>
+            <a class="dropdown-item" target="_blank" href="https://www.aderisenergy.com/acuity-user-manual">Acuity User Manual</a>
+            <a class="dropdown-item" href="/logout">Logout</a>
+          </div>
+        </li>
+
+
+
+      </ul>
+
+     
+    </div>
+  </nav>
+</header>
+
+
+{#- Inline dropdown submenus js, so they work before page is fully loaded. -#}
+<script>
+  
+  
+
+
+  $('.dropdown-menu a.dropdown-toggle').click(function(e) {
+    const $this = $(this);
+    if (!$this.next().hasClass('show')) {
+      $this.parents('.dropdown-menu').first().find('.show').removeClass('show');
+    }
+    const subMenu = $this.next('.dropdown-menu');
+    subMenu.toggleClass('show');
+
+    $this.parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
+      $('.dropdown-submenu .show').removeClass('show');
+    });
+
+    return false;
+  });
+</script>
+
+<!-- kavya code changes -- start -- -->
+<head>  
+  <!-- <script src="{{ url_for('static', filename='tiles_js_dark/Alarms.js')}}"></script>
+  <script src="{{ url_for('static', filename='tiles_js_dark/DeviceTree.js')}}"></script>
+  <script src="{{ url_for('static', filename='tiles_js_dark/kiosk_sunlight.js')}}"></script>
+  <script src="{{ url_for('static', filename='tiles_js_dark/kiosk_meter.js')}}"></script>
+  <script src="{{ url_for('static', filename='tiles_js_dark/inverter_status3-5.js')}}"></script>
+  
+
+   -->
+  
+</head>
+<body>
+
+
+</body>
+
+
+
+
+
+<script>
+
+
+document.getElementById('quit-wiretap').addEventListener('click', () => {
+        window.electronAPI.quitApp();
+    });
+
+
+var settings_gear_tab = $('<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path fill="#c7c9c9" d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>');
+
+
+
+{%- if not noauth %}
+
+function device_showtile(){
+  var config = {
+      content: [{
+          type: 'stack',
+          content: [{
+              type:'component',
+              componentName: 'device_tree',
+              componentState: { text: 'Device Tree', popup: true }
+          },
+        ]
+      }]
+  };
+
+  window.myLayout = new window.GoldenLayout(config);
+  myLayout.registerComponent("device_tree", DeviceTree);
+myLayout.createPopout({
+componentName: 'device_tree',
+type: 'component',
+title: "Device Tree",
+componentState: {
+  text: "Device Tree",
+  popped_out: true,
+  popup: true
+}
+
+});
+
+myLayout.init(); 
+  
+}
+
+
+function fuel_showtile(){
+  var config = {
+      content: [{
+          type: 'stack',
+          isClosable: true,
+          content: [{
+              type:'component',
+              componentName: 'kiosk_sunlight',
+              componentState: { text: 'Sunlight', popup:true }
+          },
+        ]
+      }]
+  };
+
+  var myLayout = new window.GoldenLayout( config);
+myLayout.createPopout({
+componentName: 'kiosk_sunlight',
+type: 'component',
+title: "Sunlight",
+componentState: {
+  text: "Sunlight",
+  popped_out: true,
+  popup: true
+}
+
+});
+
+myLayout.init(); 
+}
+
+
+
+
+
+
+function pwr_showtile(){
+  var config = {
+      content: [{
+          type: 'stack',
+          isClosable: true,
+          content: [{
+              type:'component',
+              componentName: 'kiosk_meter',
+              componentState: { text: 'Power & Energy', popup: true }
+          },
+        ]
+      }]
+  };
+
+  var myLayout = new window.GoldenLayout( config );
+myLayout.createPopout({
+componentName: 'kiosk_meter',
+type: 'component',
+title: "Power & Energy",
+componentState: {
+  text: "Power & Energy",
+  popped_out: true,
+  popup: true
+}
+
+});
+
+myLayout.init(); 
+}
+
+
+
+
+function gen_showtile(){
+  var config = {
+      content: [{
+          type: 'stack',
+          isClosable: true,
+          content: [{
+              type:'component',
+              componentName: 'inverter_status',
+              componentState: { text: 'Inverter Status', popup: true }
+          },
+        ]
+      }]
+  };
+
+  var myLayout = new window.GoldenLayout( config);
+myLayout.createPopout({
+componentName: 'inverter_status',
+type: 'component',
+title: "Inverter Status",
+componentState: {
+  text: "Inverter Status",
+  popped_out: true,
+  popup: true
+}
+
+});
+
+myLayout.init(); 
+  
+
+}
+
+{% if plant_config.get("battery_storage", False) %}
+
+function bess_showtile () {
+
+  var config = {
+
+    content: [
+
+      {
+
+        type: 'stack',
+        isClosable: true,
+        content: [
+          
+          {
+
+            type:'component',
+            componentName: 'kiosk_storage',
+            componentState: {
+
+              text: 'Energy Storage', 
+              popup: true
+
+            }
+            
+          }
+
+        ]
+
+      }
+
+    ]
+
+  };
+
+  var myLayout = new window.GoldenLayout(config);
+
+  myLayout.createPopout({
+
+    componentName: 'kiosk_storage',
+    type: 'component',
+    title: "Energy Storage",
+    componentState: {
+
+      text: "Energy Storage",
+      popped_out: true,
+      popup: true
+
+    }
+
+  });
+
+  myLayout.init(); 
+  
+}
+
+{% endif %}
+
+{% endif %}
+
+</script>

@@ -1,0 +1,23 @@
+{%- from '/subnav/_macros.html' import subnav_link -%}
+
+<div class="d-flex acu-subnav">
+  <div class="mr-auto acu-subnav-header">System</div>
+  <div>
+    {{ subnav_link(href='/network', text='Network') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/system', text='Resources') }}
+  </div>
+  {#- JH 2023-06-16
+      The '/utils' endpoint serves an unformatted HTML page that only has a <ul>
+      of links, we probably shouldn't link to it.
+  <div>
+      <a
+        class="mypv_subnav_link"
+        id="dt_utilities_subnav"
+        href="/utils">
+          Utilities
+      </a>
+  </div>
+  -#}
+</div>

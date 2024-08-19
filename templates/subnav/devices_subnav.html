@@ -1,0 +1,33 @@
+{%- from '/subnav/_macros.html' import subnav_link -%}
+{% if Fasle%}
+<div class="d-flex acu-subnav">
+  <div class="mr-auto acu-subnav-header">Devices</div>
+  <div>
+    {{ subnav_link(href='/device_types', text='Types') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/device_templates', text='Templates') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/modbus_templates', text='Tag Mapping') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/rest_templates', text='REST Mapping') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/snmp_templates', text='SNMP Mapping') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/dnp_templates', text='DNP Mapping') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/oem_definitions', text='Status Mapping') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/wiretap_monitor_v1', text='Modbus Tools') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/data_toolbox', text='Data Toolbox', perm_check=current_user.is_owner_or_admin) }}
+  </div>
+</div>
+{%endif%}

@@ -1,0 +1,42 @@
+{%- from '/subnav/_macros.html' import subnav_link -%}
+
+
+<div class="d-flex acu-subnav">
+  <div class="mr-auto acu-subnav-header">Utilities</div>
+  
+  {%- if current_user.is_owner_or_admin or current_user.is_aderis_user -%}
+  <div>
+    {{ subnav_link(href='/dashboard_tiles', text='Dashboard Tiles', perm_check=(current_user.is_owner_or_admin or current_user.is_aderis_user)) }}
+
+  </div>
+  {%- endif -%}
+
+  {%- if current_user.is_owner_or_admin or current_user.is_aderis_user -%}
+  <div>
+
+    {{ subnav_link(href='/utils/edit_json', text='JSON Config', perm_check=(current_user.is_owner_or_admin or current_user.is_aderis_user)) }}
+
+  </div>
+  {%- endif -%}
+
+  <div>
+    {{ subnav_link(href='/kpi_configuration', text='KPI Config') }}
+  </div>
+
+
+  {%- if current_user.is_owner_or_admin or current_user.is_aderis_user -%}
+  <div>
+    {{ subnav_link(href='/processes', text='Processes', perm_check=(current_user.is_owner_or_admin or current_user.is_aderis_user)) }}
+
+  </div>
+  {%- endif -%}
+
+  {%- if current_user.is_owner_or_admin or current_user.is_aderis_user -%}
+  <div>
+
+    {{ subnav_link(href='/utils/import_tool', text='Template Import', perm_check=(current_user.is_owner or current_user.is_aderis_user)) }}
+
+  </div>
+  {%- endif -%}
+
+</div>

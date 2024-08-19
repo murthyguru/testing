@@ -1,0 +1,78 @@
+{%- extends 'mypv_base.html' -%}
+
+{%- block content -%}
+
+<style>
+  /* Existing styles */
+  .launch_title {
+    padding-top: 1%;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .launch_image {
+    padding-top: 20%;
+    padding-left: 42%;
+  }
+
+  .launch_header {
+    padding-top: 10%;
+    font-size: 24px;
+    padding-left: 42%;
+    font-weight: 600;
+  }
+
+  /* New styles to ensure white background */
+  body,
+  html {
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  .content {
+    background-color: white;
+    min-height: 100%;
+  }
+
+  .video_div {
+    background-color: white;
+  }
+</style>
+
+<div class="content">
+  <div class="video_div">
+    <video id="animation" width="50%" height="100%" style="margin-left: 25%; pointer-events: none; margin-top: 25px;"
+      muted="muted">
+      <source src="{{ url_for('static', filename='aderis_wiretap_LogoEntry_v1-0_sm.mp4') }}" type="video/mp4">
+    </video>
+  </div>
+</div>
+
+<script>
+  $(document).ready(() => {
+    var video = document.getElementById('animation');
+    video.play();
+    video.playbackRate = 2;
+  });
+
+  var video = document.getElementById('animation');
+
+  video.addEventListener('ended', function () {
+    this.style.pointerEvents = 'auto';
+    this.style.cursor = 'pointer';
+  });
+
+  video.addEventListener('click', function () {
+    // Redirect to the desired URL
+    window.location.href = '/home';
+  });
+
+  video.addEventListener('ended', function () {
+    // Redirect to the desired URL automatically after the video ends
+    window.location.href = '/home';
+  });
+</script>
+
+{%- endblock -%}

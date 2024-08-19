@@ -1,0 +1,1931 @@
+{% extends 'mypv_base.html' %}
+
+{% block content %}
+
+<br>
+
+{% include '/subnav/devices_subnav.html' %}
+
+<br>
+
+<script src="{{url_for('static', filename='js/templates/templates.js')}}"></script>
+
+<style>
+    code {
+        font-size: 12px;
+        color: unset;
+        word-break: break-word;
+        font-weight: 600;
+    }
+
+
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .status_txt {
+        padding: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        vertical-align: super;
+    }
+
+    /*  */
+    .btn-outline-success:hover {
+        background-color: unset;
+        color: transparent;
+    }
+
+    .btn-outline-success:click {
+        background-color: unset;
+        color: transparent;
+    }
+
+    .selecter {
+        width: inherit !important;
+        background-color: #fff !important;
+        height: 36px;
+    }
+
+    /*  */
+    #dataTableBody td {
+
+        vertical-align: middle;
+
+    }
+
+    #dataTableBody,
+    #preview_table,
+    #ethernetSearchTable,
+    #ethernetSearchTableFull,
+    #ethernetProbeTable,
+    #ethernetProbeTagMapping {
+
+        text-align: center;
+
+    }
+
+    td {
+
+        font-size: 14;
+
+    }
+
+    .spin {
+
+        cursor: wait;
+
+    }
+
+    #wireTapType {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: transparent;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--secondary);
+        border-radius: 0.2rem;
+        color: black;
+
+    }
+
+
+    #sel_interfaces {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: transparent;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--secondary);
+        border-radius: 0.2rem;
+        color: black;
+
+    }
+
+    .option {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: transparent;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--secondary);
+        border-radius: 0.2rem;
+        color: var(--secondary);
+
+    }
+
+    .option:hover {
+
+        background-color: var(--secondary);
+        color: #FFF;
+
+    }
+
+    .selectedOption {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: var(--primary);
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--primary);
+        border-radius: 0.2rem;
+        color: #FFF;
+
+    }
+
+    .option:focus {
+
+        outline: 0;
+
+    }
+
+    .selectedOption:focus {
+
+        outline: 0;
+
+    }
+
+    .vertSpacer {
+
+        height: 1em;
+
+    }
+
+    .port-card-body {
+        max-height: 100px;
+        /* Adjust as needed */
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        /* Optional: to visualize the scroll area */
+        padding: 10px;
+        /* Optional: for better spacing */
+    }
+
+    .portFeed {
+        white-space: pre-wrap;
+        /* Preserve whitespace */
+    }
+
+    .inlinePre {
+        display: inline-block;
+    }
+
+    pre {
+
+        display: inline;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+
+    }
+
+    input {
+
+        color: #495057;
+        padding: 0.375rem 0.75rem;
+        line-height: 1.5;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+    }
+
+    .mypv-icon {
+
+        width: 2em;
+        /* ~32px */
+        height: 2em;
+        /* ~32px */
+        vertical-align: -.125em;
+
+    }
+
+    #ethernetSearchTable td {
+
+        vertical-align: middle;
+
+    }
+
+    #ethernetSearchTableFull td {
+
+        vertical-align: middle;
+
+    }
+
+    .mypv-icon-table {
+
+        width: calc(1.8125rem + 2px);
+        height: calc(1.8125rem + 2px);
+        vertical-align: -.125em;
+
+    }
+
+    .clickable {
+
+        cursor: pointer;
+
+    }
+
+    .unclickable {
+
+        cursor: default !important;
+
+    }
+
+    .hidden-button {
+
+        background-color: rgba(0, 0, 0, 0);
+        border: 0px;
+
+    }
+
+    #ethernetProbeTable td {
+
+        vertical-align: middle;
+
+    }
+
+    #ethernetProbeTagMapping td {
+
+        vertical-align: middle;
+
+    }
+
+    .highlightedProbeValue {
+
+        color: var(--primary)
+    }
+
+    .quadrant {
+
+        padding: 20px;
+
+    }
+
+    .quadrantHeader {
+
+        border-bottom: 1px solid black;
+        margin-bottom: 20px;
+
+    }
+
+    .minLine {
+
+        stroke: var(--danger);
+
+    }
+
+    .maxLine {
+
+        stroke: var(--success);
+
+    }
+
+    .minVal {
+
+        color: var(--danger);
+
+    }
+
+    .maxVal {
+
+        color: var(--success);
+
+    }
+
+    .highcharts-grid-line {
+
+        stroke-width: 1 !important;
+
+    }
+
+    .error {
+
+        color: var(--danger);
+
+    }
+
+    .highlighted {
+        color: blue;
+    }
+
+    .mypv-loader {
+
+        width: 20px;
+        height: 20px;
+        margin-right: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        border-top: 3px solid #212529;
+        border-right: 3px solid transparent;
+        box-sizing: border-box;
+        animation: mypv-loader-rotation 1s linear infinite;
+
+    }
+
+    @keyframes mypv-loader-rotation {
+
+        0% {
+
+            transform: rotate(0deg);
+
+        }
+
+        100% {
+
+            transform: rotate(360deg);
+
+        }
+
+    }
+
+    .toggle-div {
+        display: flex;
+    }
+
+    .toggle-switch {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        position: relative;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .toggle-switch:focus {
+        outline: 0;
+    }
+
+    .toggle-switch:disabled {
+        opacity: 0.7;
+        cursor: default;
+    }
+
+    .toggle-switch.oval-track {
+        margin: 0px;
+        padding: 7px 16px !important;
+        border: 2px solid #adb5bd;
+        border-radius: 16px;
+        background: #fff;
+        transition: all 0.2s ease;
+    }
+
+    .toggle-switch.oval-track:focus {
+        box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+    }
+
+    .toggle-switch.oval-track:after {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        padding: 7px;
+        border-radius: 50%;
+        background: #adb5bd;
+        box-shadow: 0 1px 2px rgba(44, 44, 44, 0.2);
+        transition: all 0.2s cubic-bezier(0.5, 0.1, 0.75, 1.35);
+    }
+
+    .toggle-switch.oval-track:checked {
+        background: #48b95b;
+        border-color: #48b95b;
+    }
+
+    .toggle-switch.oval-track:checked:after {
+        transform: translatex(17px);
+        background: white;
+    }
+
+    /* ========tabs css starts ========== */
+
+    .tab-container {
+        display: flex;
+        flex-direction: column;
+        /* border: 1px solid #ddd; */
+        margin: 20px;
+
+        border-top: 2px solid black;
+    }
+
+    .tabs {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tab-item a {
+        color: black;
+    }
+
+    .tab-item a:hover {
+        text-decoration: none;
+    }
+
+
+
+
+
+    .tab-item {
+        display: inline-block;
+        margin: 0 10px 10px 0;
+        padding: 10px 15px;
+        /* border: 1px solid #ddd; */
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+    }
+
+    .tab-item.active {
+        /* background-color: #eee; */
+        border-bottom: 1.5px solid blue;
+    }
+
+    .tab-content-container {
+        padding: 0px;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 10px;
+        /* border: 1px solid #ddd; */
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+
+    /* ========= tabs css ends ===========*/
+
+    .header_footer {
+        text-align: center;
+        font-weight: 600;
+    }
+
+    #div_line {
+        padding-top: 10px;
+        border-top: 2px solid black;
+        display: none;
+        background-color: #F7F7F7;
+        /* Use the exact same color as the body */
+    }
+</style>
+
+
+
+<div class="container" id="body">
+
+
+
+
+    <i data-fa-symbol="sos-status-good" class="fak fa-sos-status-good"></i>
+    <i data-fa-symbol="sos-status-bad" class="fak fa-sos-status-bad"></i>
+    <i data-fa-symbol="sos-status-not-available" class="fak fa-sos-status-not-available"></i>
+    <i data-fa-symbol="sos-action-edit" class="fak fa-sos-action-edit"></i>
+    <i data-fa-symbol="sos-action-delete" class="fak fa-sos-action-delete"></i>
+    <i data-fa-symbol="sos-action-add" class="fak fa-sos-action-add"></i>
+
+
+    {% if mac_device %}
+
+    <div class="card shadow-sm" style="width: 0.8 vw" id="serialMonitorCardMac">
+
+        <div class="card-header">
+
+            <div class="d-flex align-items-center">
+                <img src="{{ url_for('static', filename='Wiretap_Icon_DiscoverWiretap_Black.svg') }}" height="40px">
+                <h6 style="font-weight: 600;padding-left: 6px;
+                padding-top: 8px;font-size: 1.2rem;">Discover & Wiretap Existing MODBUS RTU Devices Monitored by Others
+                </h6>
+
+            </div>
+
+        </div>
+
+        <div class="card-body d-flex justify-content-center">
+
+            <h6 style="font-weight: 600;">Wiretapping functionality is not supported on MacOS</h6>
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="card shadow-sm" style="width: 0.8 vw" id="serialMonitorCard">
+
+        <div class="card-header d-flex justify-content-between">
+
+            <div class="d-flex align-items-center">
+                <img src="{{ url_for('static', filename='Wiretap_Icon_DiscoverWiretap_Black.svg') }}" height="40px">
+                <h6 style="font-weight: 600;padding-left: 6px;
+                padding-top: 8px;font-size: 1.2rem;">Discover & Wiretap Existing MODBUS RTU Devices Monitored by Others
+                </h6>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="card-header">
+            <div style="padding-right: 5px;padding-bottom: 10px;">Select Your Serial Port Interface</div>
+            <select id="sel_interfaces" class="selecter" style="width: 400px!important;">
+
+                <option value="" style="text-align: left;">Select a serial Interface</option>
+                <option value="1" style="text-align: left;">Serial Interface 1</option>
+                {% for opt in serial_ports%}
+                <option value="{{opt['Port']}}">{{opt['Port']}}:{{opt['Description']}}</option>
+                {%endfor%}
+
+            </select>
+
+            <div class="tab-container" id="placeholder_line"></div>
+
+            <div id="placeholder" style="padding-top: 20px; display: flex; align-items: stretch; height: auto;">
+                <div class="left" style="flex: 2; display: flex; justify-content: center; align-items: center;">
+                    <img src="/static/shutterstock_2271270241.jpg"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 5%;">
+                </div>
+                <div class="right"
+                    style="flex: 1; padding: 0 20px; display: flex; flex-direction: column; justify-content: center;">
+                    <div>
+                        <h6 class="header_footer">TIPS FOR SUCCESS.</h6>
+                        <ol>
+                            <li>You will need the Gearmo P/N: US-485422, USB to RS-422 / RS-485 Converter w/FTDI Chip
+                                connected to your chosen serial interface.</li>
+                        </ol>
+                        <div style="text-align: center;">
+                            <img src="/static/usb-to-rs232-new00305_4.png"
+                                style="height: auto; width: 100%; max-width: 140px; margin: 10px auto;">
+                        </div>
+                        <ol start="2">
+                            <li>Ensure the devices you are trying to listen to, are actively being polled by an existing
+                                MODBUS master device.</li>
+                            <li>Try swapping your Tx and Rx connections if you do not immediately detect serial
+                                communications traffic.</li>
+                        </ol>
+                        <h6 class="header_footer">HAVE FUN & STAY SAFE!</h6>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row" style="padding-top: 20px;padding-bottom: 10px; padding-left: 15px;display: none;"
+                id="div_cnts">
+
+                <div class="col" style="padding-left:0">Messages Received:<span id="messagesReceived">0</span></div>
+                <div class="col" style="padding-left:0">MODBUS Device IDs:<span id="devicesFound">0</span></div>
+                <div class="col" style="padding-left:0" id="modbusRegisterCount">MODBUS Registers: 0</div>
+
+                <!-- <div class="col" style="padding-left:0">
+                    <button style="float: right;border-color:var(--primary);color:var(--primary);" type="button"
+                        class="btn btn-success btn-outline-success" id="reset_cnts">Reset Counters</button>
+
+                </div> -->
+            </div>
+        </div>
+
+
+        <div id="div_line"></div>
+
+
+        <div class="card-header justify-content-between" style="display: none;" id="div_opt">
+
+
+            <div style="display: flex; float: right;">
+
+
+                <div id="serialOptions" style="display: flex;">
+
+                    <button type="button" class="selectedOption"
+                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;"
+                        id="serialStreamButton">Serial
+                        Stream</button>
+
+                    <button type="button" class="option"
+                        style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
+                        id="serialRegistersButton">Registers</button>
+
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+
+
+        <!--  -->
+        <div class="card-body" id="div_body" style="display: none; background-color: #F7F7F7;">
+
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="idsError"
+                style="display: none;">
+
+                The following IP Addresses are not valid: <span id="idsErrorList"></span>
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="searchPortError"
+                style="display: none;">
+
+                The port provided is not valid
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="addrProbeError"
+                style="display: none;">
+
+                The IP Address provided is not valid
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="portProbeError"
+                style="display: none;">
+
+                The port provided is not valid
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="deviceProbeError"
+                style="display: none;">
+
+                The device id provided is not valid
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="functionProbeError"
+                style="display: none;">
+
+                The function provided is not valid
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="registerProbeError"
+                style="display: none;">
+
+                The registers provided are not valid
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="tagNameRequired"
+                style="display: none;">
+
+                The tag map must have a name
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="uniqueTagName"
+                style="display: none;">
+
+                The tag map must have a unique name
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="bWOrderIssue"
+                style="display: none;">
+
+                The given byte word order was unable to be deciphered
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="tagMapEmpty"
+                style="display: none;">
+
+                Tag map must have at least one entry
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="alert alert-success alert-dismissible fade show" role="alert" id="successfulSaveTagMap"
+                style="display: none;">
+
+                The tag map was saved successfully
+
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+            <div id="upperMenu">
+
+                <div id="serialRegistersUpperMenu" style="display: none;">
+
+                    <div id="serialRegistersUpperMenuDataFound" {% if not(dataFound) %}style="display: none;" {% endif
+                        %}>
+
+                        <div class="row">
+
+                            <div class="col">
+
+                                <label for="devID">Detected Device ID</label><br>
+
+                                <select class="custom-select" id="devID">
+
+                                    <option value="None">Choose...</option>
+
+
+
+                                </select>
+
+                            </div>
+                            <div class="col"></div>
+                            <div class="col"></div>
+
+                            <!-- <div class="col">
+
+                                <label for="devType">Device Type</label><br>
+
+                                <select class="custom-select" id="devType">
+
+                                    <option value="None">Choose...</option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col">
+
+                                <label for="devTemp">Device Template</label><br>
+
+                                <select class="custom-select" id="devTemp">
+
+                                    <option value="None">Choose...</option>
+
+                                </select>
+
+                            </div> -->
+
+
+                        </div>
+
+                    </div>
+
+                    <div id="serialRegistersUpperMenuDataNotFound" {% if dataFound %}style="display: none;" {% endif %}>
+
+                        <div
+                            style="display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; flex-direction: column;">
+
+                            <h1>Data Could Not Be Found</h1>
+                            <p>Please check your device's serial connection</p>
+                            <p><i>Pro Tip 1:</i> Check the Serial Stream Tab to ensure data is being recieved and
+                                processed</p>
+                            <p><i>Pro Tip 2:</i> Verify the current MODBUS master is actively polling</p>
+                            <p><i>Pro Tip 3:</i> See if swaping the TX and RX wires solves this issue</p>
+                            <p><i>Pro Tip 4:</i> Verify that the modbus_rtu_wiretap process is running</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div id="serialStreamUpperMenu" style="display: block;">
+
+                    <div class="row" style="margin: auto 0; display: flex; justify-content: space-between;">
+
+                        <div style="display: flex;">Time Since Last Data Update: <div class="timerDisplay"
+                                style="padding-right: 5px; padding-left: 5px;">-</div> seconds</div>
+
+                        <button type="button" id="startSerialStreamRead"
+                            class="btn btn-sm btn-success btn-outline-success" style="float: right;" value="start">Start
+                            Listening</button>
+
+                    </div>
+
+                </div>
+                <div>
+
+                    <!-- <div id="serialRegistersBody" style="display: none;">
+
+                        <div class="row" id="data_table">
+
+                            <table class="table table-sm table-striped" id="preview_table" style="font-size: 12px;">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+
+                                            Function
+
+                                        </th>
+
+                                        <th>
+
+                                            Register
+
+                                        </th>
+
+                                        <th>
+
+                                            Hex
+
+                                        </th>
+
+                                        <th>
+
+                                            int 16
+
+                                        </th>
+
+                                        <th>
+
+                                            uint 16
+
+                                        </th>
+
+                                        <th>
+
+                                            int 32
+
+                                        </th>
+
+                                        <th>
+
+                                            uint 32
+
+                                        </th>
+
+                                        <th>
+
+                                            float 32
+
+                                        </th>
+
+                                        <th>
+
+                                            Data Timestamp
+
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="dataTableBody">
+
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div> -->
+                    <div id="serialRegistersBody" style="display: none;">
+                        <div class="row" id="data_table" style="margin: auto -10px; padding-top: 20px;">
+                            <table class="table table-sm table-striped" id="dataTableBody" style="font-size: 12px;">
+                                <thead>
+                                    <tr>
+                                        <th>Register</th>
+                                        <th>Hex Value</th>
+                                        <th>INT16</th>
+                                        <th>UINT16</th>
+                                        <th>INT32</th>
+                                        <th>UINT32</th>
+                                        <th>FLOAT32</th>
+                                        <th>Slope (m<i>x</i>)</th>
+                                        <th><i>y</i>-Intercept (<i>b</i>)</th>
+                                        <th>Scaled Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div id="lowerMenu">
+
+                        <br id="beforeSpacer">
+
+                        <div id="serialRegistersLowerMenu" style="display: none;">
+
+                            <div class="row" style="margin: auto 0; display: flex; justify-content: space-between;">
+
+                                <div style="display: none;" id="serialCounterLabel">Time Since Last Data Update:
+                                    <div class="timerDisplay" style="padding-right: 5px; padding-left: 5px;">-</div>
+                                    seconds
+                                </div>
+
+                                {% if True %}
+
+                                <div id="add_btn" style="display: flex; float: right;">
+
+                                    <button type="button" class="btn btn-sm btn-success mypv_create_btn_text"
+                                        id='add_device_button' style="display: none;">Create Device</button>
+
+                                </div>
+
+                                {% endif %}
+
+                                <button type="button" id="startSerialStreamRead"
+                                    class="btn btn-sm btn-success btn-outline-success"
+                                    style="display: none; float: right;" value="start">Start</button>
+
+                            </div>
+
+                        </div>
+
+                        <div id="ethernetSearchStatus" style="display: none;">
+
+                            <div id="ethernetSearchStatusDisplay" style="width: 100%"></div>
+
+                            <br>
+
+                        </div>
+
+                        <div id="ethernetProbeStatus" style="display: none;">
+
+                            <div class="progress" style="width: 100%; background: var(--bs-gray)">
+
+                                <div id="probeStatusProgress"
+                                    class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                    aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                    Started</div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- <div id="ethernetBreak" style="display: none">
+
+                            <br>
+
+                        </div>-->
+
+                        <br id="afterSpacer" style="display: block;">
+
+                    </div>
+
+                    <div id="serialStreamBody" style="display: block; background-color: #F7F7F7;">
+                        {% if False %}
+                        <div
+                            style="display: flex; height: 100%; width: 100%; align-items: center; justify-content: center;">
+                            <h1>Wiretapping is not setup on any ports</h1>
+                            <p>Please add ports to the background.json file under "modbus_rtu_wiretap" under
+                                "parameters" under "portRecieve"</p>
+                        </div>
+                        {% else %}
+                        <div class="row" id="serialStreams">
+                            <div class="col">
+                                <div class="card-header" id="portHeader" style="background-color: #F7F7F7;">
+                                    Port:
+                                </div>
+                                <div class="port-card-body" id="cardBodyContent">
+                                    <pre id="portFeed" class="portFeed"></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card-header" style="background-color: #F7F7F7;">
+                                    Found Pairings
+                                </div>
+                                <div class="port-card-body" id="found_pairings_feed"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+
+
+
+
+                </div>
+
+                <!--  -->
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        <script>
+            var timeCounter = 0;
+            var timeInterval = null;
+
+            var last_data = null
+
+            var timer_max = 1
+
+            var active_port_screens = ["None"]
+
+            var currentProbeSettings = {};
+            var functionScale = { "read-coils": 10000, "read-discrete-inputs": 20000, "read-holding-registers": 30000, "read-input-registers": 40000 }
+
+            var timeSinceLastUpdate = 0;
+            var updateTimeElement = document.querySelector(".timerDisplay");
+
+            // Global variable to track which button was clicked
+            var lastButtonClicked = "";
+
+
+            // Timer Functions
+
+            // Only triggered by global listen button. Triggers background reading process.
+            function start() {
+                timeCounter = 0;
+
+                var modbusRegisterCount = document.getElementById("modbusRegisterCount");
+                modbusRegisterCount.textContent = "MODBUS Registers: 0";
+
+                timeSinceLastUpdate = 0;  // Reset the timer when starting
+                updateTimeElement.textContent = timeSinceLastUpdate;  // Update the display immediately
+
+                if (!(timeInterval == null)) {
+                    clearInterval(timeInterval)
+                }
+
+                var interface = document.getElementById("sel_interfaces").value;
+
+                if (!(interface == "None")) {
+                    $.post(`/start_wiretap`, { "ports": interface }).done((data) => {
+                        timeInterval = setInterval(increment, 1000);
+                    });
+                }
+            }
+
+            function reset() {
+                timeCounter = 0;
+            }
+
+            function stop() {
+                timeCounter = 0;
+                timeSinceLastUpdate = 0;  // Reset the timer when stopping
+                updateTimeElement.textContent = timeSinceLastUpdate;  // Reset the display to 0
+                clearInterval(timeInterval)
+                $.ajax({
+                    url: '/stop_wiretap',
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response_data) {
+                        console.log("Wiretap Stopped")
+                    }
+                })
+            }
+
+            function increment() {
+                timeSinceLastUpdate++;
+                updateTimeElement.textContent = timeSinceLastUpdate;
+                updateData()
+            }
+
+            function toggleInputs() {
+                let startSerialStreamReadElement = document.getElementById("startSerialStreamRead");
+                let slopeInputs = document.querySelectorAll("input.slope");
+                let yintInputs = document.querySelectorAll("input.yint");
+
+                if (startSerialStreamReadElement && startSerialStreamReadElement.value == "start") {
+                    slopeInputs.forEach(input => input.disabled = false);
+                    yintInputs.forEach(input => input.disabled = false);
+                } else {
+                    slopeInputs.forEach(input => input.disabled = true);
+                    yintInputs.forEach(input => input.disabled = true);
+                }
+            }
+
+            // Reset Panels Functions
+            document.getElementById("startSerialStreamRead").onclick = function () {
+                var startSerialStreamReadElement = document.getElementById("startSerialStreamRead");
+                if (startSerialStreamReadElement.value == "start") {
+                    startSerialStreamReadElement.value = "stop";
+                    startSerialStreamReadElement.innerHTML = "Stop Listening";
+                    startSerialStreamReadElement.classList.remove("btn-sucess");
+                    startSerialStreamReadElement.classList.remove("btn-outline-sucess");
+                    startSerialStreamReadElement.classList.add("btn-danger");
+                    startSerialStreamReadElement.classList.add("btn-outline-danger");
+                    start();
+                } else {
+                    startSerialStreamReadElement.value = "start";
+                    startSerialStreamReadElement.innerHTML = "Start Listening";
+                    startSerialStreamReadElement.classList.remove("btn-danger");
+                    startSerialStreamReadElement.classList.remove("btn-outline-danger");
+                    startSerialStreamReadElement.classList.add("btn-sucess");
+                    startSerialStreamReadElement.classList.add("btn-outline-sucess");
+                    stop();
+                }
+            }
+
+            // Switching Functionality
+            document.getElementById("serialStreamButton").onclick = function () {
+                lastButtonClicked = "Serial Stream";
+                if (document.getElementById("serialStreamUpperMenu")) {
+                    document.getElementById("serialStreamUpperMenu").style.display = "block";
+                } else {
+                    console.error("Element with ID 'serialStreamUpperMenu' not found");
+                }
+                if (document.getElementById("serialStreamBody")) {
+                    document.getElementById("serialStreamBody").style.display = "block";
+                } else {
+                    console.error("Element with ID 'serialStreamBody' not found");
+                }
+
+                // Hide Other Upper Menus
+                if (document.getElementById("serialRegistersUpperMenu")) {
+                    document.getElementById("serialRegistersUpperMenu").style.display = "none";
+                } else {
+                    console.error("Element with ID 'serialRegistersUpperMenu' not found");
+                }
+
+                // Hide Other Lower Menus/Statuses
+                if (document.getElementById("serialRegistersLowerMenu")) {
+                    document.getElementById("serialRegistersLowerMenu").style.display = "none";
+                } else {
+                    console.error("Element with ID 'serialRegistersLowerMenu' not found");
+                }
+
+                if (document.getElementById("serialRegistersBody")) {
+                    document.getElementById("serialRegistersBody").style.display = "none"
+                } else {
+                    console.error("Element with ID 'serialRegistersBody' not found");
+                }
+
+                // Hide Extra Spacer
+                if (document.getElementById("afterSpacer")) {
+                    document.getElementById("afterSpacer").style.display = "none";
+                } else {
+                    console.error("Element with ID 'afterSpacer' not found");
+                }
+
+                // Switch Buttons
+                if (!(document.getElementById("serialStreamButton").classList.contains("selectedOption"))) {
+                    document.getElementById("serialStreamButton").classList.add("selectedOption")
+                }
+
+                if (document.getElementById("serialStreamButton").classList.contains("option")) {
+                    document.getElementById("serialStreamButton").classList.remove("option")
+                }
+
+                if (!(document.getElementById("serialRegistersButton").classList.contains("option"))) {
+                    document.getElementById("serialRegistersButton").classList.add("option")
+                }
+
+                if (document.getElementById("serialRegistersButton").classList.contains("selectedOption")) {
+                    document.getElementById("serialRegistersButton").classList.remove("selectedOption")
+                }
+
+            }
+
+            document.getElementById("serialRegistersButton").onclick = function () {
+                lastButtonClicked = "Registers";
+                if (document.getElementById("serialStreamUpperMenu")) {
+                    document.getElementById("serialStreamUpperMenu").style.display = "none";
+                } else {
+                    console.error("Element with ID 'serialStreamUpperMenu' not found");
+                }
+                if (document.getElementById("serialStreamBody")) {
+                    document.getElementById("serialStreamBody").style.display = "none";
+                } else {
+                    console.error("Element with ID 'serialStreamBody' not found");
+                }
+
+                // Switch to WireTap Registers
+                if (document.getElementById("serialRegistersUpperMenu")) {
+                    document.getElementById("serialRegistersUpperMenu").style.display = "block";
+                } else {
+                    console.error("Element with ID 'serialRegistersUpperMenu' not found");
+                }
+                if (document.getElementById("serialRegistersLowerMenu")) {
+                    document.getElementById("serialRegistersLowerMenu").style.display = "block";
+                } else {
+                    console.error("Element with ID 'serialRegistersLowerMenu' not found");
+                }
+
+                // if (document.getElementById("serialRegistersBody")) {
+                //     document.getElementById("serialRegistersBody").style.display = "block"
+                // } else {
+                //     console.error("Element with ID 'serialRegistersBody' not found");
+                // }
+
+                var serialRegistersBody = document.getElementById("serialRegistersBody");
+                var devIDElement = document.getElementById("devID");
+
+                if (devIDElement.value && devIDElement.value !== "None") {
+                    if (serialRegistersBody) {
+                        serialRegistersBody.style.display = "block";
+                    } else {
+                        console.error("Element with ID 'serialRegistersBody' not found");
+                    }
+                } else {
+                    if (serialRegistersBody) {
+                        serialRegistersBody.style.display = "none";
+                    } else {
+                        console.error("Element with ID 'serialRegistersBody' not found");
+                    }
+                }
+
+                // Call the function once initially to set the correct state, only if the element exists
+                if (document.getElementById("startSerialStreamRead")) {
+                    toggleInputs();
+                }
+
+                if (document.getElementById("afterSpacer")) {
+                    document.getElementById("afterSpacer").style.display = "block";
+                } else {
+                    console.error("Element with ID 'afterSpacer' not found");
+                }
+
+                // Switch Buttons
+                if (!(document.getElementById("serialRegistersButton").classList.contains("selectedOption"))) {
+                    document.getElementById("serialRegistersButton").classList.add("selectedOption")
+                }
+
+                if (document.getElementById("serialRegistersButton").classList.contains("option")) {
+                    document.getElementById("serialRegistersButton").classList.remove("option")
+                }
+
+                if (!(document.getElementById("serialStreamButton").classList.contains("option"))) {
+                    document.getElementById("serialStreamButton").classList.add("option")
+                }
+
+                if (document.getElementById("serialStreamButton").classList.contains("selectedOption")) {
+                    document.getElementById("serialStreamButton").classList.remove("selectedOption")
+                }
+            }
+
+            // Update Functions
+            function updateData() {
+                var interface = document.getElementById("sel_interfaces").value;
+
+                $.post(`/fetch_counts`, { "ports": interface }).done((data) => {
+                    //console.log('the data is', data)
+                    updateReadMessages(data)
+                })
+
+                if (document.getElementById("serialRegistersButton").classList.contains("selectedOption")) {
+                    var interface = document.getElementById("sel_interfaces").value;
+
+                    $.post(`/fetch_device_list`, { "ports": interface }).done((data) => {
+                        //console.log('if the fetch_device_list is', data)
+                        addKnownIds(data)
+                        updateSerialRegisters(data)
+                    });
+
+                } else {
+                    var interface = document.getElementById("sel_interfaces").value;
+
+                    $.post(`/fetch_device_list`, { "ports": interface }).done((data) => {
+                        //console.log('the else if fetch_device_list is', data)
+                        addKnownIds(data)
+                        updateSerialRegisters(data)
+                    });
+                    updateSerialStream()
+
+                }
+
+            }
+
+            function updateReadMessages(messageData) {
+                //console.log('updateReadMessages', messageData)
+                if (document.getElementById("messagesReceived")) {
+                    document.getElementById("messagesReceived").innerHTML = messageData;
+                } else {
+                    console.error("Element with ID 'messagesReceived' not found");
+                }
+            }
+
+            function addKnownIds(ids) {
+                ids = ids.split(";")
+
+                //console.log('Inside addKnownIds', ids)
+
+                var divIds = []
+
+                for (i = 0; i < ids.length; i++) {
+                    ids[i] = ids[i].split(",")
+                    divIds.push(ids[i][0])
+                }
+
+                divIds.push("None")
+
+                var values = []
+
+                for (i = document.getElementById("devID").options.length - 1; i >= 0; i--) {
+                    if (!(divIds.includes(document.getElementById("devID").options[i].value))) {
+                        document.getElementById("devID").options[i].remove()
+                    } else {
+                        values.push(document.getElementById("devID").options[i].value)
+                    }
+                }
+
+                for (i = 0; i < ids.length; i++) {
+                    if (!(values.includes(ids[i][0]))) {
+                        if (ids[i][3] != "") {
+                            document.getElementById("devID").options.add(new Option(ids[i][3], ids[i][0]));
+                        }
+                    }
+                }
+
+                if (document.getElementById("devicesFound")) {
+                    document.getElementById("devicesFound").innerHTML = document.getElementById("devID").options.length - 1;
+                } else {
+                    console.error("Element with ID 'devicesFound' not found");
+                }
+            }
+
+            // Function to auto-select the first detected device
+            function autoSelectFirstDevice() {
+                var devIDElement = document.getElementById("devID");
+                if (devIDElement && devIDElement.options.length > 1) {
+                    //console.log('Inside autoSelectFirstDevice - If condition')
+                    devIDElement.selectedIndex = 1; // Auto-select the first detected device (index 1)
+                    var event = new Event('change');
+                    devIDElement.dispatchEvent(event);
+                }
+            }
+
+            function updateSerialRegisters(ids) {
+
+                autoSelectFirstDevice();
+
+                ids = ids.split(";")
+
+                for (i = 0; i < ids.length; i++) {
+                    ids[i] = ids[i].split(",")
+                }
+
+                try {
+                    if (!(document.getElementById("devID").value == "None")) {
+                        let id = null;
+                        let port = null;
+
+                        for (let i = 0; i < ids.length; i++) {
+                            if (ids[i][0] == document.getElementById("devID").value) {
+                                id = ids[i][1]
+                                port = ids[i][2]
+                            }
+                        }
+
+                        if ((port != null) && (id != null)) {
+                            $.post(`/get_table_data_v1`, { "id": id, "port": port }).done((data) => {
+                                if (document.getElementById("serialRegistersUpperMenuDataNotFound")) {
+                                    document.getElementById("serialRegistersUpperMenuDataNotFound").style.display = "none"
+                                } else {
+                                    console.error("Element with ID 'serialRegistersUpperMenuDataNotFound' not found");
+                                }
+
+                                if (lastButtonClicked === "Registers") {
+
+                                    if (document.getElementById("serialRegistersBody")) {
+                                        document.getElementById("serialRegistersBody").style.display = "block"
+                                    } else {
+                                        console.error("Element with ID 'serialRegistersBody' not found");
+                                    }
+                                }
+                                else{
+                                    if (document.getElementById("serialRegistersBody")) {
+                                        document.getElementById("serialRegistersBody").style.display = "none"
+                                    } else {
+                                        console.error("Element with ID 'serialRegistersBody' not found");
+                                    }
+                                }
+                                //console.log(data)
+                                formatSerialRegisters(data)
+                                //console.log(data)
+
+                            });
+                        }
+                        else {
+                            if (document.getElementById("serialRegistersUpperMenuDataNotFound")) {
+                                document.getElementById("serialRegistersUpperMenuDataNotFound").style.display = "block"
+                            } else {
+                                console.error("Element with ID 'serialRegistersUpperMenuDataNotFound' not found");
+                            }
+                            if (document.getElementById("serialRegistersBody")) {
+                                document.getElementById("serialRegistersBody").style.display = "none"
+                            } else {
+                                console.error("Element with ID 'serialRegistersBody' not found");
+                            }
+                        }
+                    } else {
+                        if (document.getElementById("serialRegistersUpperMenuDataNotFound")) {
+                            document.getElementById("serialRegistersUpperMenuDataNotFound").style.display = "block"
+                        } else {
+                            console.error("Element with ID 'serialRegistersUpperMenuDataNotFound' not found");
+                        }
+                        if (document.getElementById("serialRegistersBody")) {
+                            document.getElementById("serialRegistersBody").style.display = "none"
+                        } else {
+                            console.error("Element with ID 'serialRegistersBody' not found");
+                        }
+                    }
+
+                } catch (error) {
+                    console.log(error)
+
+                    if (document.getElementById("serialRegistersBody")) {
+                        document.getElementById("serialRegistersBody").style.display = "none"
+                    } else {
+                        console.error("Element with ID 'serialRegistersBody' not found");
+                    }
+
+                    if (document.getElementById("serialRegistersUpperMenuDataNotFound")) {
+                        document.getElementById("serialRegistersUpperMenuDataNotFound").style.display = "block"
+                    } else {
+                        console.error("Element with ID 'serialRegistersUpperMenuDataNotFound' not found");
+                    }
+                }
+            }
+
+            function updateSerialStream() {
+                var serialStreamPauseElement = document.getElementById("startSerialStreamRead");
+                if (serialStreamPauseElement && serialStreamPauseElement.value == "stop") {
+                    $.ajax({
+                        url: '/new_wiretap_data',
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response_data) {
+                            //console.log("Received data:", response_data); // Debug log
+                            formatSerialStream(response_data);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching data:", status, error); // Error log
+                        }
+                    });
+                }
+            }
+
+            // Format Functions
+            // function formatSerialRegisters(data) {
+            //     var modbusRegisterCount = document.getElementById("modbusRegisterCount");
+            //     if (data.length == 0) {
+            //         if (document.getElementById("dataTableBody")) {
+            //             document.getElementById("dataTableBody").innerHTML = "<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>"
+            //         } else {
+            //             console.error("Element with ID 'dataTableBody' not found");
+            //         }
+            //         modbusRegisterCount.textContent = "MODBUS Registers: 0";
+            //     } else {
+            //         if (document.getElementById("dataTableBody")) {
+            //             document.getElementById("dataTableBody").innerHTML = ""
+            //             for (i = 0; i < data.length; i++) {
+            //                 document.getElementById("dataTableBody").innerHTML += data[i][1]
+            //             }
+            //             modbusRegisterCount.textContent = "MODBUS Registers: " + (data.length);
+            //         } else {
+            //             console.error("Element with ID 'dataTableBody' not found");
+            //         }
+            //     }
+            // }
+
+            // Helper function to format numbers with commas
+            function numberWithCommas(x) {
+                if (typeof x === 'number') {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+                return x;
+            }
+
+            // Provided evalPreview function with checks for currentProbeSettings and tagMap
+            function evalPreview(value, funct, register) {
+                //console.log(value);
+
+                let settings;
+
+                if (currentProbeSettings && Object.keys(currentProbeSettings).includes(funct) && Object.keys(currentProbeSettings[funct]).includes(register)) {
+                    settings = currentProbeSettings[funct][register];
+                } else if (tagMap) {
+                    for (let i = 0; i < tagMap.length; i++) {
+                        if ((tagMap[i]["function"] == funct) && (tagMap[i]["register"] == register)) {
+                            settings = tagMap[i];
+                            break;
+                        }
+                    }
+                }
+
+                if (!settings) {
+                    return `null`;
+                }
+
+                if (value == "-") {
+                    return `null`;
+                }
+
+                if (funct == "read-coils") {
+                    if (settings["settings"]["flipBool"]) {
+                        return value == 0 ? 1 : 0;
+                    } else {
+                        return value;
+                    }
+                } else {
+                    let calcedVal = value * settings["slopeCalced"] + settings["offsetCalced"];
+
+                    if (settings["dataType"] == "float32") {
+                        calcedVal = calcedVal.toPrecision(4);
+                    } else {
+                        calcedVal = numberWithCommas(calcedVal);
+                    }
+
+                    return `${calcedVal}`;
+                }
+            }
+
+            function formatSerialRegisters(data) {
+                var tableData = "<tbody>";
+                var byteOrder = "B";  // Default to Big Byte
+                var wordOrder = "B";  // Default to Big Word
+                var bWOrder = byteOrder + wordOrder;
+
+                var modbusRegisterCount = document.getElementById("modbusRegisterCount");
+
+                var functions = Object.keys(data);
+
+                var registerCount = 0; // Add this line at the beginning of the function
+
+                for (let i = 0; i < functions.length; i++) {
+                    if (functions[i] != "status" && functions[i] != "assets" && functions[i] != "device" && functions[i] != "error") {
+                        let registers = Object.keys(data[functions[i]]);
+                        if (!(Object.keys(currentProbeSettings).includes(functions[i]))) {
+
+                            currentProbeSettings[functions[i]] = {}
+
+                        }
+                        for (let j = 0; j < registers.length; j++) {
+                            let registerData = data[functions[i]][registers[j]];
+                            currentProbeSettings[functions[i]][registers[j]] = {
+                                "dataType": "int16",
+                                "settings": {
+                                    "flipBool": false,
+                                    "scale_mode": "slope_intercept",
+                                    "slope": "1.0",
+                                    "offset": "0.0"
+                                },
+                                "slopeCalced": 1.0,
+                                "offsetCalced": 0.0,
+                                "function": functions[i],
+                                "register": registers[j],
+                                "display": true
+                            }
+                            tableData += `<tr>
+                    <td>${parseInt(registers[j])}</td>
+                    <td>${registerData["hex"]}</td>
+
+                    <td class="rightalign"><button function="${functions[i]}" register="${registers[j]}" class="hidden-button clickable int16ProbeRes" onclick="updateScaledValue('${functions[i]}', '${registers[j]}', 'int16')">${numberWithCommas(registerData["int16"][bWOrder])}</button></td>
+                    <td class="rightalign"><button function="${functions[i]}" register="${registers[j]}" class="hidden-button clickable uint16ProbeRes" onclick="updateScaledValue('${functions[i]}', '${registers[j]}', 'uint16')">${numberWithCommas(registerData["uint16"][bWOrder])}</button></td>
+                    <td class="rightalign"><button function="${functions[i]}" register="${registers[j]}" class="hidden-button clickable int32ProbeRes" onclick="updateScaledValue('${functions[i]}', '${registers[j]}', 'int32')">${numberWithCommas(registerData["int32"][bWOrder])}</button></td>
+                    <td class="rightalign"><button function="${functions[i]}" register="${registers[j]}" class="hidden-button clickable uint32ProbeRes" onclick="updateScaledValue('${functions[i]}', '${registers[j]}', 'uint32')">${numberWithCommas(registerData["uint32"][bWOrder])}</button></td>
+                    <td class="rightalign"><button function="${functions[i]}" register="${registers[j]}" class="hidden-button clickable float32ProbeRes" onclick="updateScaledValue('${functions[i]}', '${registers[j]}', 'float32')">${registerData["float32"][bWOrder]}</button></td>
+
+                    <td><input type="text" function="${functions[i]}" register="${registers[j]}" class="slope" value="1.0" oninput="updateScaledValue('${functions[i]}', '${registers[j]}')" disabled></td>
+                    <td><input type="text" function="${functions[i]}" register="${registers[j]}" class="yint" value="0.0" oninput="updateScaledValue('${functions[i]}', '${registers[j]}')" disabled></td>
+
+                    <td class="highlightedProbeValue preview rightalign" function="${functions[i]}" register="${registers[j]}" id="scaled-${functions[i]}-${registers[j]}">${evalPreview(registerData["int16"][bWOrder], functions[i], registers[j])}</td>
+                </tr>`;
+                            registerCount++; // Increment the counter here
+                        }
+                    }
+                }
+
+                tableData += "</tbody>";
+                modbusRegisterCount.textContent = "MODBUS Registers: " + (registerCount);
+                document.getElementById("dataTableBody").getElementsByTagName("tbody")[0].innerHTML = tableData;
+            }
+
+            // Function to update the scaled value when slope or y-intercept is changed
+            function updateScaledValue(funct, register, dataType) {
+                // Highlight the clicked value in blue if a specific dataType is provided
+                if (dataType) {
+                    document.querySelectorAll(`button[function="${funct}"][register="${register}"]`).forEach(button => {
+                        button.classList.remove('highlighted'); // Reset highlight for all buttons in the row
+                    });
+                    document.querySelector(`button.${dataType}ProbeRes[function="${funct}"][register="${register}"]`).classList.add('highlighted'); // Highlight the clicked button
+                }
+
+                let slope = parseFloat(document.querySelector(`input.slope[function="${funct}"][register="${register}"]`).value) || 1.0;
+                let yint = parseFloat(document.querySelector(`input.yint[function="${funct}"][register="${register}"]`).value) || 0.0;
+
+                currentProbeSettings[funct][register]["slopeCalced"] = slope;
+                currentProbeSettings[funct][register]["offsetCalced"] = yint;
+
+                let selectedButton = document.querySelector(`button[function="${funct}"][register="${register}"].highlighted`);
+                let value = selectedButton ? parseFloat(selectedButton.textContent.replace(/,/g, '')) : parseFloat(document.querySelector(`button.int16ProbeRes[function="${funct}"][register="${register}"]`).textContent.replace(/,/g, ''));
+
+                // Update the scaled value
+                document.getElementById(`scaled-${funct}-${register}`).innerHTML = evalPreview(value, funct, register);
+            }
+
+
+            // Ensure currentProbeSettings and tagMap are defined, even if empty
+            var currentProbeSettings = {};
+            var tagMap = [];
+
+
+            function formatSerialStream(data) {
+                var portHeader = document.getElementById("portHeader");
+                var portFeed = document.getElementById("portFeed");
+                var foundPairingsFeed = document.getElementById("found_pairings_feed");
+
+                if (portHeader && portFeed) {
+                    for (let port in data["new_serial"]) {
+                        // Update the port header with the port name
+                        portHeader.textContent = `Port: ${port}`;
+
+                        // Update the feed content
+                        let string = data["new_serial"][port].join(" ");
+                        portFeed.textContent = string;
+                    }
+                } else {
+                    console.error("Element with ID 'portHeader' or 'portFeed' not found");
+                }
+
+                if (foundPairingsFeed) {
+                    let string = "<div>";
+
+                    for (let i = 0; i < data["new_found"].length; i++) {
+                        let request = data["new_found"][i]["request"].split(",");
+                        let requestString = request.join(" ");
+
+                        let response = data["new_found"][i]["response"].split(",");
+                        let responseString = response.join(" ");
+
+                        string += `<div>Found Request/Response pair from port ${data["new_found"][i]["port"]} at ${data["new_found"][i]["time"]}</div>
+                        <div><div class="inlinePre">- Request: <pre>${requestString}</pre></div></div>
+                        <div><div class="inlinePre">- Response: <pre>${responseString}</pre></div></div>
+                        <div class="vertSpacer"></div>`;
+                    }
+
+                    string += "</div>";
+                    foundPairingsFeed.innerHTML = string;
+                } else {
+                    console.error("Element with ID 'found_pairings_feed' not found");
+                }
+            }
+
+
+
+
+
+            // Setup functions for all panels
+            document.addEventListener("DOMContentLoaded", function (event) {
+                setupRegistersPanel()
+
+                $('#idsError, #searchPortError, #addrProbeError, #portProbeError, #deviceProbeError, #functionProbeError, #registerProbeError, #tagNameRequired, #uniqueTagName, #bWOrderIssue, #tagMapEmpty, #successfulSaveTagMap, #modelError').on('close.bs.alert', function (event) {
+                    event.preventDefault();
+                    this.style.display = "none";
+                });
+            })
+
+            function setupRegistersPanel() {
+                // When the device id is updated, disable
+                document.getElementById("devID").onchange = function () {
+                    if (this.value == "None") {
+                        if (document.getElementById("dataTableBody")) {
+                            document.getElementById("dataTableBody").innerHTML = "<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>"
+                        } else {
+                            console.error("Element with ID 'dataTableBody' not found");
+                        }
+                    }
+                }
+            }
+
+            document.getElementById('sel_interfaces').addEventListener("change", function () {
+                if (this.value == "") {
+                    hideContent();
+                } else {
+                    showContent();
+                }
+            });
+
+            // Function to reset the devID element
+            function resetDevID() {
+                var devIDElement = document.getElementById("devID");
+                if (devIDElement) {
+                    devIDElement.innerHTML = '<option value="None">Choose...</option>'; // Clear and reset options
+                    devIDElement.selectedIndex = 0; // Reset the selected index
+                } else {
+                    console.error("Element with ID 'devID' not found");
+                }
+            }
+
+            function hideContent() {
+                if (document.getElementById("placeholder")) {
+                    document.getElementById("placeholder").style.display = "flex";
+                } else {
+                    console.error("Element with ID 'placeholder' not found");
+                }
+                if (document.getElementById("placeholder_line")) {
+                    document.getElementById("placeholder_line").style.display = "flex";
+                } else {
+                    console.error("Element with ID 'placeholder_line' not found");
+                }
+                if (document.getElementById("div_cnts")) {
+                    document.getElementById("div_cnts").style.display = "none";
+                } else {
+                    console.error("Element with ID 'div_cnts' not found");
+                }
+                if (document.getElementById("div_line")) {
+                    document.getElementById("div_line").style.display = "none";
+                } else {
+                    console.error("Element with ID 'div_line' not found");
+                }
+                if (document.getElementById("div_body")) {
+                    document.getElementById("div_body").style.display = "none";
+                } else {
+                    console.error("Element with ID 'div_body' not found");
+                }
+                if (document.getElementById("div_opt")) {
+                    document.getElementById("div_opt").style.display = "none";
+                } else {
+                    console.error("Element with ID 'div_opt' not found");
+                }
+            }
+
+            function showContent() {
+                if (document.getElementById("placeholder")) {
+                    document.getElementById("placeholder").style.display = "none";
+                } else {
+                    console.error("Element with ID 'placeholder' not found");
+                }
+                if (document.getElementById("placeholder_line")) {
+                    document.getElementById("placeholder_line").style.display = "none";
+                } else {
+                    console.error("Element with ID 'placeholder_line' not found");
+                }
+                if (document.getElementById("div_cnts")) {
+                    document.getElementById("div_cnts").style.display = "flex";
+                } else {
+                    console.error("Element with ID 'div_cnts' not found");
+                }
+                if (document.getElementById("div_line")) {
+                    document.getElementById("div_line").style.display = "block";
+                } else {
+                    console.error("Element with ID 'div_line' not found");
+                }
+                if (document.getElementById("div_body")) {
+                    document.getElementById("div_body").style.display = "block";
+                } else {
+                    console.error("Element with ID 'div_body' not found");
+                }
+                if (document.getElementById("div_opt")) {
+                    document.getElementById("div_opt").style.display = "block";
+                } else {
+                    console.error("Element with ID 'div_opt' not found");
+                }
+
+                if (document.getElementById("serialRegistersUpperMenuDataNotFound")) {
+                    document.getElementById("serialRegistersUpperMenuDataNotFound").style.display = "block"
+                } else {
+                    console.error("Element with ID 'serialRegistersUpperMenuDataNotFound' not found");
+                }
+                if (document.getElementById("serialRegistersBody")) {
+                    document.getElementById("serialRegistersBody").style.display = "none"
+                } else {
+                    console.error("Element with ID 'serialRegistersBody' not found");
+                }
+
+                var portHeader = document.getElementById("portHeader");
+                var portFeed = document.getElementById("portFeed");
+                var foundPairingsFeed = document.getElementById("found_pairings_feed");
+                var modbusRegisterCount = document.getElementById("modbusRegisterCount");
+                var messagesReceivedCount = document.getElementById("messagesReceived");
+                var deviceFoundCount = document.getElementById("devicesFound");
+
+                modbusRegisterCount.textContent = "MODBUS Registers: 0";
+                messagesReceivedCount.textContent = "0";
+                deviceFoundCount.textContent = "0";
+
+                portHeader.textContent = `Port:`;
+                portFeed.textContent = '';
+                foundPairingsFeed.textContent = '';
+                var startSerialStreamReadElement = document.getElementById("startSerialStreamRead");
+                startSerialStreamReadElement.value = "start";
+                startSerialStreamReadElement.innerHTML = "Start Listening";
+                startSerialStreamReadElement.classList.remove("btn-danger");
+                startSerialStreamReadElement.classList.remove("btn-outline-danger");
+                startSerialStreamReadElement.classList.add("btn-sucess");
+                startSerialStreamReadElement.classList.add("btn-outline-sucess");
+                resetDevID();
+                stop();
+
+            }
+
+
+
+        </script>
+
+        {% endblock %}

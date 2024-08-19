@@ -1,0 +1,453 @@
+{
+ "special_variables": {
+  "3PWRnnn": [
+   "Three\u2013phase power elements, 1\u20134 ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50Annn": [
+   "Level 1\u2013Level 4 A\u2013phase instantaneous overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50AnnnT": [
+   "Level 1\u2013Level 4 A\u2013phase definite time\u2013overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50Bnnn": [
+   "Level 1\u2013Level 4 B\u2013phase instantaneous overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50BnnnT": [
+   "Level 1\u2013Level 4 B\u2013phase definite time\u2013overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50Cnnn": [
+   "Level 1\u2013Level 4 C\u2013phase instantaneous overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50CnnnT": [
+   "Level 1\u2013Level 4 C\u2013phase definite time\u2013overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50Gnnn": [
+   "Level 1\u2013Level 6 ground instantaneous overcurrent elements ",
+   [
+    1,
+    6
+   ]
+  ],
+  "50GnnnT": [
+   "Level 1\u2013Level 4 ground definite time\u2013overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50Nnnn": [
+   "Level 1\u2013Level 6 neutral instantaneous overcurrent elements ",
+   [
+    1,
+    6
+   ]
+  ],
+  "50NnnnT": [
+   "Level 1\u2013Level 4 neutral definite time\u2013overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50Pnnn": [
+   "Level 1\u2013Level 6 phase instantaneous overcurrent elements ",
+   [
+    1,
+    6
+   ]
+  ],
+  "50PnnnT": [
+   "Level 1\u2013Level 4 phase definite time\u2013overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "50Qnnn": [
+   "Level 1\u2013Level 6 negative\u2013sequence instantaneous overcurrent elements ",
+   [
+    1,
+    6
+   ]
+  ],
+  "50QnnnT": [
+   "Level 1\u2013Level 4 negative\u2013sequence definite time\u2013overcurrent elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "81Dnnn": [
+   "Level 1\u2013Level 6 instantaneous frequency elements (for testing only) ",
+   [
+    1,
+    6
+   ]
+  ],
+  "81DnnnT": [
+   "Level 1\u2013Level 6 definite\u2013time frequency elements ",
+   [
+    1,
+    6
+   ]
+  ],
+  "81RnnnT": [
+   "Level 1\u2013Level 4 rate\u2013of\u2013change\u2013of\u2013frequency elements ",
+   [
+    1,
+    4
+   ]
+  ],
+  "HIZnnn": [
+   "States 170 to 192 of HIZ Logic  Fault Detection on page 4.144)",
+   [
+    170,
+    192
+   ]
+  ],
+  "INnnn": [
+   "Optoisolated inputs IN101\u2013IN206, asserted (optional inputs)   ",
+   [
+    101,
+    206
+   ]
+  ],
+  "LBnnn": [
+   "Local bits 01\u201316, asserted    ",
+   [
+    1,
+    16
+   ]
+  ],
+  "LTnnn": [
+   "Latch bits 01\u201332, asserted  ",
+   [
+    1,
+    32
+   ]
+  ],
+  "OUTnnn": [
+   "Output contacts OUT101\u2013OUT202, asserted (optional outputs) ",
+   [
+    101,
+    202
+   ]
+  ],
+  "PBnnn_LED": [
+   "Operator control pushbutton LEDs 01\u201312. Driven by associated SELOGIC front\u2013panel settings PB01_LED\u2013PB12_LED .",
+   [
+    1,
+    12
+   ]
+  ],
+  "PBnnn_PUL": [
+   "Operator control pushbutton 01\u201312, momentarily pulsed (one process\u2013 ing interval assertion when button is first pressed) .",
+   [
+    1,
+    12
+   ]
+  ],
+  "PBnnn": [
+   "Operator control pushbuttons 01\u201312 (asserted when button is being pressed) ",
+   [
+    1,
+    12
+   ]
+  ],
+  "RBnnn": [
+   "Remote bits 01\u201332, asserted ",
+   [
+    1,
+    32
+   ]
+  ],
+  "RMBnnnA": [
+   "Received MIRRORED BITS 1\u20138, Channel A ",
+   [
+    1,
+    8
+   ]
+  ],
+  "RMBnnnB": [
+   "Received MIRRORED BITS 1\u20138, Channel B ",
+   [
+    1,
+    8
+   ]
+  ],
+  "SCnnnQD": [
+   "SELOGIC Counters 01\u201316, asserted when counter = 0 ",
+   [
+    1,
+    16
+   ]
+  ],
+  "SCnnnQU": [
+   "SELOGIC Counters 01\u201316, asserted when counter = Preset value ",
+   [
+    1,
+    16
+   ]
+  ],
+  "SGnnn": [
+   "Setting group indication, group 1\u20138, asserted for active group ",
+   [
+    1,
+    8
+   ]
+  ],
+  "SVnnn": [
+   "SELOGIC variables 01\u201364. Associated timers (below) are picked up when variable is asserted ",
+   [
+    1,
+    64
+   ]
+  ],
+  "SVnnnT": [
+   "SELOGIC timers 01\u201364, timed out when asserted ",
+   [
+    1,
+    64
+   ]
+  ],
+  "TLED_nnn": [
+   "Target LEDs 01\u201324. Asserted when LED illuminated ",
+   [
+    1,
+    24
+   ]
+  ],
+  "TMBnnnA": [
+   "Transmit MIRRORED BITS 1\u20138, channel A ",
+   [
+    1,
+    8
+   ]
+  ],
+  "TMBnnnB": [
+   "Transmit MIRRORED BITS 1\u20138, channel B ",
+   [
+    1,
+    8
+   ]
+  ],
+  "TQUALnnn": [
+   "Encoded IRIG time quality bits 1\u20134. Only available when Global set\u2013 ting IRIGC = C37.118 and a proper IRIG signal is decoded.",
+   [
+    1,
+    4
+   ]
+  ],
+  "TREAnnn": [
+   "Trigger Reason bits 1\u20134 (follow SELOGIC control equations of same name . Sent with C37.118 synchro\u2013 phasor message.",
+   [
+    1,
+    4
+   ]
+  ],
+  "VBnnn": [
+   "Virtual bits 001\u2013128. Virtual bit configuration is controlled by loaded CID file (IEC 61850 relay models only). Virtual bits can be configured to follow received GOOSE messages .",
+   [
+    1,
+    128
+   ]
+  ]
+ },
+ "25A1": "Synchronism\u2013check elements ",
+ "25A2": "Undervoltage element for frequency element blocking ",
+ "27YA1": "A\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YA2": "A\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YA3": "A\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YA4": "AB\u2013phase\u2013to\u2013phase undervoltage element, Y\u2013terminal ",
+ "27YB1": "B\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YB2": "B\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YB3": "B\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YB4": "BC\u2013phase\u2013to\u2013phase undervoltage element, Y\u2013terminal ",
+ "27YC1": "C\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YC2": "C\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YC3": "C\u2013phase undervoltage elements, Y\u2013terminal ",
+ "27YC4": "CA\u2013phase\u2013to\u2013phase undervoltage, Y\u2013terminal ",
+ "27ZA1": "A\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZA2": "A\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZA3": "A\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZA4": "AB\u2013phase\u2013to\u2013phase undervoltage element, Z\u2013terminal ",
+ "27ZB1": "B\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZB2": "B\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZB3": "B\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZB4": "BC\u2013phase\u2013to\u2013phase undervoltage element, Z\u2013terminal ",
+ "27ZC1": "C\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZC2": "C\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZC3": "C\u2013phase undervoltage elements, Z\u2013terminal ",
+ "27ZC4": "Circuit breaker status ",
+ "52AA": "A\u2013, B\u2013, or C\u2013phase circuit breaker status (available when setting BKTYP := 1) ",
+ "52AB": "A\u2013, B\u2013, or C\u2013phase circuit breaker status (available when setting BKTYP := 1) ",
+ "52AC": "Healthy voltage VS for synchronism check ",
+ "59YA1": "A\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YA2": "A\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YA3": "A\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YA4": "AB\u2013phase\u2013to\u2013phase overvoltage element, Y\u2013terminal ",
+ "59YB1": "B\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YB2": "B\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YB3": "B\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YB4": "BC\u2013phase\u2013to\u2013phase overvoltage element, Y\u2013terminal ",
+ "59YC1": "C\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YC2": "C\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YC3": "C\u2013phase overvoltage elements, Y\u2013terminal ",
+ "59YC4": "Voltage input V1Y instantaneous overvoltage element (V1Y voltage above pickup setting 59YP1P; see Detecting Voltage Presence on Volt\u2013 age Inputs V1Y and V1Z on page 4.41)",
+ "59YN1": "Zero\u2013sequence overvoltage elements, Y\u2013terminal ",
+ "59YN2": "Positive\u2013sequence overvoltage element, Y\u2013terminal ",
+ "59ZA1": "A\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZA2": "A\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZA3": "A\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZA4": "AB\u2013phase\u2013to\u2013phase overvoltage element, Z\u2013terminal ",
+ "59ZB1": "B\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZB2": "B\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZB3": "B\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZB4": "BC\u2013phase\u2013to\u2013phase overvoltage element, Z\u2013terminal ",
+ "59ZC1": "C\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZC2": "C\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZC3": "C\u2013phase overvoltage elements, Z\u2013terminal ",
+ "59ZC4": "Voltage input V1Z instantaneous overvoltage element (V1Z voltage above pickup setting 59ZP1P; see Detecting Voltage Presence on Volt\u2013 age Inputs V1Y and V1Z on page 4.41)",
+ "59ZN1": "Zero\u2013sequence overvoltage elements, Z\u2013terminal ",
+ "59ZN2": "Reclosing relay in the Reclose Cycle State (available when setting ESPB := N) ",
+ "79CYA": "A\u2013, B\u2013, or C\u2013phase reclosing relay in the Reclose Cycle State (available when setting ESPB := Y) ",
+ "79CYB": "A\u2013, B\u2013, or C\u2013phase reclosing relay in the Reclose Cycle State (available when setting ESPB := Y) ",
+ "79CYC": "Reclosing relay in the Lockout State (available when setting ESPB := N) ",
+ "79LOA": "A\u2013, B\u2013, or C\u2013phase reclosing relay in the Lockout State (available when setting ESPB := Y) ",
+ "79LOB": "A\u2013, B\u2013, or C\u2013phase reclosing relay in the Lockout State (available when setting ESPB := Y) ",
+ "79LOC": "Reclosing relay in the Reset State (available when setting ESPB := N) ",
+ "79RSA": "A\u2013, B\u2013, or C\u2013phase reclosing relay in the Reset State (available when setting ESPB := Y) ",
+ "79RSB": "A\u2013, B\u2013, or C\u2013phase reclosing relay in the Reset State (available when setting ESPB := Y) ",
+ "79RSC": "Battery failure ",
+ "CBADA": "MIRRORED BITS channel unavailability over threshold, Channels A and B ",
+ "CBADB": "Close Failure condition (available when setting ESPB := N) ",
+ "CFA": "A\u2013, B\u2013, or C\u2013phase Close Failure condition (available when setting ESPB := Y) ",
+ "CFB": "A\u2013, B\u2013, or C\u2013phase Close Failure condition (available when setting ESPB := Y) ",
+ "CFC": "Close logic output asserted (available when setting ESPB := N) ",
+ "CLOSEA": "A\u2013, B\u2013, or C\u2013phase close logic output asserted (available when setting ESPB := Y)  ",
+ "CLOSEB": "A\u2013, B\u2013, or C\u2013phase close logic output asserted (available when setting ESPB := Y)  ",
+ "CLOSEC": "Disturbance Detector  Trip Logic on page 5.11)",
+ "DDNA": "A\u2013, B\u2013, C\u2013Phase Tuning Threshold Decrease  on page 4.139)",
+ "DDNB": "A\u2013, B\u2013, C\u2013Phase Tuning Threshold Decrease  on page 4.139)",
+ "DDNC": "A\u2013, B\u2013, C\u2013Phase Tuning Threshold Decrease  on page 4.139)",
+ "DIA_DIS": "A\u2013, B\u2013, C\u2013Phase Large Difference Current Disturbance  on page 4.139) ",
+ "DIB_DIS": "A\u2013, B\u2013, C\u2013Phase Large Difference Current Disturbance  on page 4.139) ",
+ "DIC_DIS": "Battery failed discharge test .",
+ "DUPA": "A\u2013, B\u2013, C\u2013Phase Tuning Threshold Increase  on page 4.139)",
+ "DUPB": "A\u2013, B\u2013, C\u2013Phase Tuning Threshold Increase  on page 4.139)",
+ "DUPC": "A\u2013, B\u2013, C\u2013Phase Tuning Threshold Increase  on page 4.139)",
+ "DVA_DIS": "A\u2013, B\u2013, C\u2013 Phase Difference Voltage Disturbance  on page 4.139) ",
+ "DVB_DIS": "A\u2013, B\u2013, C\u2013 Phase Difference Voltage Disturbance  on page 4.139) ",
+ "DVC_DIS": "A\u2013, B\u2013, C\u2013Phase Averager Freeze and Trending Clear Condition  on page 4.139). Previously, this logic existed on an individual phase level with Relay Word bits FRZCLRA, FRZCLRB, and FRZCLRC. These three Relay Word bits have been replaced with FRZCLR, which oper\u2013 ates for all phases. The assertion of Relay Word bit HIFRZ, DIA_DIS, DVA_DIS, DIB_DIS, DVB_DIS, DIC_DIS, or DVC_DIS causes FRZCLR to assert. The assertion of FRZCLR also causes Relay Word bit DL2CLR to assert (see Relay Word bit DL2CLR in this table for more information).",
+ "FSA": "Fault identification logic outputs (used in targeting)",
+ "FSB": "Fault identification logic outputs (used in targeting)",
+ "FSC": "Pulses for approximately five seconds when a warning diagnostic con\u2013 dition occurs ",
+ "HBL2AT": "A\u2013, B\u2013, C\u2013Phase Second\u2013Harmonic Block Timed Out  ",
+ "HBL2BT": "A\u2013, B\u2013, C\u2013Phase Second\u2013Harmonic Block Timed Out  ",
+ "HBL2CT": "Combined\u2013Phase Second\u2013Harmonic Block Timed Out ",
+ "HIA2_A": "A\u2013, B\u2013, C\u2013Phase HIF Alarm from Algorithm 2  ",
+ "HIA2_B": "A\u2013, B\u2013, C\u2013Phase HIF Alarm from Algorithm 2  ",
+ "HIA2_C": "A\u2013, B\u2013, C\u2013Phase HIF Alarm from Algorithm 2  ",
+ "HIF2_A": "A\u2013, B\u2013, C\u2013Phase HIF Detection by Algorithm 2  ",
+ "HIF2_B": "A\u2013, B\u2013, C\u2013Phase HIF Detection by Algorithm 2  ",
+ "HIF2_C": "Reset 50G HIZ Alarm  Fault Detec\u2013 tion on page 4.144)",
+ "IAMET": "Channel IA, IB, or IC operating from high\u2013gain channel ",
+ "IBMET": "Channel IA, IB, or IC operating from high\u2013gain channel ",
+ "ICMET": "Three\u2013phase voltage interruption element = INTA AND INTB AND INTC ",
+ "INTA": "A\u2013, B\u2013, or C\u2013Phase voltage interruption elements ",
+ "INTB": "A\u2013, B\u2013, or C\u2013Phase voltage interruption elements ",
+ "INTC": "IRIG time\u2013source signal detected (= TIRIG OR TSOK) ",
+ "ITUNE_A": "A\u2013, B\u2013, C\u2013Phase Initial Tuning  on page 4.139) ",
+ "ITUNE_B": "A\u2013, B\u2013, C\u2013Phase Initial Tuning  on page 4.139) ",
+ "ITUNE_C": "A\u2013, B\u2013, C\u2013Phase Initial Tuning  on page 4.139) ",
+ "LBOKA": "MIRRORED BITS channel looped back OK, Channels A and B ",
+ "LBOKB": "Asserted when a valid Ethernet link is detected on port 5  (only on relays with a single Ethernet connector)",
+ "LINK5A": "Asserted when a valid Ethernet link is detected on port 5A or 5B  (only on relays with dual Ethernet connectors)",
+ "LINK5B": "Three\u2013phase Load Reduction Event  on page 4.139)",
+ "LRA": "A\u2013, B\u2013, C\u2013Phase Load Reduction  on page 4.139)",
+ "LRB": "A\u2013, B\u2013, C\u2013Phase Load Reduction  on page 4.139)",
+ "LRC": "Neutral demand current element (available when EGNDSW := N) ",
+ "NTUNE_A": "A\u2013, B\u2013, C\u2013Phase Normal Tuning  on page 4.139) ",
+ "NTUNE_B": "A\u2013, B\u2013, C\u2013Phase Normal Tuning  on page 4.139) ",
+ "NTUNE_C": "Reclosing relay open interval timer is timing (available when setting ESPB := N) ",
+ "OPTMNA": "A\u2013, B\u2013, or C\u2013phase reclosing relay open interval timer is timing (avail\u2013 able when setting ESPB := Y)  ",
+ "OPTMNB": "A\u2013, B\u2013, or C\u2013phase reclosing relay open interval timer is timing (avail\u2013 able when setting ESPB := Y)  ",
+ "OPTMNC": "Maximum\u2013phase demand current element ",
+ "PHASE_A": "A\u2013, B\u2013, or C\u2013Phase target logic output   ",
+ "PHASE_B": "A\u2013, B\u2013, or C\u2013Phase target logic output   ",
+ "PHASE_C": "Reverse zero\u2013sequence voltage\u2013polarized directional element ",
+ "RBADA": "MIRRORED BITS outage duration over threshold, Channels A and B ",
+ "RBADB": "Reclose supervision failure, asserts for one processing interval (avail\u2013 able when setting ESPB := N) ",
+ "RCSFA": "A\u2013, B\u2013, or C\u2013Phase reclose supervision failure, asserts for one process\u2013 ing interval (available when setting ESPB := Y) ",
+ "RCSFB": "A\u2013, B\u2013, or C\u2013Phase reclose supervision failure, asserts for one process\u2013 ing interval (available when setting ESPB := Y) ",
+ "RCSFC": "Pole 3 recloser trip output asserted (only available for single\u2013phase reclosers) ",
+ "ROKA": "MIRRORED BITS received data OK, Channels A and B ",
+ "ROKB": "Reclosing relay reset timer is timing (available when setting ESPB := N) ",
+ "RSTMNA": "A\u2013, B\u2013, or C\u2013Phase reclosing relay reset timer is timing (available when setting ESPB := Y)  ",
+ "RSTMNB": "A\u2013, B\u2013, or C\u2013Phase reclosing relay reset timer is timing (available when setting ESPB := Y)  ",
+ "RSTMNC": "Three\u2013phase voltage sag element = SAGA AND SAGB AND SAGC ",
+ "SAGA": "A\u2013, B\u2013, or C\u2013Phase voltage sag elements ",
+ "SAGB": "A\u2013, B\u2013, or C\u2013Phase voltage sag elements ",
+ "SAGC": "Reclosing relay shot counter = 0 (available when setting ESPB := N) ",
+ "SH0A": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 0 (available when setting ESPB := Y) ",
+ "SH0B": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 0 (available when setting ESPB := Y) ",
+ "SH0C": "Reclosing relay shot counter = 1 (available when setting ESPB := N) ",
+ "SH1A": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 1 (available when setting ESPB := Y) ",
+ "SH1B": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 1 (available when setting ESPB := Y) ",
+ "SH1C": "Reclosing relay shot counter = 2 (available when setting ESPB := N) ",
+ "SH2A": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 2 (available when setting ESPB := Y) ",
+ "SH2B": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 2 (available when setting ESPB := Y) ",
+ "SH2C": "Reclosing relay shot counter = 3 (available when setting ESPB := N) ",
+ "SH3A": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 3 (available when setting ESPB := Y) ",
+ "SH3B": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 3 (available when setting ESPB := Y) ",
+ "SH3C": "Reclosing relay shot counter = 4 (available when setting ESPB := N) ",
+ "SH4A": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 4 (available when setting ESPB := Y) ",
+ "SH4B": "A\u2013, B\u2013, or C\u2013Phase reclosing relay shot counter = 4 (available when setting ESPB := Y) ",
+ "SH4C": "Single\u2013pole/phase open condition ",
+ "SPOA": "Phase A, B, or C single\u2013pole/phase open conditions  ",
+ "SPOB": "Phase A, B, or C single\u2013pole/phase open conditions  ",
+ "SPOC": "Three\u2013phase voltage swell element = SWA AND SWB AND SWC ",
+ "SWA": "A\u2013, B\u2013, or C\u2013Phase voltage swell elements ",
+ "SWB": "A\u2013, B\u2013, or C\u2013Phase voltage swell elements ",
+ "SWC": "Trip logic output asserted (available when setting ESPB := N) ",
+ "TRIPA": "Phase A, B, or C trip logic output asserted (available when setting ESPB := Y) ",
+ "TRIPB": "Phase A, B, or C trip logic output asserted (available when setting ESPB := Y) ",
+ "TRIPC": "Unlatch close condition. Driven by associated SELOGIC Group setting ULCL3P ",
+ "ULCLA": "Phase A, B, or C unlatch close condition. Driven by associated SELOGIC Group settings ULCLA, ULCLB, or ULCLC .",
+ "ULCLB": "Phase A, B, or C unlatch close condition. Driven by associated SELOGIC Group settings ULCLA, ULCLB, or ULCLC .",
+ "ULCLC": "Time limit expired for voltage matching attempt ",
+ "XS_CLOS1": "Pole 1, 2, or 3: excessive close operations detected (available for sin\u2013 gle\u2013phase reclosers only) ",
+ "XS_CLOS2": "Pole 1, 2, or 3: excessive close operations detected (available for sin\u2013 gle\u2013phase reclosers only) ",
+ "XS_CLOS3": "Pole 1, 2, or 3: excessive close operations detected (available for sin\u2013 gle\u2013phase reclosers only) ",
+ "XS_TRIP1": "Pole 1, 2, or 3: excessive trip operations detected (available for single\u2013 phase reclosers only) ",
+ "XS_TRIP2": "Pole 1, 2, or 3: excessive trip operations detected (available for single\u2013 phase reclosers only) ",
+ "XS_TRIP3": "Load encroachment element = ZLIN OR ZLOUT  "
+}

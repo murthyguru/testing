@@ -1,0 +1,2703 @@
+{% extends 'mypv_base.html' %}
+
+{% block content %}
+
+<br>
+
+{% include '/subnav/devices_subnav.html' %}
+
+<br>
+
+<script src = "{{url_for('static', filename='js/templates/templates.js')}}"></script>
+
+<style>
+
+code {
+    font-size: 12px;
+    color:unset;
+    word-break: break-word;
+    font-weight: 600;
+}
+
+    
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+    .status_txt{
+        padding: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    vertical-align: super;
+    }
+/*  */
+    .btn-outline-success:hover{
+        background-color: unset;
+        color: transparent;
+    }
+
+    .btn-outline-success:click{
+        background-color: unset;
+        color: transparent;
+    }
+
+    .selecter{
+        width: inherit!important;
+        background-color: #fff!important;
+        height: 36px;
+    }
+
+    /*  */
+
+    #preview_table, #ethernetSearchTable, #ethernetSearchTableFull, #dataTableBody, #ethernetProbeTagMapping {
+
+        text-align: center;
+
+    }
+
+    td {
+
+        font-size: 14;
+
+    }
+
+    .spin {
+
+        cursor: wait;
+
+    }
+
+    #wireTapType {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: transparent;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--secondary);
+        border-radius: 0.2rem;
+        color: black;
+
+    }
+
+
+    #sel_interfaces {
+
+padding: 0.25rem 0.5rem;
+font-size: 0.875rem;
+line-height: 1.25;
+cursor: pointer;
+background-color: transparent;
+display: inline-block;
+font-weight: 400;
+white-space: nowrap;
+vertical-align: middle;
+border: 1px solid var(--secondary);
+border-radius: 0.2rem;
+color: black;
+
+}
+
+    .option {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: transparent;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--secondary);
+        border-radius: 0.2rem;
+        color: var(--secondary);
+
+    }
+
+    .option:hover {
+
+        background-color: var(--secondary);
+        color: #FFF;
+
+    }
+
+    .selectedOption {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: var(--primary);
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--primary);
+        border-radius: 0.2rem;
+        color: #FFF;
+
+    }
+
+    .option:focus {
+
+        outline: 0;
+
+    }
+
+    .selectedOption:focus {
+
+        outline: 0;
+
+    }
+
+    .vertSpacer {
+
+        height: 1em;
+
+    }
+
+    .portFeed {
+
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+
+    }
+
+    pre {
+
+        display: inline;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+
+    }
+
+    input {
+
+        color: #495057;
+        padding: 0.375rem 0.75rem;
+        line-height: 1.5;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+    }
+
+    .mypv-icon {
+
+        width: 2em;  /* ~32px */
+        height: 2em;  /* ~32px */
+        vertical-align: -.125em;
+
+    }
+
+    #ethernetSearchTable td {
+
+        vertical-align: middle;
+
+    }
+    
+    #ethernetSearchTableFull td {
+
+        vertical-align: middle;
+
+    }
+
+    .mypv-icon-table {
+
+        width: calc(1.8125rem + 2px);
+        height: calc(1.8125rem + 2px);
+        vertical-align: -.125em;
+
+    }
+
+    .clickable {
+
+        cursor: pointer;
+
+    }
+
+    .unclickable {
+
+        cursor: default !important;
+
+    }
+
+    .hidden-button {
+
+        background-color: rgba(0, 0, 0, 0);
+        border: 0px;
+
+    }
+
+    #dataTableBody td {
+
+        vertical-align: middle;
+
+    }
+
+    #ethernetProbeTagMapping td {
+
+        vertical-align: middle;
+
+    }
+
+    .highlightedProbeValue {
+
+        color: var(--primary)
+
+    }
+
+    .quadrant {
+    
+        padding: 20px;
+
+    }
+
+    .quadrantHeader {
+
+        border-bottom: 1px solid black;
+        margin-bottom: 20px;
+
+    }
+
+    .minLine {
+
+        stroke: var(--danger);
+
+    }
+
+    .maxLine {
+
+        stroke: var(--success);
+
+    }
+
+    .minVal {
+
+        color: var(--danger);
+
+    }
+
+    .maxVal {
+
+        color: var(--success);
+
+    }
+
+    .highcharts-grid-line {
+
+        stroke-width: 1 !important;
+
+    }
+
+    .error {
+
+        color: var(--danger);
+
+    }
+
+    .mypv-loader {
+
+        width: 20px;
+        height: 20px;
+        margin-right: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        border-top: 3px solid #212529;
+        border-right: 3px solid transparent;
+        box-sizing: border-box;
+        animation: mypv-loader-rotation 1s linear infinite;
+    
+    }
+
+    @keyframes mypv-loader-rotation {
+
+        0% {
+            
+            transform: rotate(0deg);
+            
+        }
+        
+        100% {
+            
+            transform: rotate(360deg);
+            
+        }
+
+    }
+
+    .toggle-div { display: flex; }
+.toggle-switch {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.toggle-switch:focus { outline: 0; }
+.toggle-switch:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.toggle-switch.oval-track {
+  margin: 0px;
+  padding: 7px 16px !important;
+  border: 2px solid #adb5bd;
+  border-radius: 16px;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.toggle-switch.oval-track:focus{ box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%); }
+.toggle-switch.oval-track:after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  padding: 6px;
+  border-radius: 50%;
+  background: #adb5bd;
+  box-shadow: 0 1px 2px rgba(44, 44, 44, 0.2);
+  transition: all 0.2s cubic-bezier(0.5, 0.1, 0.75, 1.35);
+}
+.toggle-switch.oval-track:checked {
+  background: #00B176;
+  border-color: #00B176;
+}
+.toggle-switch.oval-track:checked:after {
+  transform: translatex(17px);
+  background: white;
+}
+
+/* ========tabs css starts ========== */
+
+.tab-container {
+  display: flex;
+  flex-direction: column;
+  /* border: 1px solid #ddd; */
+  margin: 20px;
+
+  border-top: 2px solid black;
+}
+
+.tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tab-item a{
+    color: black;
+}
+
+.tab-item a:hover{
+    text-decoration: none;
+}
+
+
+.header_footer{
+    text-align: center;
+    font-weight: 600;
+}
+
+
+
+
+
+.tab-item {
+  display: inline-block;
+  margin: 0 10px 10px 0;
+  padding: 10px 15px;
+  /* border: 1px solid #ddd; */
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.tab-item.active {
+  /* background-color: #eee; */
+  border-bottom: 1.5px solid blue;
+}
+
+.tab-content-container {
+  padding: 0px;
+}
+
+.tab-content {
+  display: none;
+  padding: 10px;
+  /* border: 1px solid #ddd; */
+}
+
+.tab-content.active {
+  display: block;
+}
+
+
+/* ========= tabs css ends ===========*/
+
+.updownIndicator {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.updownSpacer {
+
+    padding-right: 5px;
+
+}
+
+#data_table td .float32ProbeRes, #data_table .preview {
+
+    word-wrap: anywhere;
+
+}
+
+#data_table th {
+
+    white-space: nowrap;
+
+}
+
+.rightalign {
+
+    text-align: right;
+
+}
+
+</style>
+
+
+
+<div class = "container" id = "body">
+
+    <i data-fa-symbol = "sos-status-good" class = "fak fa-sos-status-good"></i>
+    <i data-fa-symbol = "sos-status-bad" class = "fak fa-sos-status-bad"></i>
+    <i data-fa-symbol = "sos-status-not-available" class = "fak fa-sos-status-not-available"></i>
+    <i data-fa-symbol = "sos-action-edit" class = "fak fa-sos-action-edit"></i>
+    <i data-fa-symbol = "sos-action-delete" class = "fak fa-sos-action-delete"></i>
+    <i data-fa-symbol = "sos-action-add" class = "fak fa-sos-action-add"></i>
+
+
+    <div class="modal fade" id="modal_status" tabindex="-1" role="dialog" aria-labelledby="load_report_modal_title" style="padding-top: 200px;"
+        aria-hidden="true">
+
+        <div class="modal-close-mark" id="close-modal">X</div>
+        
+        <div class="modal-dialog" role="document">
+
+            
+            <div class="modal-content">
+                <!-- <div id="ethernetSearchStatusDisplay" style="width: 100%;padding: 18px ">
+                    Loading...
+                    <div class="progress" style="width: 100%; background: var(--bs-gray)">
+                        <div id="prg_bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                            style="width: 100%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"><span
+                                style="padding-left: 5px" id="prg_span">10%</span></div>
+                    </div>
+                </div> -->
+                
+                <!-- <div class="modal-footer">
+                    <button  style="float: right;border-color:var(--primary);color:var(--primary);" type="button" class="btn btn-success btn-outline-success" data-dismiss="modal">Cancel</button>
+                  </div> -->
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class = "card shadow-sm" style = "width: 0.8 vw">
+
+        <div class = "card-header d-flex justify-content-between">
+
+            <div class = "d-flex align-items-center">
+                <img src="{{ url_for('static', filename='Wiretap_Icon_DiscoverScanNetwork_Black.svg') }}" height="40px">
+                <h6 style="font-weight: 600;padding-left: 6px;
+                padding-top: 8px;font-size: 1.2rem;">Discover & Scan Network Connected MODBUS TCP/IP Devices</h6>
+
+            </div>
+
+            <div style = "display: flex; float: right;">
+
+                <div id = "serialOptions" style = "display: none;">
+
+                    <button type = "button" class = "selectedOption" style = "border-top-right-radius: 0; border-bottom-right-radius: 0;" id = "serialRegistersButton">Registers</button>
+                    <button type = "button" class = "option" style = "border-top-left-radius: 0; border-bottom-left-radius: 0;" id = "serialStreamButton">Serial Stream</button>
+
+                </div>
+
+            </div>
+
+            
+
+        </div>
+
+        <div class = "card-header" >
+
+            <div class="row" style="padding-top: 20px;padding-left: 35px;">
+            <div style = "padding-right: 5px;padding-bottom: 10px;">Select Your Network Interface</div>
+
+            </div>
+
+            <div class="row" style = "padding-left: 35px; padding-right: 35px;">
+            
+                <div class="col-4" style = "padding-left: 0px;">
+
+                    <select id = "sel_interfaces" class = "form-control selecter">
+
+                        {% if (adapters|length > 0) %}
+
+                            <option value = "" >Select a Network Interface</option>
+
+                            {%for each in adapters%}
+
+                            <option value = "{{each['ipv4_address']}}" >{{each['name']}} - IP: {{each['ipv4_address']}}, Mask: {{each['Subnet Mask']}}</option>
+                            
+                            {%endfor%}
+                            
+                        {% else %}
+
+                            <option value = "">No Interfaces Detected</option>
+                        
+                        {% endif %}
+
+
+                    </select>
+
+                </div>
+
+                <div class="col-8 align-items-center" id = "tcp_stats" style = "display: none; padding-right: 0px;">
+                    
+                    <div class = "row justify-content-center align-items-center" style = "height: 100%;">
+
+                        <div style = "padding-right: 20px;">IP Addresses Searched: <span id = "ip_count">0</span></div>
+                        <div style = "padding-right: 20px;">Ping Responses: <span id = "host_up_count">0</span></div>
+                        <div>Port <span class = "port_val">502</span> Open: <span id = "port_open_count">0</span></div>
+
+                    </div>
+                
+                </div>
+
+                <div class="col-8 align-items-center" id = "modbus_stats" style = "display: none; padding-right: 0px;">
+                    
+                    <div class = "row justify-content-center align-items-center" style = "height: 100%;">
+
+                        <div style = "padding-right: 20px;">MODBUS Registers Searched: <span id = "register_count">0</span></div>
+                        <div style = "padding-right: 20px;">Registers Holding Data: <span id = "value_hold_count">0</span></div>
+
+                    </div>
+                
+                </div>
+
+            </div>
+
+
+            
+
+            <!-- <div class="row" style="padding-top: 20px;padding-left: 35px; padding-right: 35px;">
+
+                <div class="col align-items-center">
+                    
+                    <div class = "row">
+
+                        <div style = "padding-right: 20px;">Packets Sent: 0</div>
+                        <div style = "padding-right: 20px;">Packets Received: 0</div>
+                        <div>Packets Dropped: 0</div>
+
+                    </div>
+                
+                </div>
+
+                <div class="col-4"></div>
+              
+                <div class="col-2" style="padding-right: 0px;">
+
+                    <button style="float: right;" type="button" class="btn btn-primary btn-outline-primary" id="reset_cnts"  >Reset Counters</button>
+
+                </div>
+
+            </div> -->
+
+            
+          
+
+            <!-- <button style="float: right;border-color:var(--primary);color:var(--primary);" type="button" class="btn btn-success btn-outline-success" id="reset_cnts"  >Reset Counters</button> -->
+
+            <div class="row" style="padding-top: 20px;">
+            
+           
+            </div>
+            
+            <div class="tab-container" id="placeholder_line"></div>
+
+            <div id="placeholder" style="padding-top: 20px; display: flex; align-items: stretch;">
+                <div class="left" style="flex: 2; display: flex; justify-content: center; align-items: center;">
+                    <img src="/static/shutterstock_2190281279.jpg" style="width: 100%; height: 100%; object-fit: cover; padding-left: 20px; border-radius: 5%;">
+                </div>
+                <div class="right" style="flex: 1; padding: 0 20px; display: flex; flex-direction: column; justify-content: center;">
+                    <div>
+                        <h6 class="header_footer">TIPS FOR SUCCESS.</h6>
+                        <ol>
+                            <li>Turn off, or disable, all network interfaces not connected to the network you are trying to scan.</li>
+                            <li>Ensure your chosen network interface is configured with an available IP address, gateway, and network mask as the network you are trying to scan.</li>
+                            <li>Use a low cost network cable tester to ensure your connection to the network is reliable.</li>
+                            <li>Scan groups of IP addresses, 40-50 at a time, to reduce network scanning times.</li>
+                        </ol>
+                        <h6 class="header_footer">HAVE FUN & STAY SAFE!</h6>
+                    </div>
+                </div>
+            </div>
+            
+        
+            <div class="tab-container" id = "tabs-content" style = "display: none;">
+                <ul class="tabs">
+                  <li id="tab_one" class="tab-item active"><a href="#tab1">DISCOVER FOR MODBUS TCP/IP DEVICES</a></li>
+                  <li id="tab_two" class="tab-item"><a href="#tab2">SEARCH MODBUS REGISTERS</a></li>
+                </ul>
+
+                <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "idsError" style = "display: none;">
+
+                    The following IP Addresses are not valid: <span id = "idsErrorList"></span>
+    
+                    <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                        
+                        <span aria-hidden = "true">&times;</span>
+                    
+                    </button>
+    
+                </div>
+
+                <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "searchPortError" style = "display: none;">
+
+                    The port provided is not valid
+    
+                    <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                        
+                        <span aria-hidden = "true">&times;</span>
+                    
+                    </button>
+    
+                </div>
+
+                <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "addrProbeError" style = "display: none;">
+
+                    The IP Address provided is not valid
+    
+                    <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                        
+                        <span aria-hidden = "true">&times;</span>
+                    
+                    </button>
+    
+                </div>
+    
+                <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "portProbeError" style = "display: none;">
+    
+                    The port provided is not valid
+    
+                    <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                        
+                        <span aria-hidden = "true">&times;</span>
+                    
+                    </button>
+    
+                </div>
+    
+                <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "deviceProbeError" style = "display: none;">
+    
+                    The device id provided is not valid
+    
+                    <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                        
+                        <span aria-hidden = "true">&times;</span>
+                    
+                    </button>
+    
+                </div>
+    
+                <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "functionProbeError" style = "display: none;">
+    
+                    The function provided is not valid
+    
+                    <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                        
+                        <span aria-hidden = "true">&times;</span>
+                    
+                    </button>
+    
+                </div>
+    
+                <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "registerProbeError" style = "display: none;">
+    
+                    The registers provided are not valid
+    
+                    <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                        
+                        <span aria-hidden = "true">&times;</span>
+                    
+                    </button>
+    
+                </div>
+
+                <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "genericProbeError" style = "display: none;">
+    
+                    An error occured while probing: <span id = "genericProbeErrorText"></span>
+    
+                    <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                        
+                        <span aria-hidden = "true">&times;</span>
+                    
+                    </button>
+    
+                </div>
+    
+                <div class="tab-content-container">
+                  <div id="tab1" class="tab-content active">
+                    
+                    
+
+                        <div class = "row" style = "margin: auto -10px;">
+                
+                            <div class = "col-5" style = "padding-left: 0px;">
+                
+                                <label for = "ethernetSearchIP">IP Address Range to Search</label><br>
+                                <input type = "text" id = "ethernetSearchIP" style = "width:100%"><br>
+                                <div style = "font-size: 11px; color: #495057;">IP address ranges are expressed as IP address, hyphen, last octet in range.</div>
+                
+                            </div>
+                
+                            <div class = "col-2 ">
+                
+                                <label for = "ethernetSearchPort">Test for Port</label><br>
+                                <input type = "number" id = "ethernetSearchPort" value = "502" min = "0" max = "65536" style = "width: 100%">
+                
+                            </div>
+                
+                            <div class = "col-3" style="padding-top: 16px;">
+                
+                                <div class = "d-flex justify-content-center align-items-center" style = "width: 100%; height: 100%">
+
+                                    <input type="checkbox"  class = "toggle-switch oval-track process-checkbox" id="hide_ports" checked></input><span style="font-size:medium;padding-left: 3px;vertical-align: super;">Hide Failed Hosts</span>
+                
+                                </div>
+
+                            </div>
+                
+
+                            <div class="col-2" style = "padding-left: 0px; padding-right: 0px; padding-top: 16px;">
+
+                                <div class = "d-flex justify-content-center align-items-center" style = "width: 100%; height: 100%">
+
+                                    <button id = "scan_devices" type="button" class="btn btn-primary btn-outline-primary" style = "width: 100%" value = "start">Scan for Devices</button>
+                                
+                                </div>
+                            
+                            </div>
+                        
+                        </div>
+                            <!-- <div class = "col-md-2 col-sm-2 col-xs-3" style=" padding-top: 32px;padding-left: unset;padding-right: unset;">
+                            
+                                
+                                <button id = "scan_devices" style="border-color:var(--primary);color:var(--primary);" type="button" class="btn btn-success btn-outline-success" id="reset_cnts"  >Scan for Devices</button>
+                                </div> -->
+
+                                <div id = "ethernetSearchStatus" class = "row" style = "display: none; padding-top: 20px; margin: auto -10px;">
+            
+                                    <div id = "ethernetSearchStatusDisplay" style = "width: 100%"></div>
+                
+                                    <br>
+                
+                                </div>
+
+
+                                <div class = "row" style="padding-top: 20px; margin: auto -10px;" id="filtered_rows">
+                            
+
+                                    <table class = "table table-sm table-striped" id = "ethernetSearchTable"  style = "font-size: 12px;">
+            
+                                        <thead>
+            
+                                            <tr>
+             
+                                                <th>Device IP Address </th>
+                                                <th>Device Responded to PING</th>
+                                                <th>Device Port <span class = "port_val">502</span> is Open</th>
+                                                <th>MODBUS Registers</th>
+            
+                                            </tr>
+            
+                                        </thead>
+            
+                                        <tbody>
+            
+                                            <tr>
+                                                
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+            
+                                            </tr>
+            
+                                        </tbody>
+            
+                                    </table>
+        
+                              
+                                </div>
+        
+                                <div class = "row" style="padding-top: 20px;display: none; margin: auto -10px;" id="all_rows">
+                                    
+                                    <table class = "table table-sm table-striped" id = "ethernetSearchTableFull"  style = "font-size: 12px;">
+        
+                                        <thead>
+            
+                                            <tr>
+            
+                                                <th>Device IP Address </th>
+                                                <th>Device Responded to PING</th>
+                                                <th>Device Port <span class = "port_val">502</span> is Open</th>
+                                                <th>MODBUS Registers</th>
+            
+                                            </tr>
+            
+                                        </thead>
+            
+                                        <tbody>
+            
+                                            <tr>
+                                                
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+            
+                                            </tr>
+            
+                                        </tbody>
+            
+                                    </table>
+            
+                                </div>
+                
+                        </div>
+
+                    
+                
+                
+                        <div id="tab2" class="tab-content">
+
+
+                            <div class = "row" style = "margin: auto -10px;">
+                        
+                                <div class = "col-6" style = "padding-left: 0px;">
+                
+                                    <label for = "deviceIP">Device IP Address to Search</label><br>
+                                    <input type = "text" id = "deviceIP" style = "width:100%"><br>
+                    
+                                </div>
+                    
+                                <div class = "col-2">
+                    
+                                    <label for = "devicePort">Port</label><br>
+                                    <input type = "number" id = "devicePort" value = "502" min = "0" max = "65536" style = "width: 100%">
+                    
+                                </div>
+                                
+                
+                                <div class = "col-2">
+                    
+                                   
+                                    <label for = "byte_order" >Byte Order</label><br>
+                                    <select id = "byte_order" class = "form-control selecter">
+                                        <option value = "Big Byte" >Big Byte</option>
+                                        <option value = "Little Byte" >Little Byte</option>
+                                    </select>
+                
+                                </div>
+        
+                                <div class = "col-2" style = "padding-right: 0px;">
+                    
+                               
+                                    <label for = "word_order">Word Order</label><br>
+                                    <select id = "word_order" class="form-control selecter">
+                                        <option value = "Big Word" >Big Word</option>
+                                        <option value = "Little Word" >Little Word</option>
+                                    </select>
+        
+                                </div>
+        
+                                <!-- <div class = "col-2">
+                    
+                                    <label for = "refresh rate">Refresh Rate</label><br>
+                                    <select id = "refresh_rate" class="form-control selecter">
+                                        <option value = "1" >1 Second</option>
+                                        <option value = "5" >5 Seconds</option>
+                                        <option value = "10" selected>10 Seconds</option>
+                                        <option value = "30" >30 Seconds</option>
+                                    </select>
+                
+                                </div> -->
+                    
+                               
+                    
+                            </div>
+        
+                            <div class = "row" style="padding-top: 20px; margin: auto -10px;">
+                        
+                                <div class = "col-2" style = "padding-left: 0px;">
+                                    <label for = "deviceID">MODBUS Device ID</label><br>
+                                    <input type = "text" id = "deviceID" style = "width:100%" value="1"><br>
+                                </div>
+                    
+                                <div class = "col-4">
+                                    <label for = "funct_code">Function Call</label><br>
+                                <select id = "funct_code" class="form-control selecter">
+                                    <option value = "1" >Read - Coils (0x01: 1#,###)</option>
+                                    <option value = "2" >Read - Discrete Registers (0x02: 2#,###)</option>
+                                    <option value = "3" selected>Read - Holding Registers (0x03: 4#,###)</option>
+                                    <option value = "4" >Read - Input Registers (0x04: 3#,###)</option>
+                                </select>
+        
+                                </div>
+                                
+                
+                                <div class = "col-4">
+                                    <label for = "register_range">Register Search Range</label><br>
+                                    <input type = "text" id = "register_range" style = "width: 100%" value="0-50">
+                                    <div style = "font-size: 9px; color: #495057;">Specify non-consecutive range as: 1, 5-9, 11, 20-30, 41</div>
+                                </div>
+        
+                             
+                                <div class = "col" style=" padding-top: 32px; padding-left: 0; padding-right: 0;">
+
+                                    <button id="search_modbus_registers" type="button" class="btn btn-primary btn-outline-primary" style = "width: 100%" value = "start">Search Registers</button>
+        
+                                </div>
+                               
+                    
+                            </div>
+
+                            <div id = "ethernetProbeStatus" class = "row" style = "display: none; margin: auto -10px; padding-top: 20px;">
+                
+                                <div class = "progress" style = "width: 100%; background: var(--bs-gray)">
+            
+                                    <div id = "probeStatusProgress" class = "progress-bar progress-bar-striped progress-bar-animated" role = "progressbar" aria-valuemin = "0" aria-valuemax = "100" style = "width: 0%">Started</div>
+                                
+                                </div>
+            
+                            </div>
+        
+                            <div class = "row" id = "data_table" style = "margin: auto -10px; padding-top: 20px;">
+        
+                                <table class = "table table-sm table-striped" id = "dataTableBody" style = "font-size: 12px;">
+        
+                                    <thead>
+        
+                                        <tr>
+        
+                                            <th>
+        
+                                                Register
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                Hex Value
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                INT16
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                UINT16
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                INT32
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                UINT32
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                FLOAT32
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                Slope (m<i>x</i>)
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                <i>y</i>-Intercept (<i>b</i>)
+        
+                                            </th>
+        
+                                            <th>
+        
+                                                Scaled Value
+        
+                                            </th>
+        
+                                        </tr>
+        
+                                    </thead>
+        
+                                    <tbody >
+        
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+        
+                                    </tbody>
+        
+                                </table>
+        
+                            </div>
+                            
+                          </div>
+                
+                </div>
+                
+                </div>
+            </div>
+            
+        </div>
+
+      
+
+       
+
+      
+    </div>
+
+    <!--  -->
+
+   
+    
+
+</div>
+
+<script>
+
+    var timeCounter = 0;
+    var timeInterval = null;
+    var timer_max = 2;
+
+    var ips_searching = 0;
+    var hosts_up = 0;
+    var ports_open = 0;
+
+    var registers_searching = 0;
+    var value_holding_registers = 0;
+
+    var currentProbeSettings = {};
+    var functionScale = {"read-coils": 10000, "read-discrete-inputs": 20000, "read-holding-registers": 30000, "read-input-registers": 40000}
+
+    function switch_counters () {
+
+        if (document.getElementById("tab1").classList.contains("active")) {
+
+            document.getElementById("modbus_stats").style.display = "";
+            document.getElementById("tcp_stats").style.display = "none";
+
+        } else if (document.getElementById("tab2").classList.contains("active")) {
+
+            document.getElementById("tcp_stats").style.display = "";
+            document.getElementById("modbus_stats").style.display = "none";
+
+        }
+
+    }
+
+    document.getElementById("tab_one").addEventListener("click", function () {
+
+        switch_counters();
+
+    })
+
+    document.getElementById("tab_two").addEventListener("click", function () {
+
+        switch_counters();
+
+    })
+
+    document.getElementById("tab_one").getElementsByTagName("a")[0].addEventListener("click", function () {
+
+        switch_counters();
+
+    })
+
+    document.getElementById("tab_two").getElementsByTagName("a")[0].addEventListener("click", function () {
+
+        switch_counters();
+
+    })
+
+    function reset_counters_tcp () {
+
+        ips_searching = 0;
+        hosts_up = 0;
+        ports_open = 0;
+
+        document.getElementById("ip_count").innerHTML = ips_searching;
+        document.getElementById("host_up_count").innerHTML = hosts_up;
+        document.getElementById("port_open_count").innerHTML = ports_open;
+
+    }
+
+    function reset_counters_modbus () {
+
+        registers_searching = 0;
+        value_holding_registers = 0;
+
+        document.getElementById("register_count").innerHTML = registers_searching;
+        document.getElementById("value_hold_count").innerHTML = value_holding_registers;
+
+    }
+
+    function reset_counters () {
+
+        if (document.getElementById("tab1").classList.contains("active")) {
+
+            reset_counters_tcp()
+
+        } else if (document.getElementById("tab2").classList.contains("active")) {
+
+            reset_counters_modbus()
+
+        }
+
+    }
+
+    function lock_inputs () {
+
+        document.getElementById("ethernetSearchIP").disabled = true;
+        document.getElementById("ethernetSearchPort").disabled = true;
+        document.getElementById("deviceIP").disabled = true;
+        document.getElementById("devicePort").disabled = true;
+        document.getElementById("byte_order").disabled = true;
+        document.getElementById("word_order").disabled = true;
+        document.getElementById("deviceID").disabled = true;
+        document.getElementById("funct_code").disabled = true;
+        document.getElementById("register_range").disabled = true;
+        document.getElementById("sel_interfaces").disabled = true;
+
+    }
+
+    function unlock_inputs () {
+
+        document.getElementById("ethernetSearchIP").disabled = false;
+        document.getElementById("ethernetSearchPort").disabled = false;
+        document.getElementById("deviceIP").disabled = false;
+        document.getElementById("devicePort").disabled = false;
+        document.getElementById("byte_order").disabled = false;
+        document.getElementById("word_order").disabled = false;
+        document.getElementById("deviceID").disabled = false;
+        document.getElementById("funct_code").disabled = false;
+        document.getElementById("register_range").disabled = false;
+        document.getElementById("sel_interfaces").disabled = false;
+        
+    }
+
+    // Start Timer
+    function start () {
+
+        timeCounter = 0;
+
+        reset_counters();
+        lock_inputs();
+
+        document.querySelectorAll(".timerDisplay").forEach(element => element.innerHTML = timeCounter)
+
+        if (!(timeInterval == null)) {
+
+            clearInterval(timeInterval)
+
+        }
+
+        timeInterval = setInterval(increment, 1000);
+
+    }
+
+    // Reset Timer
+    function reset () {
+
+        timeCounter = 0
+
+        document.querySelectorAll(".timerDisplay").forEach(element => element.innerHTML = timeCounter)
+
+    }
+
+    // Stop Timer
+    function stop () {
+
+        timeCounter = 0
+
+        document.querySelectorAll(".timerDisplay").forEach(element => element.innerHTML = "-")
+
+        clearInterval(timeInterval);
+
+        unlock_inputs();
+
+    }
+
+    // Increment Timer
+    function increment () {
+
+        timeCounter++;
+
+        if (!(timeCounter == timer_max)) {
+
+            document.querySelectorAll(".timerDisplay").forEach(element => element.innerHTML = timeCounter)
+
+        } else {
+
+            if (document.getElementById("scan_devices").classList.contains("btn-danger")) {
+
+                updateEthernetSearch()
+
+            } else if (document.getElementById("search_modbus_registers").classList.contains("btn-danger")) {
+
+                updateEthernetProbe()
+
+            }
+
+            reset()
+
+        }
+
+    }
+
+    function updateEthernetSearch () {
+
+        if (document.getElementById("scan_devices").value == "stop") {
+
+            $.ajax({
+
+                url:'/ip_discovery_status',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(response_data){
+
+                    formatEthernetSearch(response_data);
+
+                }
+
+            })
+
+        }
+
+    }
+
+    function updateEthernetProbe () {
+
+        $.ajax({
+
+            url:'/tcp_probe_read',
+            type:"POST",
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function(response_data){
+
+                formatEthernetProbe(response_data);
+
+            }
+
+        })
+
+    }
+
+    function formatEthernetSearch (data) {
+
+        tableData = "<tbody>"
+        tableDataFull = "<tbody>"
+
+        canProbe = []
+        cannotProbe = []
+
+        hosts = data["hosts"]
+        hostIps = Object.keys(hosts)
+        hostIps.sort(function (a, b) {
+
+            aForm = parseInt(a.split(".").map(x => `00${x}`.slice(-3)).join(""))
+            bForm = parseInt(b.split(".").map(x => `00${x}`.slice(-3)).join(""))
+
+            if (aForm > bForm) return 1;
+            if (aForm < bForm) return -1;
+            return 0;
+
+        })
+
+        portValue = document.getElementById("ethernetSearchPort").value
+
+        ips_searching = hostIps.length;
+
+        hosts_up = 0;
+        ports_open = 0;
+
+        for (let i = 0; i < hostIps.length; i++) {
+
+            hostStatus = null
+            portStatus = null
+
+            portOpen = false
+
+            if (Object.keys(hosts[hostIps[i]]).includes("status")) {
+                
+                if (hosts[hostIps[i]]["status"] == "up") {
+                    
+                    hostStatus = '<td><div class = "updownIndicator"><div class = "updownSpacer">Yes</div><svg class = "mypv-icon sos-status-good"><use xlink:href = "#sos-status-good"></use></svg></div></td>'
+
+                    hosts_up ++;
+
+                } else if (hosts[hostIps[i]]["status"] == "down") {
+                    
+                    hostStatus = '<td><div class = "updownIndicator"><div class = "updownSpacer">No</div><svg class = "mypv-icon sos-status-bad"><use xlink:href = "#sos-status-bad"></use></svg></div></td>'
+                
+                } else {
+                    
+                    hostStatus = '<td><div class = "updownIndicator"><div class = "updownSpacer">No</div><svg class = "mypv-icon sos-status-not-available"><use xlink:href = "#sos-status-not-available"></use></svg></div></td>'
+                
+                }
+            
+            } else {
+
+                hostStatus = '<td>-</td>'
+
+            }
+
+            if (Object.keys(hosts[hostIps[i]]).includes("port")) {
+                
+                if (hosts[hostIps[i]]["port"] == "open") {
+                    
+                    portStatus = '<td><div class = "updownIndicator"><div class = "updownSpacer">Yes</div><svg class = "mypv-icon sos-status-good"><use xlink:href = "#sos-status-good"></use></svg></div></td>'
+                
+                    portOpen = true
+
+                    ports_open ++;
+
+                } else if (hosts[hostIps[i]]["port"] == "closed") {
+                    
+                    portStatus = '<td><div class = "updownIndicator"><div class = "updownSpacer">No</div><svg class = "mypv-icon sos-status-bad"><use xlink:href = "#sos-status-bad"></use></svg></div></td>'
+                
+                } else if (hosts[hostIps[i]]["port"] == "filtered") {
+
+                    portStatus = '<td><div class = "updownIndicator"><div class = "updownSpacer">No</div><svg class = "mypv-icon sos-status-bad"><use xlink:href = "#sos-status-bad"></use></svg></div></td>'
+
+                } else {
+                    
+                    portStatus = '<td><div class = "updownIndicator"><div class = "updownSpacer">No</div><svg class = "mypv-icon sos-status-not-available"><use xlink:href = "#sos-status-not-available"></use></svg></div></td>'
+                
+                }
+            
+            } else {
+
+                portStatus = '<td>-</td>'
+
+            }
+
+            if (portOpen) {
+
+                probeButton = `<button type = 'button' class = 'btn btn-sm btn-primary btn-outline-primary' onclick = 'moveSearchToProbe("${hostIps[i]}", ${portValue})'>Search Registers</button>`
+
+                canProbe.push(`<tr><td>${hostIps[i]}</td>${hostStatus}${portStatus}<td>${probeButton}</td></tr>`)
+
+            } else {
+
+                cannotProbe.push(`<tr><td>${hostIps[i]}</td>${hostStatus}${portStatus}<td></td></tr>`)
+
+            }
+
+        }
+
+        for (let i = 0; i < canProbe.length; i++) {
+
+            tableData += canProbe[i]
+            tableDataFull += canProbe[i]
+
+        }
+
+        for (let i = 0; i < cannotProbe.length; i++) {
+
+            tableDataFull += cannotProbe[i]
+
+        }
+
+        if (tableData == "<tbody>") {
+
+            tableData += "<tr><td>-</td><td>-</td><td>-</td><td>-</td></tr>"
+
+        }
+
+        if (tableDataFull == "<tbody>") {
+
+            tableDataFull += "<tr><td>-</td><td>-</td><td>-</td><td>-</td></tr>"
+
+        }
+
+        tableData += "</tbody>"
+        tableDataFull += "</tbody>"
+
+        ethernetSearchTable = document.getElementById("ethernetSearchTable");
+        ethernetSearchTableFull = document.getElementById("ethernetSearchTableFull");
+
+        ethernetSearchTable.getElementsByTagName("tbody")[0].innerHTML = tableData;
+        ethernetSearchTableFull.getElementsByTagName("tbody")[0].innerHTML = tableDataFull;
+
+        document.getElementById("ip_count").innerHTML = ips_searching;
+        document.getElementById("host_up_count").innerHTML = hosts_up;
+        document.getElementById("port_open_count").innerHTML = ports_open;
+
+        if ((data["currentStatus"] == "Finished") || (data["currentStatus"] == "Exited due to an error")) {
+
+            document.getElementById("ethernetSearchStatus").style.display = "none";
+
+            $.ajax({
+
+                url:'/kill_ip_discovery',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(response_data){
+
+                }
+
+            })
+
+            document.getElementById("scan_devices").value = "start"
+            document.getElementById("scan_devices").innerHTML = "Scan for Devices"
+            document.getElementById("scan_devices").classList.add("btn-primary")
+            document.getElementById("scan_devices").classList.add("btn-outline-primary")
+
+            document.getElementById("scan_devices").classList.remove("btn-danger")
+            document.getElementById("scan_devices").classList.remove("btn-outline-danger")
+
+            stop()
+
+            return
+
+        }
+
+        document.getElementById("ethernetSearchStatusDisplay").innerHTML = `<div class = "progress" style = "width: 100%; background: var(--bs-gray)"><div class = "progress-bar progress-bar-striped progress-bar-animated" role = "progressbar" style = "width: ${data["currentStatus"]["percent"]}%" aria-valuenow = "10" aria-valuemin = "0" aria-valuemax = "100"><span style = "padding-left: 5px">${data["currentStatus"]["task"]} - ${data["currentStatus"]["percent"]}%</span></div></div>`
+
+        reset();
+
+    }
+
+    function formatEthernetProbe (data) {
+
+        tableData = "<tbody>";
+
+        last_data = data
+
+        functions = Object.keys(data)
+        bWOrder = (document.getElementById("byte_order").value == "Big Byte" ? "B" : "L") + (document.getElementById("word_order").value == "Big Word" ? "B" : "L")
+
+        //console.log(currentProbeSettings)
+
+        if (currentProbeSettings["device"] != data["device"]) {
+
+            currentProbeSettings = {"device": data["device"]}
+
+        }
+
+        registers_searching = 0;
+        value_holding_registers = 0;
+
+        for (let i = 0; i < functions.length; i++) {
+
+            if (functions[i] != "status" && functions[i] != "assets" && functions[i] != "device" && functions[i] != "error") {
+
+                if (!(Object.keys(currentProbeSettings).includes(functions[i]))) {
+
+                    currentProbeSettings[functions[i]] = {}
+
+                }
+
+                registers = Object.keys(data[functions[i]])
+
+                registers_searching += registers.length;
+
+                for (let j = 0; j < registers.length; j++) {
+
+                    if (!(Object.keys(currentProbeSettings[functions[i]]).includes(registers[j]))) {
+
+                        currentProbeSettings[functions[i]][registers[j]] = {"dataType": "int16", 
+                                                                            "settings": {
+                                                                                "flipBool": false,
+                                                                                "scale_mode": "slope_intercept",
+                                                                                "slope": "1.0",
+                                                                                "offset": "0.0"
+                                                                            },
+                                                                            "slopeCalced": 1.0,
+                                                                            "offsetCalced": 0.0,
+                                                                            "function": functions[i],
+                                                                            "register": registers[j],
+                                                                            "display": true
+                                                                        }
+
+                    }
+
+                    currentProbeSettings[functions[i]][registers[j]]["data"] = data[functions[i]][registers[j]]
+
+                    if (data[functions[i]][registers[j]]["hex"] != "-") {
+
+                        value_holding_registers++;
+
+                    }
+
+                    if (currentProbeSettings[functions[i]][registers[j]]["display"]) {
+
+                        if (functions[i] == "read-coils") {
+
+                            currentProbeSettings[functions[i]][registers[j]]["dataType"] = "bool"
+
+                            tableData += `<tr><td>${parseInt(registers[j]) + functionScale[functions[i]]}</td><td>${data[functions[i]][registers[j]]["hex"]}</td><td class = "highlightedProbeValue" colspan = 5>${data[functions[i]][registers[j]]["val"]}</td><td>-</td><td>-</td><td class = "highlightedProbeValue preview" function = "${functions[i]}" register = "${registers[j]}">${evalPreview(data[functions[i]][registers[j]]["val"], functions[i], registers[j])}</td></tr>`
+
+                        } else {
+
+                            tableData += `<tr><td>${numberWithCommas(parseInt(registers[j]) + functionScale[functions[i]])}</td><td>${data[functions[i]][registers[j]]["hex"]}</td><td class = "rightalign"><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable int16ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "int16" ? " highlightedProbeValue" : ""}">${numberWithCommas(parseInt(data[functions[i]][registers[j]]["int16"][bWOrder]))}</button></td><td class = "rightalign"><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable uint16ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "uint16" ? " highlightedProbeValue" : ""}">${numberWithCommas(parseInt(data[functions[i]][registers[j]]["uint16"][bWOrder]))}</button></td><td class = "rightalign"><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable int32ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "int32" ? " highlightedProbeValue" : ""}">${numberWithCommas(parseInt(data[functions[i]][registers[j]]["int32"][bWOrder]))}</button></td><td class = "rightalign"><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable uint32ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "uint32" ? " highlightedProbeValue" : ""}">${numberWithCommas(parseInt(data[functions[i]][registers[j]]["uint32"][bWOrder]))}</button></td><td class = "rightalign"><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable float32ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "float32" ? " highlightedProbeValue" : ""}">${naNCorrection(parseFloat(data[functions[i]][registers[j]]["float32"][bWOrder]).toPrecision(4))}</button></td><td><input type = "text" function = "${functions[i]}" register = "${registers[j]}" class = "slope" value = "${currentProbeSettings[functions[i]][registers[j]]["slopeCalced"]}"></td><td><input type = "text" function = "${functions[i]}" register = "${registers[j]}" class = "yint" value = "${currentProbeSettings[functions[i]][registers[j]]["offsetCalced"]}"></td><td class = "highlightedProbeValue preview rightalign" function = "${functions[i]}" register = "${registers[j]}">${evalPreview(data[functions[i]][registers[j]][currentProbeSettings[functions[i]][registers[j]]["dataType"]][bWOrder], functions[i], registers[j])}</td></tr>`
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        document.getElementById("register_count").innerHTML = registers_searching;
+        document.getElementById("value_hold_count").innerHTML = value_holding_registers;
+
+        tableData += "</tbody>"
+
+        document.getElementById("dataTableBody").getElementsByTagName("tbody")[0].innerHTML = tableData
+
+        document.getElementById("probeStatusProgress").style.width = data["status"] == "Started" ? "0%" : data["status"] == "Finished" ? "100%" : data["status"] == "Failed" ? "100%" : data["status"] == "Exited due to an error" ? "100%" : `${data["status"]}%`
+
+        document.getElementById("probeStatusProgress").innerHTML = "<span style = 'padding-left: 5px'>"
+
+        document.getElementById("probeStatusProgress").innerHTML += data["status"] == "Started" ? "Started" : data["status"] == "Finished" ? "100%" : data["status"] == "Failed" ? "100%" : data["status"] == "Exited due to an error" ? "100%" : `${data["status"]}%`
+
+        document.getElementById("probeStatusProgress").innerHTML += "</span>"
+
+        document.querySelectorAll(".int16ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "int16"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".uint16ProbeRes, .int32ProbeRes, .uint32ProbeRes, .float32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][(document.getElementById("byte_order").value == "Big Byte" ? "B" : "L") + (document.getElementById("word_order").value == "Big Word" ? "B" : "L")], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".uint16ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "uint16"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".int16ProbeRes, .int32ProbeRes, .uint32ProbeRes, .float32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][(document.getElementById("byte_order").value == "Big Byte" ? "B" : "L") + (document.getElementById("word_order").value == "Big Word" ? "B" : "L")], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".int32ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "int32"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".int16ProbeRes, .uint16ProbeRes, .uint32ProbeRes, .float32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][(document.getElementById("byte_order").value == "Big Byte" ? "B" : "L") + (document.getElementById("word_order").value == "Big Word" ? "B" : "L")], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".uint32ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "uint32"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".int16ProbeRes, .uint16ProbeRes, .int32ProbeRes, .float32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][(document.getElementById("byte_order").value == "Big Byte" ? "B" : "L") + (document.getElementById("word_order").value == "Big Word" ? "B" : "L")], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".float32ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "float32"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".int16ProbeRes, .uint16ProbeRes, .int32ProbeRes, .uint32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][(document.getElementById("byte_order").value == "Big Byte" ? "B" : "L") + (document.getElementById("word_order").value == "Big Word" ? "B" : "L")], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".slope").forEach(function (el) {
+
+            el.addEventListener("change", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                if (el.value == "") {
+
+                    el.value = "1"
+
+                }
+
+                currentProbeSettings[funct_code][reg]["slopeCalced"] = parseFloat(el.value)
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][(document.getElementById("byte_order").value == "Big Byte" ? "B" : "L") + (document.getElementById("word_order").value == "Big Word" ? "B" : "L")], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".yint").forEach(function (el) {
+
+            el.addEventListener("change", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                if (el.value == "") {
+
+                    el.value = "0"
+
+                }
+
+                currentProbeSettings[funct_code][reg]["offsetCalced"] = parseFloat(el.value)
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][(document.getElementById("byte_order").value == "Big Byte" ? "B" : "L") + (document.getElementById("word_order").value == "Big Word" ? "B" : "L")], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll("#dataTableBody > tbody > tr > td > .mypv_create_btn").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                if (el.classList.contains("btn-success")) {
+
+                    funct_code = el.getAttribute('function')
+                    reg = el.getAttribute('register')
+
+                    document.getElementById("function_code").value = funct_code
+                    document.getElementById("register").value = reg
+
+                    if (funct_code == "read-coils") {
+
+                        document.getElementById("data_type").innerHTML = `<option value = "bool">bool</option>`
+
+                    } else {
+
+                        document.getElementById("data_type").innerHTML = `<option value = "int16">int16</option><option value = "uint16">uint16</option><option selected = "" value = "int32">int32</option><option value = "uint32">uint32</option><option value = "float32">float32</option>`
+
+                    }
+
+                    document.getElementById("data_type").value = currentProbeSettings[funct_code][reg]["dataType"]
+                    document.getElementById("tag_name").value = currentProbeSettings[funct_code][reg]["name"]
+
+                    modal = document.getElementById("probe_item_settings_modal")
+
+                    modal.setAttribute('function', funct_code)
+                    modal.setAttribute('register', reg)
+
+                    document.getElementById("measure").value = currentProbeSettings[funct_code][reg]["measure"]
+
+                    setUnitOptions()
+
+                    settings = Object.keys(currentProbeSettings[funct_code][reg]["settings"])
+
+                    for (let i = 0; i < settings.length; i++) {
+
+                        if (!(settings[i] == 'flipBool')) {
+
+                            document.getElementById(settings[i]).value = currentProbeSettings[funct_code][reg]["settings"][settings[i]]
+
+                        } else {
+
+                            document.getElementById(settings[i]).checked = currentProbeSettings[funct_code][reg]["settings"][settings[i]]
+
+                        }
+
+                    }
+
+                    createAddressAlias()
+                    toggleExtremaHandling()
+                    evalSlopeFields()
+                    redoGraph()
+
+                    $('#probe_item_settings_modal').modal('show');
+
+                }
+
+            })
+
+        })
+
+        document.querySelectorAll("#dataTableBody > tbody > tr > td > .mypv_delete_btn").forEach(function (el) {
+
+            el.addEventListener('click', function () {
+
+                $.ajax({
+
+                    url:'/remove_register',
+                    type:"POST",
+                    contentType:"application/json; charset=utf-8",
+                    dataType:"json",
+                    data: JSON.stringify({'function': el.getAttribute('function'), 'register': el.getAttribute('register')}),
+                    complete: function(data){
+
+                        updateEthernetProbe()
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        if ((data["status"] == "Finished") || (data["status"] == "Exited due to an error")) {
+
+            document.getElementById("ethernetProbeStatus").style.display = "none";
+
+            $.ajax({
+
+                url:'/tcp_probe_kill',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(response_data){
+
+                }
+
+            })
+
+            document.getElementById("search_modbus_registers").value = "start"
+            document.getElementById("search_modbus_registers").innerHTML = "Search"
+            document.getElementById("search_modbus_registers").classList.add("btn-primary")
+            document.getElementById("search_modbus_registers").classList.add("btn-outline-primary")
+
+            document.getElementById("search_modbus_registers").classList.remove("btn-danger")
+            document.getElementById("search_modbus_registers").classList.remove("btn-outline-danger")
+
+            stop()
+
+            if (data["currentStatus"] == "Exited due to an error") {
+
+                document.getElementById("genericProbeErrorText").innerHTML = data["error"]
+
+                document.getElementById("genericProbeError").style.display = "block"
+
+            }
+
+            return
+
+        }
+
+        reset();
+
+    }
+
+    function evalPreview (value, funct, register) {
+
+        console.log(value)
+
+        if (Object.keys(currentProbeSettings).includes(funct) && Object.keys(currentProbeSettings[funct]).includes(register)) {
+
+            settings = currentProbeSettings[funct][register]
+
+        } else {
+
+            for (let i = 0; i < tagMap.length; i++) {
+
+                if ((tagMap[i]["function"] == funct) && (tagMap[i]["register"] == register)) {
+
+                    settings = tagMap[i]
+
+                    break
+
+                }
+
+            }
+
+        }
+
+        if ("value" == "-") {
+
+            return `null`
+
+        }
+
+        if (funct == "read-coils") {
+
+            if (settings["settings"]["flipBool"]) {
+
+                if (value == 0) {
+
+                    return 1
+
+                } else {
+
+                    return 0
+
+                }
+
+            } else {
+
+                return value
+
+            }
+
+        } else {
+
+            calcedVal = value * settings["slopeCalced"] + settings["offsetCalced"]
+
+            // if (calcedVal < parseFloat(settings["accepted_min"])) {
+
+            //     if (settings["extreme_exceeded"] == "to_null") {
+
+            //         calcedVal = "null"
+
+            //     } else if (settings["extreme_exceeded"] == "to_zero") {
+
+            //         calcedVal = "0"
+
+            //     } else if (settings["extreme_exceeded"] == "to_one") {
+
+            //         calcedVal = "1"
+
+            //     } else if (settings["extreme_exceeded"] == "to_extreme") {
+
+            //         calcedVal = settings["accepted_min"]
+
+            //     } else if (settings["extreme_exceeded"] == "to_extreme_opposite") {
+
+            //         if (settings["accepted_max"] == "") {
+
+            //             calcedVal = "null"
+
+            //         } else {
+
+            //             calcedVal = settings["accepted_max"]
+
+            //         }
+
+            //     }
+
+            // } else if (calcedVal > parseFloat(settings["accepted_max"])) {
+
+            //     if (settings["extreme_exceeded"] == "to_null") {
+
+            //         calcedVal = "null"
+
+            //     } else if (settings["extreme_exceeded"] == "to_zero") {
+
+            //         calcedVal = "0"
+
+            //     } else if (settings["extreme_exceeded"] == "to_one") {
+
+            //         calcedVal = "1"
+
+            //     } else if (settings["extreme_exceeded"] == "to_extreme") {
+
+            //         calcedVal = settings["accepted_min"]
+
+            //     } else if (settings["extreme_exceeded"] == "to_extreme_opposite") {
+
+            //         if (settings["accepted_max"] == "") {
+
+            //             calcedVal = "null"
+
+            //         } else {
+
+            //             calcedVal = settings["accepted_max"]
+
+            //         }
+
+            //     }
+
+            // }
+
+            if (settings["dataType"] == "float32") {
+
+                calcedVal = calcedVal.toPrecision(4)
+
+            } else {
+
+                calcedVal = numberWithCommas(calcedVal)
+
+            }
+
+            return `${calcedVal}`
+
+        }
+
+    }
+
+    document.getElementById('hide_ports').addEventListener("change", function(){
+       
+        if (this.checked){
+
+            document.getElementById('filtered_rows').style.display = "block";
+            document.getElementById('all_rows').style.display = "none";
+            
+
+        } else {
+
+            document.getElementById('filtered_rows').style.display = "none";
+            document.getElementById('all_rows').style.display = "block";
+
+        }
+
+    })
+
+    //-------------------------------------------------//
+    //                   Tousif Code                   //
+    //-------------------------------------------------//
+
+
+    var timeInterval =null
+    const tabItems = document.querySelectorAll('.tab-item');
+    const tabContentDivs = document.querySelectorAll('.tab-content');
+
+    tabItems.forEach(tabItem => {
+
+        tabItem.addEventListener('click', () => {
+
+            tabItems.forEach(item => item.classList.remove('active'));
+            tabContentDivs.forEach(div => div.classList.remove('active'));
+
+            tabItem.classList.add('active');
+            const contentId = tabItem.querySelector('a').getAttribute('href');
+            const contentDiv = document.querySelector(contentId);
+            contentDiv.classList.add('active');
+
+        });
+
+    });
+
+
+
+    // intial value
+    document.querySelectorAll('.port_val').forEach (item => item.innerHTML = document.getElementById('ethernetSearchPort').value)
+
+    // set onchnage value
+    document.getElementById('ethernetSearchPort').addEventListener("change", function(){
+        
+        var port_value = this.value
+
+        document.querySelectorAll('.port_val').forEach(item => item.innerHTML = port_value)
+
+    });
+
+if (document.getElementById('sel_interfaces').value != "") {
+
+    changeIPDefault(document.getElementById('sel_interfaces'))
+
+}
+
+document.getElementById('sel_interfaces').addEventListener("change", function(){
+
+    if (this.value == "") {
+
+        hideContent();
+
+    } else {
+
+        showContent();
+
+        changeIPDefault(this);
+
+    }
+
+});
+
+function hideContent () {
+
+    document.getElementById("placeholder").style.display = "flex";
+    document.getElementById("placeholder_line").style.display = "flex";
+    document.getElementById("tabs-content").style.display = "none";
+    document.getElementById("tcp_stats").style.display = "none";
+    document.getElementById("modbus_stats").style.display = "none";
+
+}
+
+function showContent() {
+
+    document.getElementById("tabs-content").style.display = "";
+    document.getElementById("placeholder").style.display = "none";
+    document.getElementById("placeholder_line").style.display = "none";
+    
+    if (document.getElementById("tab1").classList.contains("active")) {
+
+        document.getElementById("tcp_stats").style.display = "";
+        document.getElementById("modbus_stats").style.display = "none";
+
+    } else if (document.getElementById("tab2").classList.contains("active")) {
+
+        document.getElementById("modbus_stats").style.display = "";
+        document.getElementById("tcp_stats").style.display = "none";
+
+    }
+
+}
+
+function changeIPDefault (item) {
+
+    if(isValidIpAddress(item.value)){
+
+        let ip_octets = item.value;
+        let ip_octets_arry = ip_octets.split('.')
+        let searchIp = '';
+        let last_oct = parseInt(ip_octets_arry[3])
+
+        if (last_oct >= 244) {
+
+            last_oct--;
+            searchIp = ip_octets_arry[0]+'.'+ip_octets_arry[1]+'.'+ip_octets_arry[2]+'.'+ (last_oct - 10) + "-" + (last_oct)
+
+        } else {
+
+            last_oct++;
+            searchIp = ip_octets_arry[0]+'.'+ip_octets_arry[1]+'.'+ip_octets_arry[2]+'.'+(last_oct) + "-" + (last_oct + 10)
+
+        }
+
+        document.getElementById('ethernetSearchIP').value = searchIp
+
+    } else {
+
+    document.getElementById('ethernetSearchIP').value = ''
+
+    }
+
+}
+
+
+function isValidIpAddress(ipAddress) {
+  // Regular expression for IPv4 address format (0-255)
+  const ipv4Regex = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
+
+  // Check if the IP address matches either IPv4 format
+  return ipv4Regex.test(ipAddress);
+}
+
+
+
+
+// 
+
+
+
+document.getElementById("search_modbus_registers").onclick = function () {
+
+    if (this.value == "start") {
+
+        if (!(document.getElementById("scan_devices").value == "start")) {
+
+            document.getElementById("ethernetSearchStatus").style.display = "none";
+
+            $.ajax({
+
+                url:'/kill_ip_discovery',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(response_data){
+
+                }
+
+            })
+
+            document.getElementById("scan_devices").value = "start"
+            document.getElementById("scan_devices").innerHTML = "Scan for Devices"
+            document.getElementById("scan_devices").classList.add("btn-primary")
+            document.getElementById("scan_devices").classList.add("btn-outline-primary")
+
+            document.getElementById("scan_devices").classList.remove("btn-danger")
+            document.getElementById("scan_devices").classList.remove("btn-outline-danger")
+
+            stop()
+            reset()
+            // timer_max = document.getElementById("refresh_rate").value
+
+        }
+
+        startData = {'address': document.getElementById("deviceIP").value, 
+                    'port': document.getElementById("devicePort").value,
+                    'devId': document.getElementById("deviceID").value,
+                    'function': document.getElementById("funct_code").value,
+                    'registers': document.getElementById("register_range").value}
+
+        $.ajax({
+
+            url:'/tcp_probe_start',
+            type:"POST",
+            contentType:"application/json; charset=utf-8",
+            data: JSON.stringify(startData),
+            dataType:"json",
+            success: function(response_data){
+
+                if (response_data["error"] == "Bad Address") {
+
+                    document.getElementById("addrProbeError").style.display = "block"
+
+                    document.getElementById("ethernetProbeStatus").style.display = "none";
+
+                } else if (response_data["error"] == "Bad Port") {
+
+                    document.getElementById("portProbeError").style.display = "block"
+
+                    document.getElementById("ethernetProbeStatus").style.display = "none";
+
+                } else if (response_data["error"] == "Bad Function") {
+
+                    document.getElementById("functionProbeError").style.display = "block"
+
+                    document.getElementById("ethernetProbeStatus").style.display = "none";
+
+                } else if (response_data["error"] == "Bad Registers") {
+
+                    document.getElementById("registerProbeError").style.display = "block"
+
+                    document.getElementById("ethernetProbeStatus").style.display = "none";
+
+                } else if (response_data["error"] == "Bad Device") {
+
+                    document.getElementById("deviceProbeError").style.display = "block"
+
+                    document.getElementById("ethernetProbeStatus").style.display = "none";
+
+                } else {
+
+                    document.getElementById("ethernetProbeStatus").style.display = "flex";
+
+                    document.getElementById("addrProbeError").style.display = "none"
+                    document.getElementById("portProbeError").style.display = "none"
+                    document.getElementById("functionProbeError").style.display = "none"
+                    document.getElementById("registerProbeError").style.display = "none"
+                    document.getElementById("deviceProbeError").style.display = "none"
+
+                    document.getElementById("search_modbus_registers").value = "stop"
+                    document.getElementById("search_modbus_registers").innerHTML = "Stop Probe"
+                    document.getElementById("search_modbus_registers").classList.add("btn-danger")
+                    document.getElementById("search_modbus_registers").classList.add("btn-outline-danger")
+
+                    document.getElementById("search_modbus_registers").classList.remove("btn-primary")
+                    document.getElementById("search_modbus_registers").classList.remove("btn-outline-primary")
+
+                    dataTableBody = document.getElementById("dataTableBody");
+
+                    document.getElementById("probeStatusProgress").style.width = "0%"
+
+                    document.getElementById("probeStatusProgress").innerHTML = "<span style = 'padding-left: 5px'>Started</span>"
+
+                    start();
+
+                }
+
+            }
+
+        })
+
+    } else {
+
+        document.getElementById("ethernetProbeStatus").style.display = "none";
+
+        $.ajax({
+
+            url:'/tcp_probe_kill',
+            type:"POST",
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function(response_data){
+
+            }
+
+        })
+
+        this.value = "start"
+        this.innerHTML = "Search Registers"
+        this.classList.add("btn-primary")
+        this.classList.add("btn-outline-primary")
+
+        this.classList.remove("btn-danger")
+        this.classList.remove("btn-outline-danger")
+
+        stop()
+
+    }
+
+}
+
+
+document.getElementById("scan_devices").onclick = function () {
+
+    if (this.value == "start") {
+
+        if (!(document.getElementById("search_modbus_registers").value == "start")) {
+
+            document.getElementById("ethernetProbeStatus").style.display = "none";
+
+            $.ajax({
+
+                url:'/tcp_probe_kill',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(response_data){
+
+                }
+
+            })
+
+            document.getElementById("search_modbus_registers").value = "start"
+            document.getElementById("search_modbus_registers").innerHTML = "Search Registers"
+            document.getElementById("search_modbus_registers").classList.add("btn-primary")
+            document.getElementById("search_modbus_registers").classList.add("btn-outline-primary")
+
+            document.getElementById("search_modbus_registers").classList.remove("btn-danger")
+            document.getElementById("search_modbus_registers").classList.remove("btn-outline-danger")
+
+            stop()
+            reset()
+            timer_max = 2
+
+        }
+
+        startData = {'ips': document.getElementById("ethernetSearchIP").value, 
+                    'port': document.getElementById("ethernetSearchPort").value}
+
+        $.ajax({
+
+            url:'/ip_discovery',
+            type:"POST",
+            contentType:"application/json; charset=utf-8",
+            data: JSON.stringify(startData),
+            dataType:"json",
+            success: function(response_data){
+
+                if (Object.keys(response_data).includes("errors")) {
+
+                    document.getElementById("ethernetSearchStatus").style.display = "none";
+
+                    if (response_data["errors"] == "badPort") {
+
+                        document.getElementById("searchPortError").style.display = "block"
+
+                    } else {
+
+                        idsErrorList = document.getElementById("idsErrorList")
+                        idsErrorList.innerHTML = response_data["errors"]
+                        document.getElementById("idsError").style.display = "block"
+
+                    }
+
+                } else {
+
+                    document.getElementById('idsError').style.display = "none";
+
+                    document.getElementById("scan_devices").value = "stop"
+                    document.getElementById("scan_devices").innerHTML = "Stop Scan"
+                    document.getElementById("scan_devices").classList.add("btn-danger")
+                    document.getElementById("scan_devices").classList.add("btn-outline-danger")
+
+                    document.getElementById("scan_devices").classList.remove("btn-primary")
+                    document.getElementById("scan_devices").classList.remove("btn-outline-primary")
+
+                    ethernetSearchTable = document.getElementById("ethernetSearchTable");
+                    ethernetSearchTableFull = document.getElementById("ethernetSearchTableFull");
+
+                    ethernetSearchTable.getElementsByTagName("tbody")[0].innerHTML = "<tr><td>-</td><td>-</td><td>-</td><td>-</td></tr>"
+                    ethernetSearchTableFull.getElementsByTagName("tbody")[0].innerHTML = "<tr><td>-</td><td>-</td><td>-</td><td>-</td></tr>"
+
+                    document.getElementById("ethernetSearchStatus").style.display = "flex";
+                    document.getElementById("ethernetSearchStatusDisplay").innerHTML = `<div class = "progress" style = "width: 100%; background: var(--bs-gray)"><div class = "progress-bar progress-bar-striped progress-bar-animated" role = "progressbar" style = "width: 100%" aria-valuenow = "10" aria-valuemin = "0" aria-valuemax = "100"><span style = "padding-left: 5px">Initializing - 0%</span></div></div>`
+
+                    start();
+
+                }
+
+            }
+
+        })
+
+    } else {
+
+        document.getElementById("ethernetSearchStatus").style.display = "none";
+
+        $.ajax({
+
+            url:'/kill_ip_discovery',
+            type:"POST",
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function(response_data){
+
+            }
+
+        })
+
+        this.value = "start"
+        this.innerHTML = "Search"
+        this.classList.add("btn-primary")
+        this.classList.add("btn-outline-primary")
+
+        this.classList.remove("btn-danger")
+        this.classList.remove("btn-outline-danger")
+
+        stop()
+
+    }
+
+}
+
+// function formatRegisterdata(data){
+
+//     for (let i = 0; i < data['registers'].length; i++) {
+        
+
+//         table_content += `   <tr style="text-align:right">
+//                                 <td>${numberWithCommas(data['registers'][i]['register'])}</td>
+//                                 <td><code>${data['registers'][i]['hex_value']}<code></td>
+//                                 <td id="int16_${i}" >${numberWithCommas(data['registers'][i]['int16'])}</td>
+//                                 <td>${numberWithCommas(data['registers'][i]['uint16'])}</td>
+//                                 <td>${numberWithCommas(data['registers'][i]['int32'])}</td>
+//                                 <td>${numberWithCommas(data['registers'][i]['uint32'])}</td>
+//                                 <td>${numberWithCommas(data['registers'][i]['float32'])}</td>
+//                                 <td style="width:90px;text-align:right"><input type="number" style="width:77px;text-align:right" name="slope_${i}" onchange="update_scaled_val('${i}')" value="1"></td>
+//                                 <td style="width:90px;text-align:right"><input style="width:77px;text-align:right" type="number" name="intercept_${i}" onchange="update_scaled_val('${i}')" value="0"></td>
+//                                 <td  style="width:100px;font-weight:600" id="scaled_${i}">${numberWithCommas(data['registers'][i]['int16'])}</td>
+//                              </tr>
+//                             `
+
+
+// }
+// if(data.length == 0){
+
+//     table_content += 
+// `
+// <tr>
+// <td>-</td>
+// <td>-</td>
+// <td>-</td>
+// <td>-</td>
+// <td>-</td>
+// <td>-</td>
+// <td>-</td>
+// <td>-</td>
+// <td>-</td>
+// <td>-</td>
+// </tr>
+// `
+
+// }
+
+//     dataTableBody = document.getElementById("dataTableBody");
+//     dataTableBody.innerHTML = table_content;
+
+// }
+
+function progress_bar(percent){
+    if(percent < 100){
+        $("#modal_status").modal('show')
+    }
+    else{
+        $("#modal_status").modal('hide')
+    }
+    document.getElementById('prg_bar').style.width = percent+'%'
+    document.getElementById('prg_span').textContent = percent+'%'
+}
+
+// document.getElementById('refresh_rate').addEventListener("change", function () {
+
+//     timer_max = this.value
+
+// })
+
+
+function moveSearchToProbe (addr, port) {
+
+    switch_counters();
+
+    document.getElementById("deviceIP").value = addr;
+    document.getElementById("devicePort").value = port;
+
+    document.getElementById("tab1").classList.toggle('active')
+    document.getElementById("tab2").classList.toggle('active')
+    document.getElementById("tab_one").classList.toggle('active')
+    document.getElementById("tab_two").classList.toggle('active')
+
+    if (document.getElementById("tab2").classList.contains('active')) {
+
+        // timer_max = document.getElementById('refresh_rate').value
+        timer_max = 2
+
+    } else {
+
+        timer_max = 2
+
+    }
+
+    document.getElementById("ethernetSearchStatus").style.display = "none";
+
+    $.ajax({
+
+        url:'/kill_ip_discovery',
+        type:"POST",
+        contentType:"application/json; charset=utf-8",
+        dataType:"json",
+        success: function(response_data){
+
+        }
+
+    })
+
+    document.getElementById("scan_devices").value = "start"
+    document.getElementById("scan_devices").innerHTML = "Scan for Devices"
+    document.getElementById("scan_devices").classList.add("btn-primary")
+    document.getElementById("scan_devices").classList.add("btn-outline-primary")
+
+    document.getElementById("scan_devices").classList.remove("btn-danger")
+    document.getElementById("scan_devices").classList.remove("btn-outline-danger")
+
+    stop()
+    reset()
+
+}
+
+function update_scaled_val(row_id){
+    
+    let value1 = parseInt((document.getElementById("int16_"+row_id).textContent).replace(/,/g, ""));
+
+    let  value2 = parseInt((document.querySelector(`input[name="slope_${row_id}"]`).value).replace(/,/g, ""));
+
+    let  value3 = parseInt(document.querySelector(`input[name="intercept_${row_id}"]`).value);
+
+    document.getElementById("scaled_"+row_id).textContent = numberWithCommas((value1*value2)-value3)
+    
+
+}
+
+
+function numberWithCommas(number) {
+
+    if (!(isNaN(number))) {
+
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    } else {
+
+        return "-"
+
+    }
+
+}
+
+function naNCorrection (number) {
+
+    if (!(isNaN(number))) {
+
+        return number
+
+    } else {
+
+        return "-"
+
+    }
+
+}
+
+// 
+
+</script>
+
+{% endblock %}

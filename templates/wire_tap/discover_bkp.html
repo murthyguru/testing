@@ -1,0 +1,5133 @@
+{% extends 'mypv_base.html' %}
+
+{% block content %}
+
+<br>
+
+{% include '/subnav/devices_subnav.html' %}
+
+<br>
+
+<script src = "{{url_for('static', filename='js/templates/templates.js')}}"></script>
+
+<style>
+
+    #preview_table, #ethernetSearchTable, #ethernetSearchTableFull, #ethernetProbeTable, #ethernetProbeTagMapping {
+
+        text-align: center;
+
+    }
+
+    td {
+
+        font-size: 14;
+
+    }
+
+    .spin {
+
+        cursor: wait;
+
+    }
+
+    #wireTapType {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: transparent;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--secondary);
+        border-radius: 0.2rem;
+        color: black;
+
+    }
+
+
+    #sel_interfaces {
+
+padding: 0.25rem 0.5rem;
+font-size: 0.875rem;
+line-height: 1.25;
+cursor: pointer;
+background-color: transparent;
+display: inline-block;
+font-weight: 400;
+text-align: center;
+white-space: nowrap;
+vertical-align: middle;
+border: 1px solid var(--secondary);
+border-radius: 0.2rem;
+color: black;
+
+}
+
+    .option {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: transparent;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--secondary);
+        border-radius: 0.2rem;
+        color: var(--secondary);
+
+    }
+
+    .option:hover {
+
+        background-color: var(--secondary);
+        color: #FFF;
+
+    }
+
+    .selectedOption {
+
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.25;
+        cursor: pointer;
+        background-color: var(--primary);
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        border: 1px solid var(--primary);
+        border-radius: 0.2rem;
+        color: #FFF;
+
+    }
+
+    .option:focus {
+
+        outline: 0;
+
+    }
+
+    .selectedOption:focus {
+
+        outline: 0;
+
+    }
+
+    .vertSpacer {
+
+        height: 1em;
+
+    }
+
+    .portFeed {
+
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+
+    }
+
+    pre {
+
+        display: inline;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+
+    }
+
+    input {
+
+        color: #495057;
+        padding: 0.375rem 0.75rem;
+        line-height: 1.5;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+    }
+
+    .mypv-icon {
+
+        width: 2em;  /* ~32px */
+        height: 2em;  /* ~32px */
+        vertical-align: -.125em;
+
+    }
+
+    #ethernetSearchTable td {
+
+        vertical-align: middle;
+
+    }
+    
+    #ethernetSearchTableFull td {
+
+        vertical-align: middle;
+
+    }
+
+    .mypv-icon-table {
+
+        width: calc(1.8125rem + 2px);
+        height: calc(1.8125rem + 2px);
+        vertical-align: -.125em;
+
+    }
+
+    .clickable {
+
+        cursor: pointer;
+
+    }
+
+    .unclickable {
+
+        cursor: default !important;
+
+    }
+
+    .hidden-button {
+
+        background-color: rgba(0, 0, 0, 0);
+        border: 0px;
+
+    }
+
+    #ethernetProbeTable td {
+
+        vertical-align: middle;
+
+    }
+
+    #ethernetProbeTagMapping td {
+
+        vertical-align: middle;
+
+    }
+
+    .highlightedProbeValue {
+
+        color: var(--primary)
+
+    }
+
+    .quadrant {
+    
+        padding: 20px;
+
+    }
+
+    .quadrantHeader {
+
+        border-bottom: 1px solid black;
+        margin-bottom: 20px;
+
+    }
+
+    .minLine {
+
+        stroke: var(--danger);
+
+    }
+
+    .maxLine {
+
+        stroke: var(--success);
+
+    }
+
+    .minVal {
+
+        color: var(--danger);
+
+    }
+
+    .maxVal {
+
+        color: var(--success);
+
+    }
+
+    .highcharts-grid-line {
+
+        stroke-width: 1 !important;
+
+    }
+
+    .error {
+
+        color: var(--danger);
+
+    }
+
+    .mypv-loader {
+
+        width: 20px;
+        height: 20px;
+        margin-right: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        border-top: 3px solid #212529;
+        border-right: 3px solid transparent;
+        box-sizing: border-box;
+        animation: mypv-loader-rotation 1s linear infinite;
+    
+    }
+
+    @keyframes mypv-loader-rotation {
+
+        0% {
+            
+            transform: rotate(0deg);
+            
+        }
+        
+        100% {
+            
+            transform: rotate(360deg);
+            
+        }
+
+    }
+
+    .toggle-div { display: flex; }
+.toggle-switch {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.toggle-switch:focus { outline: 0; }
+.toggle-switch:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.toggle-switch.oval-track {
+  margin: 0px;
+  padding: 7px 16px !important;
+  border: 2px solid #adb5bd;
+  border-radius: 16px;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.toggle-switch.oval-track:focus{ box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%); }
+.toggle-switch.oval-track:after {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 7px;
+  border-radius: 50%;
+  background: #adb5bd;
+  box-shadow: 0 1px 2px rgba(44, 44, 44, 0.2);
+  transition: all 0.2s cubic-bezier(0.5, 0.1, 0.75, 1.35);
+}
+.toggle-switch.oval-track:checked {
+  background: #48b95b;
+  border-color: #48b95b;
+}
+.toggle-switch.oval-track:checked:after {
+  transform: translatex(17px);
+  background: white;
+}
+
+
+
+</style>
+
+<div id = "device_info_partial_modal" class = "modal fade bd-example-modal-lg" tabindex = "-1" role = "dialog" aria-labelledby = "device_modal" aria-hidden = "true">
+
+    <div class = "modal-dialog modal-lg">
+
+        <div  class = "modal-content">
+
+            <div id = "device_info_partial_modal_content" class = "modal-body">
+
+                {% if form is defined %}
+
+                {% include '/devices/_edit_device_form.html' %}
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class = "container" id = "body">
+
+    <!-- <h2 class = "mb-3">Modbus Tools</h2> -->
+
+    
+
+    <i data-fa-symbol = "sos-status-good" class = "fak fa-sos-status-good"></i>
+    <i data-fa-symbol = "sos-status-bad" class = "fak fa-sos-status-bad"></i>
+    <i data-fa-symbol = "sos-status-not-available" class = "fak fa-sos-status-not-available"></i>
+    <i data-fa-symbol = "sos-action-edit" class = "fak fa-sos-action-edit"></i>
+    <i data-fa-symbol = "sos-action-delete" class = "fak fa-sos-action-delete"></i>
+    <i data-fa-symbol = "sos-action-add" class = "fak fa-sos-action-add"></i>
+
+    <div class = "modal fade bd-example-modal-lg" id = "probe_item_settings_modal" tabindex = "-1" role = "dialog" aria-labelledby = "exampleModalLabel" style = "display: none;" aria-hidden = "true" function = '' register = ''>
+        
+        <div class = "modal-dialog modal-lg" role = "document">
+        
+            <div class = "modal-content">
+            
+                <div id = "probe_item_settings_modal_body" class = "modal-body">
+    
+                    <div class = "modal-header">
+                    
+                        <h5 class = "modal-title">Tag Mapping Configuration</h5>
+                    
+                    </div>
+                    
+                    <div class = "row">
+                    
+                        <div class = "quadrant col" style = "border-bottom: 1px solid #e9ecef; border-right: 1px solid #e9ecef;">
+                            
+                            <div class = "quadrantHeader">
+                    
+                                Tag Settings
+                    
+                            </div>
+                    
+                            <div class = "form-group">
+                    
+                                <label for = "tag_name">Tag Name</label>
+                                <input class = "form-control form-control-sm" id = "tag_name" name = "tag_name" type = "text" value = "">
+                                <div id = "tag_name_errors"></div>
+                    
+                            </div>
+                            
+                            <div class = "form-group">
+                    
+                                <label for = "measure">Mapped Measure</label>
+                                <select class = "form-control form-control-sm" id = "measure" name = "measure">
+                                    
+                                    <option value = "-">-</option>
+                                
+                                </select>
+                                <div id = "measure_errors"></div>
+                                
+                            </div>
+                    
+                            <div class = "form-group">
+                                
+                                <label for = "unit">Register Value Unit</label>
+                                <select class = "form-control form-control-sm" id = "unit" name = "unit">
+
+                                    <option value = "-">-</option>
+
+                                </select>
+                                <div id = "unit_errors"></div>
+                                
+                            </div>
+                    
+                            <div class = "form-check" id = "flipBoolDiv" style = "display: none;">
+                                
+                                <input class = "form-check-input" id = "flipBool" name = "flipBool" type = "checkbox">
+                                <label class = "form-check-label" for = "flipBool">Flip Boolean Value?</label>
+                                
+                            </div>
+                            
+                        </div>
+                    
+                        <div class = "quadrant col" style = "border-bottom: 1px solid #e9ecef;">
+                    
+                            <div class = "quadrantHeader">
+                    
+                                Register Information
+                    
+                            </div>
+                            
+                            <div class = "form-group">
+                    
+                                <label for = "function_code">Function/Register Type</label>
+                                <select class = "form-control form-control-sm" id = "function_code" name = "function_code" disabled>
+                                    
+                                    <option value = "read-coils">0x01 - read-coils</option>
+                                    <option value = "read-discrete-inputs">0x02 - read-discrete-inputs</option>
+                                    <option selected = "" value = "read-holding-registers">0x03 - read-holding-registers</option>
+                                    <option value = "read-input-registers">0x04 - read-input-registers</option>
+                                
+                                </select>
+                                <div id = "function_code_errors"></div>
+                    
+                            </div>
+                    
+                            <div class = "form-group">
+                    
+                                <label for = "register">Address</label>
+                                <input class = "form-control form-control-sm" id = "register" name = "register" type = "text" value = "2" disabled>
+                                <small class = "form-text text-muted">Address alias: <span id = "addressAlias">-</span></small>
+                                <div id = "register_errors"></div>
+                                
+                            </div>
+                    
+                            <div class = "form-group">
+                                
+                                <label for = "data_type">Data Type</label>
+                                <select class = "form-control form-control-sm" id = "data_type" name = "data_type">
+                                    
+                                    <option value = "int16">int16</option>
+                                    <option value = "uint16">uint16</option>
+                                    <option selected = "" value = "int32">int32</option>
+                                    <option value = "uint32">uint32</option>
+                                    <option value = "float32">float32</option>
+                                    <option value = "bool">bool</option>
+
+                                </select>
+                                <div id = "data_type_errors"></div>
+                                
+                            </div>
+                            
+                        </div>
+                    
+                    </div>
+                    
+                    
+                    <div class = "row" id = "lowerHalf" style = "display: flex;">
+                    
+                        <div class = "quadrant col" style = "border-right: 1px solid #e9ecef;">
+                    
+                            <div class = "quadrantHeader">
+                    
+                                Data Scaling
+                    
+                            </div>
+                        
+                            <div class = "form-group">
+                    
+                                <label for = "scale_mode">Scaling Type</label>
+                                <select class = "form-control form-control-sm" id = "scale_mode" name = "scale_mode"><option value = "slope_intercept" selected>Slope Intercept</option><option value = "point_slope">Point Slope</option></select>
+                                <div id = "scale_mode_errors"></div>
+                    
+                            </div>
+                    
+                            <div id = "mb_tag_scaling_slope_intercept" style = "display: none;">
+                        
+                                <div class = "form-group">
+                        
+                                    <label for = "slope">Slope</label>
+                                    <input class = "form-control form-control-sm" id = "slope" name = "slope" type = "number" value = "1.0">
+                                    <div style = "display: none;"><span id = "zeroSlopeWarning" style = "color: var(--warning)">Warning: A slope of zero will set every value to zero</span></div>
+                                    <div id = "slope_errors"></div>
+                        
+                                </div>
+                                
+                                <div class = "form-group">
+                        
+                                    <label for = "offset">Offset</label>
+                                    <input class = "form-control form-control-sm" id = "offset" name = "offset" type = "number" value = "0.0">
+                                    <div id = "offset_errors"></div>
+                                    
+                                </div>
+                                
+                            </div>  
+                        
+                            <div id = "mb_tag_scaling_point_slope">
+                                
+                                <div class = "form-group">
+                        
+                                    <label class = "minVal" for = "value_min">Input Value Min</label>
+                                    <input class = "form-control form-control-sm" id = "value_min" name = "value_min" type = "number" value = "0.0">
+                                    <span class = "minMaxWarnRawPoint" style = "color: var(--danger); display: none;">Minimum Value must be less than Maximum Value</span>
+                                    <div id = "value_min_errors"></div>
+                        
+                                </div>
+                    
+                                <div class = "form-group">
+                                    
+                                    <label class = "minVal" for = "target_min">Scaled Value Min</label>
+                                    <input class = "form-control form-control-sm" id = "target_min" name = "target_min" type = "number" value = "0.0">
+                                    <span class = "minMaxWarnTargetPoint" style = "color: var(--danger); display: none;">Minimum Value must be less than Maximum Value</span>
+                                    <div id = "target_min_errors"></div>
+                                    
+                                </div>
+                                
+                                <div class = "form-group">
+                        
+                                    <label class = "maxVal" for = "value_max">Input Value Max</label>
+                                    <input class = "form-control form-control-sm" id = "value_max" name = "value_max" type = "number" value = "0.0">
+                                    <span class = "minMaxWarnRawPoint" style = "color: var(--danger); display: none;">Minimum Value must be less than Maximum Value</span>
+                                    <div id = "value_max_errors"></div>
+                                    
+                                </div>
+                                
+                                <div class = "form-group">
+                                    
+                                    <label class = "maxVal" for = "target_max">Scaled Value Max</label>
+                                    <input class = "form-control form-control-sm" id = "target_max" name = "target_max" type = "number" value = "0.0">
+                                    <span class = "minMaxWarnTargetPoint" style = "color: var(--danger); display: none;">Minimum Value must be less than Maximum Value</span>
+                                    <div id = "target_max_errors"></div>
+                                    
+                                </div>
+                                
+                            </div> 
+                            
+                            <div class = "form-group">
+                    
+                                <label for = "accepted_min">Min Value Accepted</label>
+                                <input class = "form-control form-control-sm" id = "accepted_min" name = "accepted_min" placeholder = "No Minimum" type = "number" value = "">
+                                <span class = "minMaxWarnInt" style = "color: var(--danger); display: none;">Minimum Value must be less than Maximum Value</span>
+                                <div id = "accepted_min_errors"></div>
+                    
+                            </div>
+                            
+                            <div class = "form-group">
+                    
+                                <label for = "accepted_max">Max Value Accepted</label>
+                                <input class = "form-control form-control-sm" id = "accepted_max" name = "accepted_max" placeholder = "No Maximum" type = "number" value = "">
+                                <span class = "minMaxWarnInt" style = "color: var(--danger); display: none;">Minimum Value must be less than Maximum Value</span>
+                                <div id = "accepted_max_errors"></div>
+                                
+                            </div>
+                    
+                        </div>
+                    
+                        <div class = "quadrant col">
+                    
+                            <div class = "quadrantHeader">
+                    
+                                Scaling Graph
+                    
+                            </div>
+                    
+                            <figure class = "highcharts-figure">
+                    
+                                <div class = "chart" id = "functionApplied" style = "max-width: 100%; overflow: hidden;" data-highcharts-chart = "0" aria-hidden = "false" role = "region" aria-label = "Chart. Highcharts interactive chart."><div id = "highcharts-screen-reader-region-before-0" aria-hidden = "false" style = "position: relative;"><div aria-hidden = "false" style = "position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; clip: rect(1px, 1px, 1px, 1px); margin-top: -3px; opacity: 0.01;"><p>Chart</p><div>Combination chart with 4 data series.</div><div><button id = "hc-linkto-highcharts-data-table-0" tabindex = "-1" aria-expanded = "false">View as data table, Chart</button></div><div>The chart has 1 X axis displaying Input Value. Data ranges from -2 to 12.</div><div>The chart has 1 Y axis displaying Scaled Value. Data ranges from -2 to 12.</div></div></div><div aria-hidden = "false" class = "highcharts-announcer-container" style = "position: relative;"><div aria-hidden = "false" aria-live = "polite" style = "position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; clip: rect(1px, 1px, 1px, 1px); margin-top: -3px; opacity: 0.01;"></div><div aria-hidden = "false" aria-live = "assertive" style = "position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; clip: rect(1px, 1px, 1px, 1px); margin-top: -3px; opacity: 0.01;"></div><div aria-hidden = "false" aria-live = "polite" style = "position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; clip: rect(1px, 1px, 1px, 1px); margin-top: -3px; opacity: 0.01;"></div></div><div id = "highcharts-9p63itf-0" dir = "ltr" class = "highcharts-container " style = "position: relative; overflow: hidden; width: 357px; height: 400px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); user-select: none; touch-action: manipulation; outline: none;" aria-hidden = "false" tabindex = "0"><div aria-hidden = "false" class = "highcharts-a11y-proxy-container-before" style = "top: 0px; left: 0px; white-space: nowrap; position: absolute;"></div><svg version = "1.1" class = "highcharts-root" style = "font-family:&quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Arial, Helvetica, sans-serif;font-size:12px;" xmlns = "http://www.w3.org/2000/svg" width = "357" height = "400" viewBox = "0 0 357 400" aria-hidden = "false" aria-label = "Interactive chart"><desc aria-hidden = "true">Created with Highcharts 9.3.1</desc><defs aria-hidden = "true"><clipPath id = "highcharts-9p63itf-1-"><rect x = "0" y = "0" width = "283" height = "334" fill = "none"></rect></clipPath><clipPath id = "highcharts-9p63itf-4-"><rect x = "0" y = "0" width = "283" height = "334" fill = "none"></rect></clipPath></defs><rect fill = "#ffffff" class = "highcharts-background" x = "0" y = "0" width = "357" height = "400" rx = "0" ry = "0" aria-hidden = "true"></rect><rect fill = "none" class = "highcharts-plot-background" x = "64" y = "10" width = "283" height = "334" aria-hidden = "true"></rect><g class = "highcharts-pane-group" data-z-index = "0" aria-hidden = "true"></g><g class = "highcharts-plot-lines-0" data-z-index = "0" aria-hidden = "true"><path fill = "none" class = "highcharts-plot-line " stroke = "#000000" stroke-width = "2" d = "M 106 10 L 106 344"></path></g><g class = "highcharts-plot-lines-0" data-z-index = "0" aria-hidden = "true"><path fill = "none" class = "highcharts-plot-line " stroke = "#000000" stroke-width = "2" d = "M 64 270 L 347 270"></path></g><g class = "highcharts-grid highcharts-xaxis-grid" data-z-index = "1" aria-hidden = "true"><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 105.5 10 L 105.5 344" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 304.5 10 L 304.5 344" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 205.5 10 L 205.5 344" opacity = "1"></path></g><g class = "highcharts-grid highcharts-yaxis-grid" data-z-index = "1" aria-hidden = "true"><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 270.5 L 347 270.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 84.5 L 347 84.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 344.5 L 347 344.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 307.5 L 347 307.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 233.5 L 347 233.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 196.5 L 347 196.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 158.5 L 347 158.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 121.5 L 347 121.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 47.5 L 347 47.5" opacity = "1"></path><path fill = "none" stroke = "#e6e6e6" stroke-width = "1" stroke-dasharray = "none" data-z-index = "1" class = "highcharts-grid-line" d = "M 64 9.5 L 347 9.5" opacity = "1"></path></g><rect fill = "none" class = "highcharts-plot-border" data-z-index = "1" x = "64" y = "10" width = "283" height = "334" aria-hidden = "true"></rect><g class = "highcharts-plot-lines-1" data-z-index = "1" aria-hidden = "true"><path fill = "none" class = "highcharts-plot-line minLine" stroke = "#999999" stroke-width = "2" stroke-dasharray = "8,6" d = "M 206 10 L 206 344"></path><path fill = "none" class = "highcharts-plot-line maxLine" stroke = "#999999" stroke-width = "2" stroke-dasharray = "8,6" d = "M 305 10 L 305 344"></path></g><g class = "highcharts-plot-lines-1" data-z-index = "1" aria-hidden = "true"><path fill = "none" class = "highcharts-plot-line minLine" stroke = "#999999" stroke-width = "2" stroke-dasharray = "8,6" d = "M 64 177 L 347 177"></path><path fill = "none" class = "highcharts-plot-line maxLine" stroke = "#999999" stroke-width = "2" stroke-dasharray = "8,6" d = "M 64 84 L 347 84"></path><path fill = "none" class = "highcharts-plot-line " stroke = "black" stroke-width = "1" stroke-dasharray = "4,3" d = "M 64 47.5 L 347 47.5"></path><path fill = "none" class = "highcharts-plot-line " stroke = "black" stroke-width = "1" stroke-dasharray = "4,3" d = "M 64 307.5 L 347 307.5"></path></g><g class = "highcharts-axis highcharts-xaxis" data-z-index = "2" aria-hidden = "true"><path fill = "none" class = "highcharts-tick" stroke = "#ccd6eb" stroke-width = "1" d = "M 105.5 344 L 105.5 354" opacity = "1"></path><path fill = "none" class = "highcharts-tick" stroke = "#ccd6eb" stroke-width = "1" d = "M 304.5 344 L 304.5 354" opacity = "1"></path><path fill = "none" class = "highcharts-tick" stroke = "#ccd6eb" stroke-width = "1" d = "M 205.5 344 L 205.5 354" opacity = "1"></path><text x = "205.5" data-z-index = "7" text-anchor = "middle" transform = "translate(0,0)" class = "highcharts-axis-title" style = "color:#666666;fill:#666666;" y = "382">Input Value</text><path fill = "none" class = "highcharts-axis-line" stroke = "#ccd6eb" stroke-width = "1" data-z-index = "7" d = "M 64 344.5 L 347 344.5"></path></g><g class = "highcharts-axis highcharts-yaxis" data-z-index = "2" aria-hidden = "true"><text x = "25.078125" data-z-index = "7" text-anchor = "middle" transform = "translate(0,0) rotate(270 25.078125 177)" class = "highcharts-axis-title" style = "color:#666666;fill:#666666;" y = "177">Scaled Value</text><path fill = "none" class = "highcharts-axis-line" data-z-index = "7" d = "M 64 10 L 64 344"></path></g><g class = "highcharts-series-group" data-z-index = "3" aria-hidden = "false"><g class = "highcharts-series highcharts-series-0 highcharts-line-series highcharts-color-0" data-z-index = "0.1" opacity = "1" transform = "translate(64,10) scale(1 1)" clip-path = "url(#highcharts-9p63itf-4-)" aria-hidden = "true"><path fill = "none" d = "M 2.7745098039216 296.8888888888889 L 280.22549019608 37.111111111111086" class = "highcharts-graph" data-z-index = "1" stroke = "#7cb5ec" stroke-width = "1" stroke-linejoin = "round" stroke-linecap = "round"></path></g><g class = "highcharts-markers highcharts-series-0 highcharts-line-series highcharts-color-0" data-z-index = "0.1" opacity = "1" transform = "translate(64,10) scale(1 1)" clip-path = "none" aria-hidden = "false" role = "region" tabindex = "-1" aria-label = "Series 1, series 1 of 4. Line with 2 data points." style = "outline: none;"><path fill = "#7cb5ec" d = "M 2.0000000000000004 300.8888888888889 A 4 4 0 1 1 2.003999999333336 300.8888868888891 Z" opacity = "0" class = "highcharts-point highcharts-negative highcharts-color-0" tabindex = "-1" role = "img" aria-label = "x, -2, -2. Series 1." style = "outline: none;"></path><path fill = "#7cb5ec" d = "M 280 41.111111111111086 A 4 4 0 1 1 280.00399999933336 41.111109111111254 Z" opacity = "0" class = "highcharts-point highcharts-color-0" tabindex = "-1" role = "img" aria-label = "x, 12, 12. Series 1." style = "outline: none;"></path></g><g class = "highcharts-series highcharts-series-1 highcharts-scatter-series" data-z-index = "0.1" opacity = "1" transform = "translate(64,10) scale(1 1)" clip-path = "url(#highcharts-9p63itf-4-)" aria-hidden = "false" role = "region" tabindex = "-1" aria-label = "Series 2, series 2 of 4, scatter plot with 0 points." style = "outline: none;"></g><g class = "highcharts-markers highcharts-series-1 highcharts-scatter-series" data-z-index = "0.1" opacity = "1" transform = "translate(64,10) scale(1 1)" clip-path = "none" aria-hidden = "false" role = "region" tabindex = "-1" aria-label = "Series 2, series 2 of 4, scatter plot with 2 points." style = "outline: none;"><path fill = "var(--danger)" d = "M 280 41.111111111111086 A 4 4 0 1 1 280.00399999933336 41.111109111111254 Z" opacity = "1" class = "highcharts-point" tabindex = "-1" role = "img" aria-label = "x, 12, 12. Series 2." style = "outline: none;"></path><path fill = "var(--danger)" d = "M 2.0000000000000004 300.8888888888889 A 4 4 0 1 1 2.003999999333336 300.8888868888891 Z" opacity = "1" class = "highcharts-point highcharts-negative" tabindex = "-1" role = "img" aria-label = "x, -2, -2. Series 2." style = "outline: none;"></path></g><g class = "highcharts-series highcharts-series-2 highcharts-scatter-series" data-z-index = "0.1" opacity = "1" transform = "translate(64,10) scale(1 1)" clip-path = "url(#highcharts-9p63itf-4-)" aria-hidden = "false" role = "region" tabindex = "-1" aria-label = "Series 3, series 3 of 4, scatter plot with 0 points." style = "outline: none;"></g><g class = "highcharts-markers highcharts-series-2 highcharts-scatter-series" data-z-index = "0.1" opacity = "1" transform = "translate(64,10) scale(1 1)" clip-path = "none" aria-hidden = "false" role = "region" tabindex = "-1" aria-label = "Series 3, series 3 of 4, scatter plot with 2 points." style = "outline: none;"></g><g class = "highcharts-series highcharts-series-3 highcharts-scatter-series highcharts-color-1" data-z-index = "0.1" opacity = "1" transform = "translate(64,10) scale(1 1)" clip-path = "url(#highcharts-9p63itf-4-)" aria-hidden = "true"></g><g class = "highcharts-markers highcharts-series-3 highcharts-scatter-series highcharts-color-1" data-z-index = "0.1" opacity = "1" transform = "translate(64,10) scale(1 1)" clip-path = "none" aria-hidden = "false" role = "region" tabindex = "-1" aria-label = "Series 4, series 4 of 4, scatter plot with 2 points." style = "outline: none;"><path fill = "#434348" d = "M 141 163 L 145 167 L 141 171 L 137 167 Z" opacity = "0" class = "highcharts-point highcharts-color-1" tabindex = "-1" role = "img" aria-label = "x, 5, 5. Series 4." style = "outline: none;"></path><path fill = "#434348" d = "M 240 70.22222222222217 L 244 74.22222222222217 L 240 78.22222222222217 L 236 74.22222222222217 Z" opacity = "0" class = "highcharts-point highcharts-color-1" tabindex = "-1" role = "img" aria-label = "x, 10, 10. Series 4." style = "outline: none;"></path></g></g><text x = "179" text-anchor = "middle" class = "highcharts-title" data-z-index = "4" style = "color:#333333;font-size:18px;fill:#333333;" y = "24" aria-hidden = "true"></text><text x = "179" text-anchor = "middle" class = "highcharts-subtitle" data-z-index = "4" style = "color:#666666;fill:#666666;" y = "24" aria-hidden = "true"></text><text x = "10" text-anchor = "start" class = "highcharts-caption" data-z-index = "4" style = "color:#666666;fill:#666666;" y = "397" aria-hidden = "true"></text><g class = "highcharts-axis-labels highcharts-xaxis-labels" data-z-index = "7" aria-hidden = "true"><text x = "106.41036414566" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "middle" transform = "translate(0,0)" y = "363" opacity = "1">0</text><text x = "304.58963585434" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "middle" transform = "translate(0,0)" y = "363" opacity = "1">10</text><text x = "205.5" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "middle" transform = "translate(0,0)" y = "363" opacity = "1">5</text></g><g class = "highcharts-axis-labels highcharts-yaxis-labels" data-z-index = "7" aria-hidden = "true"><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "274" opacity = "1">0</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "89" opacity = "1">10</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "349" opacity = "1">-4</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "311" opacity = "1">-2</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "237" opacity = "1">2</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "200" opacity = "1">4</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "163" opacity = "1">6</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "126" opacity = "1">8</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "52" opacity = "1">12</text><text x = "49" style = "color:#666666;cursor:default;font-size:11px;fill:#666666;" text-anchor = "end" transform = "translate(0,0)" y = "15" opacity = "1">14</text></g></svg><div aria-hidden = "false" class = "highcharts-a11y-proxy-container-after" style = "top: 0px; left: 0px; white-space: nowrap; position: absolute;"><div class = "highcharts-a11y-proxy-group highcharts-a11y-proxy-group-zoom"></div><div class = "highcharts-a11y-proxy-group highcharts-a11y-proxy-group-chartMenu"></div></div></div><div id = "highcharts-screen-reader-region-after-0" aria-hidden = "false" style = "position: relative;"><div aria-hidden = "false" style = "position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; clip: rect(1px, 1px, 1px, 1px); margin-top: -3px; opacity: 0.01;"><div id = "highcharts-end-of-chart-marker-0" class = "highcharts-exit-anchor" tabindex = "0" aria-hidden = "false">End of interactive chart.</div></div></div></div>
+                    
+                            </figure>
+                    
+                            <div class = "form-group" id = "extrema_exceeded_group" style = "display: block;">
+                    
+                                <label for = "extreme_exceeded">When Limits are Exceeded:</label>
+                                <select class = "form-control form-control-sm" id = "extreme_exceeded" name = "extreme_exceeded">
+                                    
+                                    <option selected = "" value = "to_null">Set value to null</option>
+                                    <option value = "to_zero">Set value to 0</option>
+                                    <option value = "to_one">Set value to 1</option>
+                                    <option value = "to_extreme">Set value to the clos</option>
+                                    <option value = "to_extreme_opposite">Set value to the farthest limit</option>
+                                
+                                </select>
+                                <div id = "extrema_exceeded_errors"></div>
+                    
+                            </div>
+                    
+                        </div>
+                        
+                    </div>
+                    
+                    <div class = "modal-footer">
+                    
+                        <input class = "btn btn-success btn-outline-success btn-sm" id = "saveSettings" type = "button" value = "Save Settings">
+                    
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% if True %}
+
+    <div class = "modal fade bd-example-modal-lg" id = "start_tag_map_modal" tabindex = "-1" role = "dialog" aria-labelledby = "exampleModalLabel" style = "display: none;" aria-hidden = "true" function = '' register = ''>
+        
+        <div class = "modal-dialog modal-lg" role = "document">
+        
+            <div class = "modal-content">
+            
+                <div id = "start_tag_map_modal_body" class = "modal-body">
+    
+                    <div class = "modal-header">
+
+                        Tag Map Information
+
+                    </div>
+
+                    <br>
+
+                    <div class = "col">
+                    
+                        <div class = "row">
+
+                            <label for = "ethernetProbeTagMapNameModal">Tag Map Name</label>
+                            <input id = "ethernetProbeTagMapNameModal" class = "form-control">
+                            <div id = "ethernetProbeTagMapNameModal_errors" style = "display: none;"><span style = "color: var(--danger)">Name cannot be empty</span></div>
+                        
+                        </div>
+
+                        <br>
+
+                        <div class = "row">
+
+                            <label for = "ethernetProbeDeviceTypeModal">Device Type</label>
+                            <select id = "ethernetProbeDeviceTypeModal" class = "form-control">
+
+                                {% for deviceType, _ in assets|dictsort %}
+
+                                <option value = "{{deviceType}}">{{deviceType}}</option>
+
+                                {% endfor %}
+
+                            </select>  
+
+                        </div>
+
+                    </div>
+
+                    <br>
+                    
+                    <div class = "modal-footer">
+                    
+                        <button class = "btn btn-success btn-outline-success btn-sm" id = "startTagMapBase" type = "button">Start Tag Map</button>
+                    
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    <div class = "card shadow-sm" style = "width: 0.8 vw">
+
+        <div class = "card-header d-flex justify-content-between">
+
+            <div class = "d-flex align-items-center">
+
+                <!-- <div style = "padding-right: 5px;">Select Your Network Interface</div> -->
+                <h6 style="font-weight: 600;">Discover & Scan Network Connected MODBUS TCP/IP Devices</h6>
+              
+
+                <div style = "padding-right: 5px;display:none;">Connection:</div>
+            
+                <select id = "wireTapType"style="display:none;">
+
+                    <option value = "ethernet" selected = "">Ethernet</option>
+                    <option value = "serial">Serial - WireTap</option>
+
+                </select>
+
+            </div>
+
+          
+
+            <div style = "display: flex; float: right;">
+
+                <div id = "serialOptions" style = "display: none;">
+
+                    <button type = "button" class = "selectedOption" style = "border-top-right-radius: 0; border-bottom-right-radius: 0;" id = "serialRegistersButton">Registers</button>
+                    <button type = "button" class = "option" style = "border-top-left-radius: 0; border-bottom-left-radius: 0;" id = "serialStreamButton">Serial Stream</button>
+
+                </div>
+
+                <div id = "ethernetOptions" style = "display: flex">
+
+                    <!-- <button type = "button" class = "selectedOption" style = "border-top-right-radius: 0; border-bottom-right-radius: 0;" id = "ethernetSearchButton" value = "start">Search</button>
+                    <button type = "button" class = "option" style = "border-top-left-radius: 0; border-bottom-left-radius: 0;" id = "ethernetProbeButton">Probe</button> -->
+
+                 
+
+                </div>
+
+            </div>
+
+            
+
+        </div>
+
+        <div class = "card-header" >
+            <div style = "padding-right: 5px;padding-bottom: 10px;">Select Your Network Interface</div>
+            <select id = "sel_interfaces" aria-placeholder="Make selection">
+                <option value = "ethernet" >en0 - IP: 192.168.80.170, Mask: 255.255.255.0</option>
+                <option value = "serial">en1 - IP: 192.168.80.23, Mask: 255.255.255.0</option>
+    
+            </select>
+
+            
+            <button style="float: right;border-color:var(--primary);color:var(--primary);" type="button" class="btn btn-success btn-outline-success" id="config_interface"  >Configure Interface</button>
+
+            <div class="row" style="padding-top: 20px;">
+                <div class="col" style="padding-left:0">Packets Sent:0</div>
+                <div class="col" style="padding-left:0">Packets Received:0</div>
+                <div class="col" style="padding-left:0">Packets Dropped:0</div>
+                <div class="col" style="padding-right:0px">
+                    
+                </div>
+
+            </div>
+            <button style="float: right;border-color:var(--primary);color:var(--primary);" type="button" class="btn btn-success btn-outline-success" id="reset_cnts"  >Reset Counters</button>
+        </div>
+
+       
+
+        <div class = "card-body">
+
+            {% if saved is defined %}
+
+                {% if saved == False %}
+
+                    <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "modelError">
+
+                        An Error Occured with Saving Device
+
+                        <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                            
+                            <span aria-hidden = "true">&times;</span>
+                        
+                        </button>
+
+                    </div>
+
+                {% else %}
+
+                    <div class = "alert alert-success alert-dismissible fade show" role = "alert" id = "modelError">
+
+                        Saved Device Successfully
+
+                        <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                            
+                            <span aria-hidden = "true">&times;</span>
+                        
+                        </button>
+
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "idsError" style = "display: none;">
+
+                The following IP Addresses are not valid: <span id = "idsErrorList"></span>
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "searchPortError" style = "display: none;">
+
+                The port provided is not valid
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "addrProbeError" style = "display: none;">
+
+                The IP Address provided is not valid
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "portProbeError" style = "display: none;">
+
+                The port provided is not valid
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "deviceProbeError" style = "display: none;">
+
+                The device id provided is not valid
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "functionProbeError" style = "display: none;">
+
+                The function provided is not valid
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "registerProbeError" style = "display: none;">
+
+                The registers provided are not valid
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "tagNameRequired" style = "display: none;">
+
+                The tag map must have a name
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "uniqueTagName" style = "display: none;">
+
+                The tag map must have a unique name
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "bWOrderIssue" style = "display: none;">
+
+                The given byte word order was unable to be deciphered
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-danger alert-dismissible fade show" role = "alert" id = "tagMapEmpty" style = "display: none;">
+
+                Tag map must have at least one entry
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div class = "alert alert-success alert-dismissible fade show" role = "alert" id = "successfulSaveTagMap" style = "display: none;">
+
+                The tag map was saved successfully
+
+                <button type = "button" class = "close" data-dismiss = "alert" aria-label = "Close">
+                    
+                    <span aria-hidden = "true">&times;</span>
+                
+                </button>
+
+            </div>
+
+            <div id = "upperMenu">
+
+                <div id = "serialRegistersUpperMenu" style = "display: none;">
+
+                    <div id = "serialRegistersUpperMenuDataFound" {% if not(dataFound) %}style = "display: none;"{% endif %}>
+
+                        <div class = "row">
+
+                            <div class = "col">
+
+                                <label for = "devID">Detected Device ID</label><br>
+
+                                <select class = "custom-select" id = "devID">
+
+                                    <option value = "None">Choose...</option>
+
+                                    {% for device in devices %}
+
+                                    <option value = "{{device[0]}}">{{device[3]}}</option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                            <div class = "col">
+
+                                <label for = "devType">Device Type</label><br>
+
+                                <select class = "custom-select" id = "devType">
+
+                                    <option value = "None">Choose...</option>
+
+                                </select>
+
+                            </div>
+
+                            <div class = "col">
+
+                                <label for = "devTemp">Device Template</label><br>
+
+                                <select class = "custom-select" id = "devTemp">
+
+                                    <option value = "None">Choose...</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div id = "serialRegistersUpperMenuDataNotFound" {% if dataFound %}style = "display: none;"{% endif %}>
+
+                        <div style = "display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; flex-direction: column;">
+
+                            <h1>Data Could Not Be Found</h1>
+                            <p>Please check your device's serial connection</p>
+                            <p><i>Pro Tip 1:</i> Check the Serial Stream Tab to ensure data is being recieved and processed</p>
+                            <p><i>Pro Tip 2:</i> Verify the current MODBUS master is actively polling</p>
+                            <p><i>Pro Tip 3:</i> See if swaping the TX and RX wires solves this issue</p>
+                            <p><i>Pro Tip 4:</i> Verify that the modbus_rtu_wiretap process is running</p>
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div id = "serialStreamUpperMenu" style = "display: none;">
+
+                    <div class = "row" style = "margin: auto 0; display: flex; justify-content: space-between;">
+
+                        <div style = "display: flex;">Time Since Last Data Update: <div class = "timerDisplay" style = "padding-right: 5px; padding-left: 5px;">-</div> seconds</div>
+
+                        <button type = "button" id = "startSerialStreamRead" class = "btn btn-sm btn-success btn-outline-success" style = "float: right;" value = "start">Start</button>
+
+                    </div>
+
+                </div>
+
+                <div id = "ethernetSearchUpperMenu" style = "display: block;">
+
+                    <div class = "row">
+
+                        <div class = "col-5">
+    
+                            <label for = "ethernetSearchIP">IP Address Range to Search</label><br>
+                            <input type = "text" id = "ethernetSearchIP" style = "width:100%"><br>
+                            <div style = "font-size: 12px; color: #495057;">IIP address ranges are expressed as IP address, hyphen, last octet in range.</div>
+
+                        </div>
+
+                        <div class = "col-2">
+
+                            <label for = "ethernetSearchPort">Test for Port</label><br>
+                            <input type = "number" id = "ethernetSearchPort" value = "502" min = "0" max = "65536" style = "width: 100%">
+
+                        </div>
+
+                        <div class = "col-3" style="padding-top: 32px;">
+
+                            <!-- <label for = "ethernetSearchPort">Port</label><br> -->
+                            <!-- <input type = "number" id = "ethernetSearchPort" value = "502" min = "0" max = "65536" style = "width: 100%"> -->
+
+                            <input type="checkbox"  class="toggle-switch oval-track process-checkbox" id="hide_ports" checked></input><span style="font-size:medium;padding-left: 3px;vertical-align: super;">Hide Failed Hosts</span>
+
+                        </div>
+
+                        <div class = "col-2">
+
+                            <button type = "button" class = "btn btn-success btn-outline-success" id = "ethernetSearchToggle" style = "width: 100%; margin-top: 20%; line-height: 1.5;color: var(--primary);border-color: var(--primary);" value = "start">Scan for Devices</button>
+                            
+
+                        </div>
+    
+                    </div>
+
+                </div>
+
+                <div id = "ethernetSearchBody"  style="padding-top: 20px;">
+
+                    <div class = "row">
+
+                        <table class = "table table-sm table-striped" id = "ethernetSearchTable"  style = "font-size: 12px;">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Device IP Address </th>
+                                    <th>Device Responded to PING</th>
+                                    <th>Device Port 502 is Open</th>
+                                    <th>MODBUS Registers</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <div id = "ethernetProbeUpperMenu" style = "display: none;">
+
+                    <div class = "row">
+
+                        <div class = "col">
+                
+                            <label for = "ethernetProbeIP">IP Address</label>
+                            <input type = "text" id = "ethernetProbeIP" style = "width: 100%">
+                            
+                        </div>
+
+                        <div class = "col">
+                
+                            <label for = "ethernetProbePort">Port</label>
+                            <input type = "number" id = "ethernetProbePort" style = "width: 100%" value = "502" min = "1" max = "65535">
+                
+                        </div>
+
+                        <div class = "col">
+                
+                            <label for = "ethernetProbeDevice">Device ID</label>
+                            <input type = "number" id = "ethernetProbeDevice" style = "width: 100%" value = "1" min = "1" max = "255">
+                
+                        </div>
+
+                        <div class = "col">
+                
+                            <label for = "ethernetProbeReadType">Function Call</label>
+                            <select id = "ethernetProbeReadType" class = "custom-select" style = "width: 100%">
+                
+                                <option value = "1">0x01 - Read Coils</option>
+                                <option value = "2">0x02 - Read Discrete Inputs</option>
+                                <option value = "3" selected>0x03 - Read Holding Registers</option>
+                                <option value = "4">0x04 - Read Input Registers</option>
+                
+                            </select>
+                
+                        </div>
+
+                        <div class = "col">
+                
+                            <label for = "ethernetProbeRegisters">Registers</label>
+                            <input type = "text" id = "ethernetProbeRegisters" style = "width: 100%">
+                            <div style = "font-size: 12px; color: #495057;">Ex: 1, 5-7, 9</div>
+                
+                        </div>
+
+                        <div class = "col d-flex align-items-start">
+                
+                            <button class = "btn btn-success btn-outline-success" style = "width: 100%; margin-top: 20%; line-height: 1.5;" id = "ethernetProbeToggle" value = "start">Probe</button>
+                
+                        </div>
+                        
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id = "lowerMenu">
+
+                <br id = "beforeSpacer">
+
+                <div id = "serialRegistersLowerMenu" style = "display: none;">
+
+                    <div class = "row" style = "margin: auto 0; display: flex; justify-content: space-between;">
+
+                        <div style = "display: none;" id = "serialCounterLabel">Time Since Last Data Update: <div class = "timerDisplay" style = "padding-right: 5px; padding-left: 5px;">-</div> seconds</div>
+
+                        {% if True %}
+
+                        <div id = "add_btn" style = "display: flex; float: right;">
+
+                            <button type = "button" class = "btn btn-sm btn-success mypv_create_btn_text" id='add_device_button' style = "display: none;">Create Device</button>
+
+                        </div>
+
+                        {% endif %}
+
+                        <button type = "button" id = "startSerialStreamRead" class = "btn btn-sm btn-success btn-outline-success" style = "display: none; float: right;" value = "start">Start</button>
+
+                    </div>
+
+                </div>
+
+                <div id = "ethernetSearchStatus" style = "display: none;">
+                
+                    <div id = "ethernetSearchStatusDisplay" style = "width: 100%"></div>
+
+                    <br>
+
+                </div>
+
+                <div id = "ethernetProbeStatus" style = "display: none;">
+                
+                    <div class = "progress" style = "width: 100%; background: var(--bs-gray)">
+
+                        <div id = "probeStatusProgress" class = "progress-bar progress-bar-striped progress-bar-animated" role = "progressbar" aria-valuemin = "0" aria-valuemax = "100" style = "width: 0%">Started</div>
+                    
+                    </div>
+
+                </div>
+
+                <div id = "ethernetBreak" style = "display: none">
+
+                    <br>
+
+                </div>
+
+                <div id = "ethernetSearchTableToggle" style = "display: none; justify-content: end;">
+
+                    <button type = "button" class = "btn btn-success btn-outline-success" id = "ethernetSearchTableToggleBtn">Show Full Results</button>
+
+                </div>
+
+                <div id = "ethernetProbeOptions" style = "display: none;" class = "row">
+
+                    <div class = "col">
+
+                        <label for = "ethernetProbeByteWordOrder">Byte Word Order</label>
+                        <select id = "ethernetProbeByteWordOrder" class = "form-control">
+                            
+                            <option value = 'BB'>Big Byte Big Word</option>
+                            <option value = 'BL'>Big Byte Little Word</option>
+                            <option value = 'LB'>Little Byte Big Word</option>
+                            <option value = 'LL'>Little Byte Little Word</option>
+                        
+                        </select>
+
+                    </div>
+
+                    <div class = "col">
+
+                        {% if True %}
+
+                        <div id = "ethernetProbeTagMapNameDiv" style = "display: none;">
+
+                            <label for = "ethernetProbeTagMapName">Tag Map Name</label>
+                            <input id = "ethernetProbeTagMapName" class = "form-control">
+                            <div id = "ethernetProbeTagMapName_errors" style = "display: none;"><span style = "color: var(--danger)">Name cannot be empty</span></div>
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class = "col">
+
+                        {% if True %}
+
+                        <div id = "ethernetProbeDeviceTypeDiv" style = "display: none;">
+
+                            <label for = "ethernetProbeDeviceType">Device Type</label>
+                            <select id = "ethernetProbeDeviceType" class = "form-control">
+
+                                {% for deviceType, _ in assets|dictsort %}
+
+                                <option value = "{{deviceType}}">{{deviceType}}</option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class = "col d-flex align-items-end">
+
+                        {% if True %}
+
+                        <button class = "btn btn-success btn-outline-success" style = "line-height: 1.5; width: 100%" id = "startMapCreationButton">Start Tag Map</button>
+                        <button class = "btn btn-success btn-outline-success" style = "line-height: 1.5; width: 100%; display: none;" id = "tagMapSaveButton">Save Tag Map</button>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <br id = "afterSpacer" style = "display: block;">
+
+            </div>
+
+            <div id = "resultBody">
+
+                <div id = "serialRegistersBody" style = "display: none;">
+
+                    {% if dataFound %}
+
+                    <div class = "row" id = "data_table">
+
+                        <table class = "table table-sm table-striped" id = "preview_table" style = "font-size: 12px;">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+
+                                        Function
+
+                                    </th>
+
+                                    <th>
+
+                                        Register
+
+                                    </th>
+
+                                    <th>
+
+                                        Hex
+
+                                    </th>
+
+                                    <th>
+
+                                        int 16
+
+                                    </th>
+
+                                    <th>
+
+                                        uint 16
+
+                                    </th>
+
+                                    <th>
+
+                                        int 32
+
+                                    </th>
+
+                                    <th>
+
+                                        uint 32
+
+                                    </th>
+
+                                    <th>
+
+                                        float 32
+
+                                    </th>
+
+                                    <th>
+
+                                        Device Mapping Preview
+
+                                    </th>
+
+                                    <th>
+
+                                        Measure Name
+
+                                    </th>
+
+                                    <th>
+
+                                        Data Timestamp
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id = "dataTableBody">
+
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div id = "serialStreamBody" style = "display: none;">
+
+                    {% if ports[0] == "No Ports Found" %}
+
+                    <div style = "display: flex; height: 100%; width: 100%; align-items: center; justify-content: center;">
+
+                        <h1>Wiretapping is not setup on any ports</h1>
+                        <p>Please add ports to the background.json file under "modbus_rtu_wiretap" under "parameters" under "portRecieve"</p>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class = "row">
+
+                        {% for port in ports %}
+
+                        <div class = "col">
+
+                            <div class = "card-header">
+
+                                Port: {{port}}
+
+                            </div>
+
+                            <div class = "card-body">
+
+                                <pre id = "{{port}}_feed" class = "portFeed"></pre>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <div class = "row">
+
+                        <div class = "col">
+
+                            <div class = "card-header">
+
+                                Found Pairings
+
+                            </div>
+
+                            <div class = "card-body" id = "found_pairings_feed"></div>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+                <div id = "ethernetSearchBody" style = "display: none;">
+
+                    <div class = "row">
+
+                        <table class = "table table-sm table-striped" id = "ethernetSearchTable"  style = "font-size: 12px;">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>IP Address</th>
+                                    <th>Host Up</th>
+                                    <th>Port Open</th>
+                                    <th>Probe</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <div id = "ethernetSearchBodyFull"  style="display: none;">
+
+                    <div class = "row">
+
+                        <table class = "table table-sm table-striped" id = "ethernetSearchTableFull"  style = "font-size: 12px;">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>IP Address</th>
+                                    <th>Host Up</th>
+                                    <th>Port Open</th>
+                                    <th>Probe</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <div id = "ethernetProbeBody" style = "display: none;">
+
+                    {% if True %}
+
+                    <div id = "tagCreationTools" style = "display: none;">
+
+                        <div class = "row">
+
+                            <table class = "table table-sm table-striped" id = "ethernetProbeTagMapping"  style = "font-size: 12px;">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Tag</th>
+                                        <th>Measure</th>
+                                        <th>Function</th>
+                                        <th>Address</th>
+                                        <th>Date Type</th>
+                                        <th>Quantity</th>
+                                        <th>Slope</th>
+                                        <th>Offset</th>
+                                        <th>Preview</th>
+                                        <th>Unit</th>
+                                        <th>Settings</th>
+                                        <th>Delete</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+                                    
+                                    <tr>
+
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+
+                                    </tr>
+                                
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <hr>
+
+                    </div>
+
+                    {% endif %}
+
+                    <div class = "row">
+
+                        <table class = "table table-sm table-striped" id = "ethernetProbeTable"  style = "font-size: 12px;">
+
+                            <thead>
+                                
+                                <tr>
+                                    
+                                    <th>Function</th>
+                                    <th>Register</th>
+                                    <th>Hex</th>
+                                    <th>int 16</th>
+                                    <th>uint 16</th>
+                                    <th>int 32</th>
+                                    <th>uint 32</th>
+                                    <th>float 32</th>
+                                    <th>Preview</th>
+
+                                    {% if True %}
+                                    <th>Add</th>
+                                    <th>Remove</th>
+                                    {% endif %}
+
+                                </tr>
+                            
+                            </thead>
+
+                            <tbody>
+                                
+                                <tr>
+                                    
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+
+                                    {% if True %}
+                                    <td>-</td>
+                                    <td>-</td>
+                                    {% endif %}
+
+                                </tr>
+                            
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    var ids = {{ devices|tojson|safe }}
+    var dataFound = {{ devices|tojson|safe }}
+
+    var timeCounter = 0;
+    var timeInterval = null;
+
+    var assets = {{ assets|tojson|safe }}
+    var currentProbeSettings = {};
+    var tagMap = [];
+    var tagMapStarted = false;
+
+    var searchTableType = "filtered";
+
+    var device_temp_list = {{ templates|tojson }};
+    var device_types_list ={{ types|tojson }};
+
+    var probed = ["none", "none", "none"];
+    var searched = ["none", "none", "none"];
+
+    var last_data = null
+
+    var timer_max = 10
+
+    // Timer Functions
+
+    function start () {
+
+        timeCounter = 0;
+
+        document.querySelectorAll(".timerDisplay").forEach(element => element.innerHTML = timeCounter)
+
+        if (!(timeInterval == null)) {
+
+            clearInterval(timeInterval)
+
+        }
+
+        timeInterval = setInterval(increment, 1000);
+
+    }
+
+    function reset () {
+
+        timeCounter = 0
+
+        document.querySelectorAll(".timerDisplay").forEach(element => element.innerHTML = timeCounter)
+
+    }
+
+    function stop () {
+
+        timeCounter = 0
+
+        document.querySelectorAll(".timerDisplay").forEach(element => element.innerHTML = "-")
+
+        clearInterval(timeInterval)
+
+    }
+
+    function increment () {
+
+        timeCounter++;
+
+        if (document.getElementById("wireTapType").value == "ethernet") {
+
+            if (timeCounter % 2 == 0) {
+
+                if (document.getElementById("ethernetSearchButton").classList.contains("selectedOption")) {
+
+                    updateEthernetSearch()
+
+                } else if (document.getElementById("ethernetProbeButton").classList.contains("selectedOption")) {
+
+                    updateEthernetProbe()
+
+                }
+
+                return
+
+            }
+
+        }
+
+        if (!(timeCounter == timer_max)) {
+
+            document.querySelectorAll(".timerDisplay").forEach(element => element.innerHTML = timeCounter)
+
+        } else {
+
+            updateData()
+
+        }
+
+        
+
+    }
+
+    // ---------------
+
+    // Reset Panels Functions
+
+    function resetSerialRegistersPanel () {
+
+
+
+    }
+
+    function resetSerialStreamPanel () {
+
+        if (!(document.getElementById("startSerialStreamRead").value == "start")) {
+
+            document.getElementById("startSerialStreamRead").value = "start"
+
+            document.getElementById("startSerialStreamRead").innerHTML = "Start"
+
+            document.getElementById("startSerialStreamRead").classList.remove("btn-danger");
+
+            document.getElementById("startSerialStreamRead").classList.add("btn-success");
+            document.getElementById("startSerialStreamRead").classList.add("btn-outline-success");
+
+        }
+
+        stop()
+
+    }
+
+    function resetEthernetSearchPanel () {
+
+
+
+    }
+
+    function resetEthernetProbePanel () {
+
+
+
+    }
+
+    // ---------------
+
+    // Switching Functionality
+
+    //Change From Serial to Ethernet and vice versa
+    document.getElementById("wireTapType").onchange = function () {
+
+        if (this.value == "serial") {
+
+            // Stop Timer
+            stop()
+
+            // Switch to WireTap Registers
+            document.getElementById("serialRegistersUpperMenu").style.display = "block";
+            document.getElementById("serialRegistersLowerMenu").style.display = "block";
+            document.getElementById("afterSpacer").style.display = "block";
+            document.getElementById("serialRegistersBody").style.display = "block";
+
+            //Hide Other Upper Menus
+            document.getElementById("serialStreamUpperMenu").style.display = "none";
+            document.getElementById("ethernetSearchUpperMenu").style.display = "none";
+            document.getElementById("ethernetProbeUpperMenu").style.display = "none";
+
+            //Hide Other Lower Menus/Statuses
+            document.getElementById("ethernetSearchStatus").style.display = "none";
+            document.getElementById("ethernetProbeStatus").style.display = "none";
+            document.getElementById("ethernetBreak").style.display = "none";
+            document.getElementById("ethernetSearchTableToggle").style.display = "none";
+            document.getElementById("ethernetProbeOptions").style.display = "none";
+
+            //Hide Other Bodies
+            document.getElementById("serialStreamBody").style.display = "none";
+            document.getElementById("ethernetSearchBody").style.display = "none";
+            document.getElementById("ethernetSearchBodyFull").style.display = "none";
+            document.getElementById("ethernetProbeBody").style.display = "none";
+
+            //Change to Serial Options
+            document.getElementById("serialOptions").style.display = "flex";
+            document.getElementById("ethernetOptions").style.display = "none";
+
+            if (!(document.getElementById("serialRegistersButton").classList.contains("selectedOption"))) {
+
+                document.getElementById("serialRegistersButton").classList.add("selectedOption")
+
+            }
+
+            if (document.getElementById("serialRegistersButton").classList.contains("option")) {
+
+                document.getElementById("serialRegistersButton").classList.remove("option")
+
+            }
+
+            if (!(document.getElementById("serialStreamButton").classList.contains("option"))) {
+
+                document.getElementById("serialStreamButton").classList.add("option")
+
+            }
+
+            if (document.getElementById("serialStreamButton").classList.contains("selectedOption")) {
+
+                document.getElementById("serialStreamButton").classList.remove("selectedOption")
+
+            }
+
+            // Reset Ethernet Sections
+            resetEthernetSearchPanel()
+            resetEthernetProbePanel()
+
+            // Update Data
+            updateData()
+
+            // Start Timer
+            start()
+
+        } else if (this.value == "ethernet") {
+
+            // Stop Timer
+            stop()
+
+            // Switch to Ethernet Search
+            document.getElementById("ethernetSearchUpperMenu").style.display = "block";
+            document.getElementById("afterSpacer").style.display = "block";
+            document.getElementById("ethernetSearchBody").style.display = "block";
+            document.getElementById("ethernetSearchBodyFull").style.display = "none";
+
+            document.getElementById("ethernetSearchStatus").style.display = searched[0];
+            document.getElementById("ethernetBreak").style.display = searched[1];
+            document.getElementById("ethernetSearchTableToggle").style.display = searched[2];
+
+            //Hide Other Upper Menus
+            document.getElementById("serialRegistersUpperMenu").style.display = "none";
+            document.getElementById("serialStreamUpperMenu").style.display = "none";
+            document.getElementById("ethernetProbeUpperMenu").style.display = "none";
+
+            //Hide Other Lower Menus/Statuses
+            document.getElementById("serialRegistersLowerMenu").style.display = "none";
+            document.getElementById("ethernetProbeStatus").style.display = "none";
+            document.getElementById("ethernetProbeOptions").style.display = "none";
+
+            //Hide Other Bodies
+            document.getElementById("serialStreamBody").style.display = "none";
+            document.getElementById("serialRegistersBody").style.display = "none";
+            document.getElementById("ethernetProbeBody").style.display = "none";
+
+            //Change to Serial Options
+            document.getElementById("ethernetOptions").style.display = "flex";
+            document.getElementById("serialOptions").style.display = "none";
+
+            if (!(document.getElementById("ethernetSearchButton").classList.contains("selectedOption"))) {
+
+                document.getElementById("ethernetSearchButton").classList.add("selectedOption")
+
+            }
+
+            if (document.getElementById("ethernetSearchButton").classList.contains("option")) {
+
+                document.getElementById("ethernetSearchButton").classList.remove("option")
+
+            }
+
+            if (!(document.getElementById("ethernetProbeButton").classList.contains("option"))) {
+
+                document.getElementById("ethernetProbeButton").classList.add("option")
+
+            }
+
+            if (document.getElementById("ethernetProbeButton").classList.contains("selectedOption")) {
+
+                document.getElementById("ethernetProbeButton").classList.remove("selectedOption")
+
+            }
+
+            // Reset WireTap Sections
+            resetSerialRegistersPanel()
+            resetSerialStreamPanel()
+
+        }
+
+    }
+
+    //Change From Serial Stream to Registers
+    document.getElementById("serialRegistersButton").onclick = function () {
+
+        // Stop Timer
+        stop()
+
+        // Switch to WireTap Registers
+        document.getElementById("serialRegistersUpperMenu").style.display = "block";
+        document.getElementById("serialRegistersLowerMenu").style.display = "block";
+        document.getElementById("afterSpacer").style.display = "block";
+        document.getElementById("serialRegistersBody").style.display = "block";
+
+        // Hide Other Upper Menus
+        document.getElementById("serialStreamUpperMenu").style.display = "none";
+
+        //Hide Other Bodies
+        document.getElementById("serialStreamBody").style.display = "none";
+
+        // Reset Serial Stream
+        resetSerialStreamPanel()
+
+        // Switch Buttons
+
+        if (!(document.getElementById("serialRegistersButton").classList.contains("selectedOption"))) {
+
+            document.getElementById("serialRegistersButton").classList.add("selectedOption")
+
+        }
+
+        if (document.getElementById("serialRegistersButton").classList.contains("option")) {
+
+            document.getElementById("serialRegistersButton").classList.remove("option")
+
+        }
+
+        if (!(document.getElementById("serialStreamButton").classList.contains("option"))) {
+
+            document.getElementById("serialStreamButton").classList.add("option")
+
+        }
+
+        if (document.getElementById("serialStreamButton").classList.contains("selectedOption")) {
+
+            document.getElementById("serialStreamButton").classList.remove("selectedOption")
+
+        }
+
+        // Update Data
+        updateData()
+
+        // Start Timer
+        start()
+
+    }
+
+    //Change From Registers to Serial Stream
+    document.getElementById("serialStreamButton").onclick = function () {
+
+        // Stop Timer
+        stop()
+
+        // Switch to WireTap Serial Stream
+        document.getElementById("serialStreamUpperMenu").style.display = "block";
+        document.getElementById("serialStreamBody").style.display = "block";
+
+        //Hide Other Upper Menus
+        document.getElementById("serialRegistersUpperMenu").style.display = "none";
+
+        //Hide Other Lower Menus/Statuses
+        document.getElementById("serialRegistersLowerMenu").style.display = "none";
+
+        //Hide Extra Spacer
+        document.getElementById("afterSpacer").style.display = "none";
+
+        //Hide Other Bodies
+        document.getElementById("serialRegistersBody").style.display = "none";
+        
+        // Switch Buttons
+
+        if (!(document.getElementById("serialStreamButton").classList.contains("selectedOption"))) {
+
+            document.getElementById("serialStreamButton").classList.add("selectedOption")
+
+        }
+
+        if (document.getElementById("serialStreamButton").classList.contains("option")) {
+
+            document.getElementById("serialStreamButton").classList.remove("option")
+
+        }
+
+        if (!(document.getElementById("serialRegistersButton").classList.contains("option"))) {
+
+            document.getElementById("serialRegistersButton").classList.add("option")
+
+        }
+
+        if (document.getElementById("serialRegistersButton").classList.contains("selectedOption")) {
+
+            document.getElementById("serialRegistersButton").classList.remove("selectedOption")
+
+        }
+
+        // Reset Serial Register
+        resetSerialRegistersPanel()
+
+    }
+
+    //Change From Probe to Search
+    document.getElementById("ethernetSearchButton").onclick = function () {
+
+        // Stop Timer
+        stop()
+
+        // Switch to Ethernet Search
+        document.getElementById("ethernetSearchUpperMenu").style.display = "block";
+        document.getElementById("afterSpacer").style.display = "block";
+        document.getElementById("ethernetSearchBody").style.display = "block";
+        document.getElementById("ethernetSearchBodyFull").style.display = "none";
+
+        document.getElementById("ethernetSearchStatus").style.display = searched[0];
+        document.getElementById("ethernetBreak").style.display = searched[1];
+        document.getElementById("ethernetSearchTableToggle").style.display = searched[2];
+
+        //Hide Other Upper Menus
+        document.getElementById("ethernetProbeUpperMenu").style.display = "none";
+
+        //Hide Other Lower Menus/Statuses
+        document.getElementById("ethernetProbeStatus").style.display = "none";
+        document.getElementById("ethernetProbeOptions").style.display = "none";
+
+        //Hide Other Bodies
+        document.getElementById("ethernetProbeBody").style.display = "none";
+
+        // Switch Buttons
+
+        if (!(document.getElementById("ethernetSearchButton").classList.contains("selectedOption"))) {
+
+            document.getElementById("ethernetSearchButton").classList.add("selectedOption")
+
+        }
+
+        if (document.getElementById("ethernetSearchButton").classList.contains("option")) {
+
+            document.getElementById("ethernetSearchButton").classList.remove("option")
+
+        }
+
+        if (!(document.getElementById("ethernetProbeButton").classList.contains("option"))) {
+
+            document.getElementById("ethernetProbeButton").classList.add("option")
+
+        }
+
+        if (document.getElementById("ethernetProbeButton").classList.contains("selectedOption")) {
+
+            document.getElementById("ethernetProbeButton").classList.remove("selectedOption")
+
+        }
+
+        // Reset Ethernet Probe
+        resetEthernetProbePanel()
+
+        if (document.getElementById("ethernetSearchToggle").value == "stop") {
+
+            // Update Data
+            updateData()
+
+            // Start Timer
+            start()
+
+        }
+
+    }
+
+    //Change From Search to Probe
+    document.getElementById("ethernetProbeButton").onclick = function () {
+
+        // Stop Timer
+        stop()
+
+        // Switch to Ethernet Probe
+        document.getElementById("ethernetProbeUpperMenu").style.display = "block";
+        document.getElementById("afterSpacer").style.display = "block";
+        document.getElementById("ethernetProbeBody").style.display = "block";
+
+        document.getElementById("ethernetProbeStatus").style.display = probed[0];
+        document.getElementById("ethernetBreak").style.display = probed[1];
+        document.getElementById("ethernetProbeOptions").style.display = probed[2];
+        
+        //Hide Other Upper Menus
+        document.getElementById("ethernetSearchUpperMenu").style.display = "none";
+
+        //Hide Other Lower Menus/Statuses
+        document.getElementById("ethernetSearchStatus").style.display = "none";
+        document.getElementById("ethernetSearchTableToggle").style.display = "none";
+
+        //Hide Other Bodies
+        document.getElementById("ethernetSearchBody").style.display = "none";
+        document.getElementById("ethernetSearchBodyFull").style.display = "none";
+
+        // Reset Ethernet Probe
+        resetEthernetSearchPanel()
+
+        // Switch Buttons
+
+        if (!(document.getElementById("ethernetProbeButton").classList.contains("selectedOption"))) {
+
+            document.getElementById("ethernetProbeButton").classList.add("selectedOption")
+
+        }
+
+        if (document.getElementById("ethernetProbeButton").classList.contains("option")) {
+
+            document.getElementById("ethernetProbeButton").classList.remove("option")
+
+        }
+
+        if (!(document.getElementById("ethernetSearchButton").classList.contains("option"))) {
+
+            document.getElementById("ethernetSearchButton").classList.add("option")
+
+        }
+
+        if (document.getElementById("ethernetSearchButton").classList.contains("selectedOption")) {
+
+            document.getElementById("ethernetSearchButton").classList.remove("selectedOption")
+
+        }
+
+        if (document.getElementById("ethernetProbeToggle").value == "stop") {
+
+            // Update Data
+            updateData()
+
+            // Start Timer
+            start()
+
+        }
+
+    }
+
+    // ---------------
+
+    // Update Functions
+
+    function updateData () {
+
+        if (document.getElementById("wireTapType").value == "serial") {
+
+            if (document.getElementById("serialRegistersButton").classList.contains("selectedOption")) {
+
+                updateSerialRegisters()
+
+            } else if (document.getElementById("serialStreamButton").classList.contains("selectedOption")) {
+
+                updateSerialStream()
+
+            }
+
+        } else if (document.getElementById("wireTapType").value == "ethernet") {
+
+            if (document.getElementById("ethernetSearchButton").classList.contains("selectedOption")) {
+
+                updateEthernetSearch()
+
+            } else if (document.getElementById("ethernetProbeButton").classList.contains("selectedOption")) {
+
+                updateEthernetProbe()
+
+            }
+
+        }
+
+    }
+
+    function updateSerialRegisters () {
+
+        try {
+
+            if (!(document.getElementById("devID").value == "None")) {
+
+                let id = null;
+                let port = null;
+
+                for (let i = 0; i < ids.length; i++) {
+
+                    if (ids[i][0] == document.getElementById("devID").value){
+
+                        id = ids[i][1]
+                        port = ids[i][2]
+
+                    }
+
+                }
+
+                if ((port != null) && (id != null)) {
+
+                    $.post(`/get_table_data_v1`, {"id": id, "port": port, "deviceType": document.getElementById("devType").value, "deviceTemplate": document.getElementById("devTemp").value}).done((data) => {
+
+                        formatSerialRegisters(data)
+
+                    });
+
+                }
+
+            }
+
+        } catch {
+
+            document.getElementById("serialRegistersUpperMenuDataFound").style.display = "none"
+            document.getElementById("serialRegistersLowerMenu").style.display = "none"
+            document.getElementById("afterSpacer").style.display = "none"
+            document.getElementById("serialRegistersBody").style.display = "none"
+
+            document.getElementById("serialRegistersUpperMenuDataNotFound").style.display = "block"
+
+            stop()
+
+        }
+
+    }
+
+    function updateSerialStream () {
+
+        $.ajax({
+
+            url:'/new_wiretap_data',
+            type:"POST",
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function(response_data){
+
+                formatSerialStream(response_data);
+
+            }
+
+        })
+
+    }
+
+    function updateEthernetSearch () {
+
+        if (document.getElementById("ethernetSearchToggle").value == "stop") {
+
+            $.ajax({
+
+                url:'/ip_discovery_status',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(response_data){
+
+                    formatEthernetSearch(response_data);
+
+                }
+
+            })
+
+        }
+
+    }
+
+    function updateEthernetProbe () {
+
+        $.ajax({
+
+            url:'/tcp_probe_read',
+            type:"POST",
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function(response_data){
+
+                formatEthernetProbe(response_data);
+
+            }
+
+        })
+
+    }
+
+    // ---------------
+
+    // Format Functions
+
+    function formatSerialRegisters (data) {
+
+        if (data.length == 0) {
+
+            document.getElementById("dataTableBody").innerHTML = "<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>"
+
+            stop()
+
+        } else {
+
+            document.getElementById("dataTableBody").innerHTML = ""
+
+            for (i = 0; i < data.length; i++) {
+
+                document.getElementById("dataTableBody").innerHTML += data[i][1]
+
+            }
+
+            reset()
+
+        }
+
+    }
+
+    function formatSerialStream (data) {
+
+        for (let i = 0; i < Object.keys(data["new_serial"]).length; i++) {
+
+            let feed = document.getElementById(`${Object.keys(data["new_serial"])[i]}_feed`);
+
+            if (feed != null) {
+
+                let string = ""
+
+                for (let j = 0; j < data["new_serial"][Object.keys(data["new_serial"])[i]].length; j++) {
+
+                    if (string == "") {
+
+                        string += data["new_serial"][Object.keys(data["new_serial"])[i]][j];
+
+                    } else {
+
+                        string += ` ${data["new_serial"][Object.keys(data["new_serial"])[i]][j]}`;
+
+                    }
+
+                }
+
+                feed.innerHTML = string;
+
+            }
+
+        }
+
+        let feed = document.getElementById(`found_pairings_feed`);
+        let string = "<div>"
+
+        for (let i = 0; i < data["new_found"].length; i++) {
+
+            let request = data["new_found"][i]["request"].split(",");
+            let requestString = "";
+
+            for (let j = 0; j < request.length; j++) {
+
+                if (requestString == "") {
+
+                    requestString += request[j];
+
+                } else {
+
+                    requestString += ` ${request[j]}`;
+
+                }
+
+            }
+
+            let response = data["new_found"][i]["response"].split(",");
+            let responseString = "";
+
+            for (let j = 0; j < response.length; j++) {
+
+                if (responseString == "") {
+
+                    responseString += response[j];
+
+                } else {
+
+                    responseString += ` ${response[j]}`;
+
+                }
+
+            }
+
+            string += `<div>Found Request/Response pair from port ${data["new_found"][i]["port"]} at ${data["new_found"][i]["time"]}</div><div><div class = "inlinePre">- Request: <pre>${requestString}</pre></div></div><div><div class = "inlinePre">- Response: <pre>${responseString}</pre></div></div><div class = "vertSpacer"></div>`;
+
+        }
+
+        string += "</div>"
+
+        feed.innerHTML = string;
+
+        reset();
+
+    }
+
+    function formatEthernetSearch (data) {
+
+        tableData = "<thead><tr><th>IP Address</th><th>Host Up</th><th>Port Open</th><th>Probe</th></tr></thead>"
+        tableDataFull = "<thead><tr><th>IP Address</th><th>Host Up</th><th>Port Open</th><th>Probe</th></tr></thead>"
+
+        canProbe = []
+        cannotProbe = []
+
+        hosts = data["hosts"]
+        hostIps = Object.keys(hosts)
+        hostIps.sort(function (a, b) {
+
+            aForm = parseInt(a.split(".").map(x => `00${x}`.slice(-3)).join(""))
+            bForm = parseInt(b.split(".").map(x => `00${x}`.slice(-3)).join(""))
+
+            if (aForm > bForm) return 1;
+            if (aForm < bForm) return -1;
+            return 0;
+
+        })
+
+        portValue = document.getElementById("ethernetSearchPort").value
+
+        for (let i = 0; i < hostIps.length; i++) {
+
+            hostStatus = null
+            portStatus = null
+
+            portOpen = false
+
+            if (Object.keys(hosts[hostIps[i]]).includes("status")) {
+                
+                if (hosts[hostIps[i]]["status"] == "up") {
+                    
+                    hostStatus = '<td><svg class = "mypv-icon sos-status-good"><use xlink:href = "#sos-status-good"></use></svg></td>'
+
+                } else if (hosts[hostIps[i]]["status"] == "down") {
+                    
+                    hostStatus = '<td><svg class = "mypv-icon sos-status-bad"><use xlink:href = "#sos-status-bad"></use></svg></td>'
+                
+                } else {
+                    
+                    hostStatus = '<td><svg class = "mypv-icon sos-status-not-available"><use xlink:href = "#sos-status-not-available"></use></svg></td>'
+                
+                }
+            
+            } else {
+
+                hostStatus = '<td>-</td>'
+
+            }
+
+            if (Object.keys(hosts[hostIps[i]]).includes("port")) {
+                
+                if (hosts[hostIps[i]]["port"] == "open") {
+                    
+                    portStatus = '<td><svg class = "mypv-icon sos-status-good"><use xlink:href = "#sos-status-good"></use></svg></td>'
+                
+                    portOpen = true
+
+                } else if (hosts[hostIps[i]]["port"] == "closed") {
+                    
+                    portStatus = '<td><svg class = "mypv-icon sos-status-bad"><use xlink:href = "#sos-status-bad"></use></svg></td>'
+                
+                } else if (hosts[hostIps[i]]["port"] == "filtered") {
+
+                    portStatus = '<td><svg class = "mypv-icon sos-status-bad"><use xlink:href = "#sos-status-bad"></use></svg></td>'
+
+                } else {
+                    
+                    portStatus = '<td><svg class = "mypv-icon sos-status-not-available"><use xlink:href = "#sos-status-not-available"></use></svg></td>'
+                
+                }
+            
+            } else {
+
+                portStatus = '<td>-</td>'
+
+            }
+
+            if (portOpen) {
+
+                probeButton = `<button type = 'button' class = 'btn btn-sm btn-success btn-outline-success' onclick = 'moveSearchToProbe("${hostIps[i]}", ${portValue})'>Probe</button>`
+
+                canProbe.push(`<tr><td>${hostIps[i]}</td>${hostStatus}${portStatus}<td>${probeButton}</td></tr>`)
+
+            } else {
+
+                cannotProbe.push(`<tr><td>${hostIps[i]}</td>${hostStatus}${portStatus}<td></td></tr>`)
+
+            }
+
+        }
+
+        for (let i = 0; i < canProbe.length; i++) {
+
+            tableData += canProbe[i]
+            tableDataFull += canProbe[i]
+
+        }
+
+        for (let i = 0; i < cannotProbe.length; i++) {
+
+            tableDataFull += cannotProbe[i]
+
+        }
+
+        if (tableData == "<thead><tr><th>IP Address</th><th>Host Up</th><th>Port Open</th><th>Probe</th></tr></thead>") {
+
+            tableData += "<tr><td>-</td><td>-</td><td>-</td><td>-</td></tr>"
+
+        }
+
+        if (tableDataFull == "<thead><tr><th>IP Address</th><th>Host Up</th><th>Port Open</th><th>Probe</th></tr></thead>") {
+
+            tableDataFull += "<tr><td>-</td><td>-</td><td>-</td><td>-</td></tr>"
+
+        }
+
+        ethernetSearchTable = document.getElementById("ethernetSearchTable");
+        ethernetSearchTableFull = document.getElementById("ethernetSearchTableFull");
+
+        ethernetSearchTable.innerHTML = tableData;
+        ethernetSearchTableFull.innerHTML = tableDataFull;
+
+        if ((data["currentStatus"] == "Finished") || (data["currentStatus"] == "Exited due to an error")) {
+
+            document.getElementById("ethernetSearchStatus").style.display = "none";
+            document.getElementById("ethernetBreak").style.display = "none";
+
+            searched = ["none", "none", document.getElementById("ethernetSearchTableToggle").style.display]
+
+            $.ajax({
+
+                url:'/kill_ip_discovery',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(response_data){
+
+                }
+
+            })
+
+            document.getElementById("ethernetSearchToggle").value = "start"
+            document.getElementById("ethernetSearchToggle").innerHTML = "Search"
+            document.getElementById("ethernetSearchToggle").classList.add("btn-success")
+            document.getElementById("ethernetSearchToggle").classList.add("btn-outline-success")
+
+            document.getElementById("ethernetSearchToggle").classList.remove("btn-danger")
+            document.getElementById("ethernetSearchToggle").classList.remove("btn-outline-danger")
+
+            stop()
+
+            return
+
+        }
+
+        document.getElementById("ethernetSearchStatusDisplay").innerHTML = `<div class = "progress" style = "width: 100%; background: var(--bs-gray)"><div class = "progress-bar progress-bar-striped progress-bar-animated" role = "progressbar" style = "width: ${data["currentStatus"]["percent"]}%" aria-valuenow = "10" aria-valuemin = "0" aria-valuemax = "100"><span style = "padding-left: 5px">${data["currentStatus"]["task"]} - ${data["currentStatus"]["percent"]}%</span></div></div>`
+
+        reset();
+
+    }
+
+    function formatEthernetProbe (data) {
+
+        tableData = "<thead><tr><th>Function</th><th>Register</th><th>Hex</th><th>int 16</th><th>uint 16</th><th>int 32</th><th>uint 32</th><th>float 32</th><th>Preview</th>{% if True %}<th>Add</th><th>Remove</th>{% endif %}</tr></thead>";
+
+        last_data = data
+
+        functions = Object.keys(data)
+        bWOrder = document.getElementById("ethernetProbeByteWordOrder").value
+
+        if (currentProbeSettings["device"] != data["device"]) {
+
+            currentProbeSettings = {"device": data["device"]}
+
+        }
+
+        for (let i = 0; i < functions.length; i++) {
+
+            if (functions[i] != "status" && functions[i] != "assets" && functions[i] != "device") {
+
+                if (!(Object.keys(currentProbeSettings).includes(functions[i]))) {
+
+                    currentProbeSettings[functions[i]] = {}
+
+                }
+
+                registers = Object.keys(data[functions[i]])
+
+                for (let j = 0; j < registers.length; j++) {
+
+                    if (!(Object.keys(currentProbeSettings[functions[i]]).includes(registers[j]))) {
+
+                        currentProbeSettings[functions[i]][registers[j]] = {"dataType": "int16", 
+                                                                            "settings": {
+                                                                                "unit": "-",
+                                                                                "flipBool": false,
+                                                                                "scale_mode": "slope_intercept",
+                                                                                "slope": "1.0",
+                                                                                "offset": "0.0",
+                                                                                "value_min": "0.0",
+                                                                                "target_min": "0.0",
+                                                                                "value_max": "1.0",
+                                                                                "target_max": "1.0",
+                                                                                "accepted_min": "",
+                                                                                "accepted_max": "",
+                                                                                "extreme_exceeded": "to_null"
+                                                                            },
+                                                                            "slopeCalced": 1.0,
+                                                                            "offsetCalced": 0.0,
+                                                                            "measure": "-", 
+                                                                            "name": "",
+                                                                            "data": {},
+                                                                            "function": functions[i],
+                                                                            "register": registers[j],
+                                                                            "display": true
+                                                                           }
+
+                    }
+
+                    currentProbeSettings[functions[i]][registers[j]]["data"] = data[functions[i]][registers[j]]
+
+                    if (currentProbeSettings[functions[i]][registers[j]]["display"]) {
+
+                        if (functions[i] == "read-coils") {
+
+                            currentProbeSettings[functions[i]][registers[j]]["dataType"] = "bool"
+
+                            tableData += `<tr><td>${functions[i]}</td><td>${registers[j]}</td><td>${data[functions[i]][registers[j]]["hex"]}</td><td class = "highlightedProbeValue" colspan = 5>${data[functions[i]][registers[j]]["val"]}</td><td class = "highlightedProbeValue preview" function = "${functions[i]}" register = "${registers[j]}">${evalPreview(data[functions[i]][registers[j]]["val"], functions[i], registers[j])}</td>{% if True %}<td><button class = "btn btn-sm ${tagMapStarted ? "btn-success" : "btn-secondary"} unclickable mypv_create_btn" function = "${functions[i]}" register = "${registers[j]}"></button></td><td><button class = "btn btn-sm btn-danger mypv_delete_btn" function = "${functions[i]}" register = "${registers[j]}"></button></td>{% endif %}</tr>`
+
+                        } else {
+
+                            tableData += `<tr><td>${functions[i]}</td><td>${registers[j]}</td><td>${data[functions[i]][registers[j]]["hex"]}</td><td><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable int16ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "int16" ? " highlightedProbeValue" : ""}">${data[functions[i]][registers[j]]["int16"][bWOrder]}</button></td><td><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable uint16ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "uint16" ? " highlightedProbeValue" : ""}">${data[functions[i]][registers[j]]["uint16"][bWOrder]}</button></td><td><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable int32ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "int32" ? " highlightedProbeValue" : ""}">${data[functions[i]][registers[j]]["int32"][bWOrder]}</button></td><td><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable uint32ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "uint32" ? " highlightedProbeValue" : ""}">${data[functions[i]][registers[j]]["uint32"][bWOrder]}</button></td><td><button function = "${functions[i]}" register = "${registers[j]}" class = "hidden-button clickable float32ProbeRes${currentProbeSettings[functions[i]][registers[j]]["dataType"] == "float32" ? " highlightedProbeValue" : ""}">${data[functions[i]][registers[j]]["float32"][bWOrder]}</button></td><td class = "highlightedProbeValue preview" function = "${functions[i]}" register = "${registers[j]}">${evalPreview(data[functions[i]][registers[j]][currentProbeSettings[functions[i]][registers[j]]["dataType"]][bWOrder], functions[i], registers[j])}</td>{% if True %}<td><button class = "btn btn-sm ${tagMapStarted ? "btn-success" : "btn-secondary"} unclickable mypv_create_btn" function = "${functions[i]}" register = "${registers[j]}"></button></td><td><button class = "btn btn-sm btn-danger mypv_delete_btn" function = "${functions[i]}" register = "${registers[j]}"></button></td>{% endif %}</tr>`
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        document.getElementById("ethernetProbeTable").innerHTML = tableData
+
+        document.getElementById("probeStatusProgress").style.width = data["status"] == "Started" ? "0%" : data["status"] == "Finished" ? "100%" : data["status"] == "Failed" ? "100%" : data["status"] == "Exited due to an error" ? "100%" : `${data["status"]}%`
+
+        document.getElementById("probeStatusProgress").innerHTML = "<span style = 'padding-left: 5px'>"
+
+        document.getElementById("probeStatusProgress").innerHTML += data["status"] == "Started" ? "Started" : data["status"] == "Finished" ? "100%" : data["status"] == "Failed" ? "100%" : data["status"] == "Exited due to an error" ? "100%" : `${data["status"]}%`
+
+        document.getElementById("probeStatusProgress").innerHTML += "</span>"
+
+        document.querySelectorAll(".int16ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "int16"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".uint16ProbeRes, .int32ProbeRes, .uint32ProbeRes, .float32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][document.getElementById("ethernetProbeByteWordOrder").value], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".uint16ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "uint16"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".int16ProbeRes, .int32ProbeRes, .uint32ProbeRes, .float32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][document.getElementById("ethernetProbeByteWordOrder").value], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".int32ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "int32"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".int16ProbeRes, .uint16ProbeRes, .uint32ProbeRes, .float32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][document.getElementById("ethernetProbeByteWordOrder").value], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".uint32ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "uint32"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".int16ProbeRes, .uint16ProbeRes, .int32ProbeRes, .float32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][document.getElementById("ethernetProbeByteWordOrder").value], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        document.querySelectorAll(".float32ProbeRes").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                let funct_code = el.getAttribute('function')
+                let reg = el.getAttribute('register')
+
+                currentProbeSettings[funct_code][reg]["dataType"] = "float32"
+
+                el.classList.add('highlightedProbeValue')
+
+                document.querySelectorAll(".int16ProbeRes, .uint16ProbeRes, .int32ProbeRes, .uint32ProbeRes").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.classList.remove('highlightedProbeValue')
+
+                    }
+
+                })
+
+                document.querySelectorAll(".preview").forEach(function (idx) {
+
+                    if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][document.getElementById("ethernetProbeByteWordOrder").value], funct_code, reg)
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        {% if True %}
+
+        document.querySelectorAll("#ethernetProbeTable > tbody > tr > td > .mypv_create_btn").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                if (el.classList.contains("btn-success")) {
+
+                    funct_code = el.getAttribute('function')
+                    reg = el.getAttribute('register')
+
+                    document.getElementById("function_code").value = funct_code
+                    document.getElementById("register").value = reg
+
+                    if (funct_code == "read-coils") {
+
+                        document.getElementById("data_type").innerHTML = `<option value = "bool">bool</option>`
+
+                    } else {
+
+                        document.getElementById("data_type").innerHTML = `<option value = "int16">int16</option><option value = "uint16">uint16</option><option selected = "" value = "int32">int32</option><option value = "uint32">uint32</option><option value = "float32">float32</option>`
+
+                    }
+
+                    document.getElementById("data_type").value = currentProbeSettings[funct_code][reg]["dataType"]
+                    document.getElementById("tag_name").value = currentProbeSettings[funct_code][reg]["name"]
+
+                    modal = document.getElementById("probe_item_settings_modal")
+
+                    modal.setAttribute('function', funct_code)
+                    modal.setAttribute('register', reg)
+
+                    document.getElementById("measure").value = currentProbeSettings[funct_code][reg]["measure"]
+
+                    setUnitOptions()
+
+                    settings = Object.keys(currentProbeSettings[funct_code][reg]["settings"])
+
+                    for (let i = 0; i < settings.length; i++) {
+
+                        if (!(settings[i] == 'flipBool')) {
+
+                            document.getElementById(settings[i]).value = currentProbeSettings[funct_code][reg]["settings"][settings[i]]
+
+                        } else {
+
+                            document.getElementById(settings[i]).checked = currentProbeSettings[funct_code][reg]["settings"][settings[i]]
+
+                        }
+
+                    }
+
+                    createAddressAlias()
+                    toggleExtremaHandling()
+                    evalSlopeFields()
+                    redoGraph()
+
+                    $('#probe_item_settings_modal').modal('show');
+
+                }
+
+            })
+
+        })
+
+        document.querySelectorAll("#ethernetProbeTable > tbody > tr > td > .mypv_delete_btn").forEach(function (el) {
+
+            el.addEventListener('click', function () {
+
+                $.ajax({
+
+                    url:'/remove_register',
+                    type:"POST",
+                    contentType:"application/json; charset=utf-8",
+                    dataType:"json",
+                    data: JSON.stringify({'function': el.getAttribute('function'), 'register': el.getAttribute('register')}),
+                    complete: function(data){
+
+                        updateEthernetProbe()
+
+                    }
+
+                })
+
+            })
+
+        })
+
+        {% endif %}
+
+        if ((data["status"] == "Finished") || (data["status"] == "Exited due to an error")) {
+
+            document.getElementById("ethernetProbeStatus").style.display = "none";
+            document.getElementById("ethernetBreak").style.display = "none";
+
+            probed = ["none", "none", document.getElementById("ethernetProbeOptions").style.display]
+
+            $.ajax({
+
+                url:'/tcp_probe_kill',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                success: function(response_data){
+
+                }
+
+            })
+
+            document.getElementById("ethernetProbeToggle").value = "start"
+            document.getElementById("ethernetProbeToggle").innerHTML = "Search"
+            document.getElementById("ethernetProbeToggle").classList.add("btn-success")
+            document.getElementById("ethernetProbeToggle").classList.add("btn-outline-success")
+
+            document.getElementById("ethernetProbeToggle").classList.remove("btn-danger")
+            document.getElementById("ethernetProbeToggle").classList.remove("btn-outline-danger")
+
+            stop()
+
+            return
+
+        }
+
+        reset();
+
+    }
+
+    // ---------------
+
+    // Helper Functions
+
+    function updateTypeTempInfo () {
+
+        $.ajax({
+
+            url:'/fetch_new_templates',
+            type:"POST",
+            contentType:"application/json; charset=utf-8",
+            dataType:"json",
+            success: function(response_data){
+
+                device_types_list = response_data["types"]
+                device_temp_list = response_data["templates"]
+
+                device_types_list.sort()
+
+                newOptions = "<option value = 'None'>Choose...</option>"
+
+                deviceTypes = Object.keys(device_types_list)
+
+                for (let i = 0; i < deviceTypes.length; i++) {
+
+                    newOptions += `<option value = "${deviceTypes[i]}">${deviceTypes[i]}</option>`
+
+                }
+
+                document.getElementById("devType").innerHTML = newOptions
+
+            }
+
+        })
+
+    }
+
+    function applyTagFilters (funct, address) {
+
+        filtersToApply = currentProbeSettings[funct][address]
+        selectedDataType = currentProbeSettings[funct][address]["dataType"]
+
+        properElement = document.querySelector(`.${selectedDataType}ProbeRes[function = '${funct}'][register = '${address}']`)
+
+        if (selectedDataType == "float32") {
+
+            value = parseFloat(properElement.innerHTML())
+
+        } else {
+
+            value = parseInt(properElement.innerHTML())
+
+        }
+
+        // Apply Filters
+
+        return value
+
+    }
+
+    function moveSearchToProbe (addr, port) {
+
+        // Stop Timer
+        stop()
+
+        document.getElementById("ethernetProbeIP").value = addr;
+        document.getElementById("ethernetProbePort").value = port;
+
+        // Switch to Ethernet Probe
+        document.getElementById("ethernetProbeUpperMenu").style.display = "block";
+        document.getElementById("ethernetProbeStatus").style.display = "flex";
+        document.getElementById("ethernetBreak").style.display = "block";
+        document.getElementById("ethernetProbeOptions").style.display = "flex";
+        document.getElementById("afterSpacer").style.display = "block";
+        document.getElementById("ethernetProbeBody").style.display = "block";
+
+        //Hide Other Upper Menus
+        document.getElementById("ethernetSearchUpperMenu").style.display = "none";
+
+        //Hide Other Lower Menus/Statuses
+        document.getElementById("ethernetSearchStatus").style.display = "none";
+        document.getElementById("ethernetSearchTableToggle").style.display = "none";
+
+        //Hide Other Bodies
+        document.getElementById("ethernetSearchBody").style.display = "none";
+        document.getElementById("ethernetSearchBodyFull").style.display = "none";
+
+        // Reset Ethernet Probe
+        resetEthernetSearchPanel()
+
+        // Switch Buttons
+
+        if (!(document.getElementById("ethernetProbeButton").classList.contains("selectedOption"))) {
+
+            document.getElementById("ethernetProbeButton").classList.add("selectedOption")
+
+        }
+
+        if (document.getElementById("ethernetProbeButton").classList.contains("option")) {
+
+            document.getElementById("ethernetProbeButton").classList.remove("option")
+
+        }
+
+        if (!(document.getElementById("ethernetSearchButton").classList.contains("option"))) {
+
+            document.getElementById("ethernetSearchButton").classList.add("option")
+
+        }
+
+        if (document.getElementById("ethernetSearchButton").classList.contains("selectedOption")) {
+
+            document.getElementById("ethernetSearchButton").classList.remove("selectedOption")
+
+        }
+
+    }
+
+    function changeMeasureOptions () {
+
+        devType = document.getElementById("ethernetProbeDeviceType").value
+
+        options = "<option value = '-'>-</option>"
+
+        measuresNew = measure_mappings[devType]
+
+        for (let i = 0; i < measuresNew.length; i++) {
+
+            options += `<option value = "${measuresNew[i][0]}">${measuresNew[i][0]}</option>`
+
+        }
+
+        document.getElementById("measure").innerHTML = options
+
+    }
+
+    function saveProbeSettings () {
+
+        errors = []
+
+        modal = document.getElementById("probe_item_settings_modal")
+
+        funct_code = modal.getAttribute('function')
+        reg = modal.getAttribute('register')
+
+        namesList = []
+        functionList = []
+        registerList = []
+
+        functions = Object.keys(currentProbeSettings)
+
+        for (let i = 0; i < functions.length; i++) {
+
+            registers = Object.keys(currentProbeSettings[functions[i]])
+
+            for (let j = 0; j < registers.length; j++) {
+
+                namesList.push(currentProbeSettings[functions[i]][registers[j]]["name"])
+                functionList.push(functions[i])
+                registerList.push(registers[j])
+
+            }
+
+        }
+
+        document.getElementById("tag_name_errors").innerHTML = ""
+        document.getElementById("value_min_errors").innerHTML = ""
+        document.getElementById("value_max_errors").innerHTML = ""
+        document.getElementById("target_min_errors").innerHTML = ""
+        document.getElementById("target_max_errors").innerHTML = ""
+        document.getElementById("accepted_min_errors").innerHTML = ""
+        document.getElementById("accepted_max_errors").innerHTML = ""
+        document.getElementById("slope_errors").innerHTML = ""
+        document.getElementById("offset_errors").innerHTML = ""
+        document.getElementById("value_min_errors").innerHTML = ""
+        document.getElementById("target_min_errors").innerHTML = ""
+        document.getElementById("value_max_errors").innerHTML = ""
+        document.getElementById("target_max_errors").innerHTML = ""
+
+        if (document.getElementById("tag_name").value == "") {
+
+            errors.push("Name")
+            document.getElementById("tag_name_errors").innerHTML += "<span class = 'error'>Value Required</span>"
+
+        } else if (namesList.includes(document.getElementById("tag_name").value) && !((functionList[namesList.indexOf(document.getElementById("tag_name").value)] == funct_code) && (registerList[namesList.indexOf(document.getElementById("tag_name").value)] == reg))) {
+
+            errors.push("Name")
+            document.getElementById("tag_name_errors").innerHTML += "<span class = 'error'>Name must be unique</span>"
+
+        }
+
+        if (document.getElementById("value_min").value > document.getElementById("value_max").value) {
+
+            errors.push("Max/Min")
+            document.getElementById("value_min_errors").innerHTML += "<span class = 'error'>Minimum value must be less than maximum value</span>"
+            document.getElementById("value_max_errors").innerHTML += "<span class = 'error'>Maximum value must be greater than minimum value</span>"
+
+        }
+
+        if (document.getElementById("target_min").value > document.getElementById("target_max").value) {
+
+            errors.push("Max/Min")
+            document.getElementById("target_min_errors").innerHTML += "<span class = 'error'>Minimum value must be less than maximum value</span>"
+            document.getElementById("target_max_errors").innerHTML += "<span class = 'error'>Maximum value must be greater than minimum value</span>"
+
+        }
+
+        if (document.getElementById("accepted_min").value > document.getElementById("accepted_max").value) {
+
+            errors.push("Max/Min")
+            document.getElementById("accepted_min_errors").innerHTML += "<span class = 'error'>Minimum value must be less than maximum value</span>"
+            document.getElementById("accepted_max_errors").innerHTML += "<span class = 'error'>Maximum value must be greater than minimum value</span>"
+
+        }
+
+        if (document.getElementById("scale_mode").value == "slope_intercept") {
+
+            if (document.getElementById("slope").value == "") {
+
+                errors.push("Empty")
+                document.getElementById("slope_errors").innerHTML += "<span class = 'error'>Value Required</span>"
+
+            }
+
+            if (document.getElementById("offset").value == "") {
+
+                errors.push("Empty")
+                document.getElementById("offset_errors").innerHTML += "<span class = 'error'>Value Required</span>"
+
+            }
+
+        }
+
+        if (document.getElementById("scale_mode").value == "point_slope") {
+
+            if (document.getElementById("value_min").value == "") {
+
+                errors.push("Empty")
+                document.getElementById("value_min_errors").innerHTML += "<span class = 'error'>Value Required</span>"
+
+            }
+
+            if (document.getElementById("target_min").value == "") {
+
+                errors.push("Empty")
+                document.getElementById("target_min_errors").innerHTML += "<span class = 'error'>Value Required</span>"
+
+            }
+
+            if (document.getElementById("value_max").value == "") {
+
+                errors.push("Empty")
+                document.getElementById("value_max_errors").innerHTML += "<span class = 'error'>Value Required</span>"
+
+            }
+
+            if (document.getElementById("target_max").value == "") {
+
+                errors.push("Empty")
+                document.getElementById("target_max_errors").innerHTML += "<span class = 'error'>Value Required</span>"
+
+            }
+
+        }
+
+        // Save fields
+
+        if (errors.length == 0) {
+
+            currentProbeSettings[funct_code][reg]["name"] = document.getElementById("tag_name").value
+            currentProbeSettings[funct_code][reg]["measure"] = document.getElementById("measure").value
+            currentProbeSettings[funct_code][reg]["settings"]["unit"] = document.getElementById("unit").value
+            currentProbeSettings[funct_code][reg]["settings"]["flipBool"] = document.getElementById("flipBool").checked
+
+            currentProbeSettings[funct_code][reg]["dataType"] = document.getElementById("data_type").value
+
+            currentProbeSettings[funct_code][reg]["settings"]["scale_mode"] = document.getElementById("scale_mode").value
+            currentProbeSettings[funct_code][reg]["settings"]["slope"] = document.getElementById("slope").value
+            currentProbeSettings[funct_code][reg]["settings"]["offset"] = document.getElementById("offset").value
+
+            if (document.getElementById("scale_mode").value == "point_slope") {
+
+                raw_min = parseFloat(document.getElementById("value_min").value)
+                raw_max = parseFloat(document.getElementById("value_max").value)
+                target_min = parseFloat(document.getElementById("target_min").value)
+                target_max = parseFloat(document.getElementById("target_max").value)
+
+                slope = ((target_max - target_min) / (raw_max - raw_min))
+                offset = target_max - slope * raw_max
+
+                currentProbeSettings[funct_code][reg]["slopeCalced"] = slope
+                currentProbeSettings[funct_code][reg]["offsetCalced"] = offset
+
+                currentProbeSettings[funct_code][reg]["settings"]["slope"] = slope
+                currentProbeSettings[funct_code][reg]["settings"]["offset"] = offset
+
+            } else {
+
+                currentProbeSettings[funct_code][reg]["slopeCalced"] = parseFloat(currentProbeSettings[funct_code][reg]["settings"]["slope"])
+                currentProbeSettings[funct_code][reg]["offsetCalced"] = parseFloat(currentProbeSettings[funct_code][reg]["settings"]["offset"])
+
+            }
+
+            currentProbeSettings[funct_code][reg]["settings"]["value_min"] = document.getElementById("value_min").value
+            currentProbeSettings[funct_code][reg]["settings"]["target_min"] = document.getElementById("target_min").value
+            currentProbeSettings[funct_code][reg]["settings"]["value_max"] = document.getElementById("value_max").value
+            currentProbeSettings[funct_code][reg]["settings"]["target_max"] = document.getElementById("target_max").value
+            currentProbeSettings[funct_code][reg]["settings"]["accepted_min"] = document.getElementById("accepted_min").value
+            currentProbeSettings[funct_code][reg]["settings"]["accepted_max"] = document.getElementById("accepted_max").value
+
+            currentProbeSettings[funct_code][reg]["settings"]["extreme_exceeded"] = document.getElementById("extreme_exceeded").value
+
+            $('#probe_item_settings_modal').modal('hide');
+
+            document.getElementById("tag_name_errors").innerHTML = ""
+            document.getElementById("value_min_errors").innerHTML = ""
+            document.getElementById("value_max_errors").innerHTML = ""
+            document.getElementById("target_min_errors").innerHTML = ""
+            document.getElementById("target_max_errors").innerHTML = ""
+            document.getElementById("accepted_min_errors").innerHTML = ""
+            document.getElementById("accepted_max_errors").innerHTML = ""
+            document.getElementById("slope_errors").innerHTML = ""
+            document.getElementById("offset_errors").innerHTML = ""
+            document.getElementById("value_min_errors").innerHTML = ""
+            document.getElementById("target_min_errors").innerHTML = ""
+            document.getElementById("value_max_errors").innerHTML = ""
+            document.getElementById("target_max_errors").innerHTML = ""
+
+            document.querySelectorAll(".preview").forEach(function (idx) {
+
+                if ((idx.getAttribute('function') == funct_code) && (idx.getAttribute('register') == reg)) {
+
+                    if (funct_code == "read-coils") {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"]["val"], funct_code, reg)
+
+                    } else {
+
+                        idx.innerHTML = evalPreview(currentProbeSettings[funct_code][reg]["data"][currentProbeSettings[funct_code][reg]["dataType"]][document.getElementById("ethernetProbeByteWordOrder").value], funct_code, reg)
+
+                    }
+
+                }
+
+            })
+
+        }
+
+    }
+
+    function redoTagTable () {
+
+        tagTable = "<thead><tr><th>Tag</th><th>Measure</th><th>Function</th><th>Address</th><th>Date Type</th><th>Quantity</th><th>Slope</th><th>Offset</th><th>Preview</th><th>Unit</th><th>Settings</th><th>Delete</th></tr></thead><tbody>"
+
+        bWOrder = document.getElementById("ethernetProbeByteWordOrder").value
+
+        for (let i = tagMap.length - 1; i >= 0; i--) {
+
+            tagTable += `<tr><td>${tagMap[i]["name"]}</td><td>${tagMap[i]["measure"]}</td><td>${tagMap[i]["function"]}</td><td>${tagMap[i]["register"]}</td><td>${tagMap[i]["dataType"]}</td><td>${tagMap[i]["dataType"] == "int16" ? "1" : tagMap[i]["dataType"] == "uint16" ? "1" : "2"}</td><td>${tagMap[i]["slopeCalced"]}</td><td>${tagMap[i]["offsetCalced"]}</td><td>${evalPreview((tagMap[i]["dataType"] == "bool" ? tagMap[i]["data"]["val"] : tagMap[i]["data"][tagMap[i]["dataType"]][bWOrder]), tagMap[i]["function"], tagMap[i]["register"])}</td><td>${tagMap[i]["settings"]["unit"]}</td><td><button class = "btn btn-sm btn-warning mypv_edit_btn" function = "${tagMap[i]["function"]}" register = "${tagMap[i]["register"]}"></button></td><td><button class = "btn btn-sm btn-danger mypv_delete_btn" function = "${tagMap[i]["function"]}" register = "${tagMap[i]["register"]}"></button></td></tr>`
+
+        }
+
+        tagTable += "</tbody>"
+
+        document.getElementById("ethernetProbeTagMapping").innerHTML = tagTable
+
+        document.querySelectorAll("#ethernetProbeTagMapping > tbody > tr > td > .mypv_delete_btn").forEach(function (el) {
+
+            el.addEventListener('click', function () {
+
+                for (let i = tagMap.length - 1; i >= 0; i--) {
+
+                    if ((tagMap[i]["function"] == el.getAttribute('function')) && (tagMap[i]["register"] == el.getAttribute('register'))) {
+
+                        currentProbeSettings[tagMap[i]["function"]][tagMap[i]["register"]]["display"] = true
+
+                        tagMap.splice(i, 1)
+
+                    }
+
+                }
+
+                formatEthernetProbe(last_data)
+
+                redoTagTable()
+
+            })
+
+        })
+
+        document.querySelectorAll("#ethernetProbeTagMapping > tbody > tr > td > .mypv_edit_btn").forEach(function (el) {
+
+            el.addEventListener("click", function () {
+
+                funct_code = el.getAttribute('function')
+                reg = el.getAttribute('register')
+
+                document.getElementById("function_code").value = funct_code
+                document.getElementById("register").value = reg
+
+                if (funct_code == "read-coils") {
+
+                    document.getElementById("data_type").innerHTML = `<option value = "bool">bool</option>`
+
+                } else {
+
+                    document.getElementById("data_type").innerHTML = `<option value = "int16">int16</option><option value = "uint16">uint16</option><option selected = "" value = "int32">int32</option><option value = "uint32">uint32</option><option value = "float32">float32</option>`
+
+                }
+
+                document.getElementById("data_type").value = currentProbeSettings[funct_code][reg]["dataType"]
+                document.getElementById("tag_name").value = currentProbeSettings[funct_code][reg]["name"]
+
+                modal = document.getElementById("probe_item_settings_modal")
+
+                modal.setAttribute('function', funct_code)
+                modal.setAttribute('register', reg)
+
+                document.getElementById("measure").value = currentProbeSettings[funct_code][reg]["measure"]
+
+                setUnitOptions()
+
+                settings = Object.keys(currentProbeSettings[funct_code][reg]["settings"])
+
+                for (let i = 0; i < settings.length; i++) {
+
+                    if (!(settings[i] == 'flipBool')) {
+
+                        document.getElementById(settings[i]).value = currentProbeSettings[funct_code][reg]["settings"][settings[i]]
+
+                    } else {
+
+                        document.getElementById(settings[i]).checked = currentProbeSettings[funct_code][reg]["settings"][settings[i]]
+
+                    }
+
+                }
+
+                createAddressAlias()
+                toggleExtremaHandling()
+                evalSlopeFields()
+                redoGraph()
+
+                $('#probe_item_settings_modal').modal('show');
+
+            })
+
+        })
+
+    }
+
+    function addTag (funct, register) {
+
+        tagInfo = currentProbeSettings[funct][register]
+
+        foundEntry = false
+
+        for (let i = tagMap.length - 1; i >= 0; i--) {
+
+            if ((tagMap[i]["function"] == funct) && (tagMap[i]["register"] == register)) {
+
+                tagMap[i] = tagInfo
+
+                foundEntry = true
+
+                break
+
+            }
+
+        }
+
+        if (!(foundEntry)) {
+
+            tagMap.push(tagInfo)
+
+        }
+
+        currentProbeSettings[funct][register]["display"] = false
+
+        formatEthernetProbe(last_data)
+
+        redoTagTable()
+
+    }
+
+    function evalPreview (value, funct, register) {
+
+        if (Object.keys(currentProbeSettings).includes(funct) && Object.keys(currentProbeSettings[funct]).includes(register)) {
+
+            settings = currentProbeSettings[funct][register]
+
+        } else {
+
+            for (let i = 0; i < tagMap.length; i++) {
+
+                if ((tagMap[i]["function"] == funct) && (tagMap[i]["register"] == register)) {
+
+                    settings = tagMap[i]
+
+                    break
+
+                }
+
+            }
+
+        }
+
+        if (funct == "read-coils") {
+
+            if (settings["settings"]["flipBool"]) {
+
+                if (value == 0) {
+
+                    return 1
+
+                } else {
+
+                    return 0
+
+                }
+
+            } else {
+
+                return value
+
+            }
+
+        } else {
+
+            calcedVal = value * settings["slopeCalced"] + settings["offsetCalced"]
+
+            if (calcedVal < parseFloat(settings["accepted_min"])) {
+
+                if (settings["extreme_exceeded"] == "to_null") {
+
+                    calcedVal = "null"
+
+                } else if (settings["extreme_exceeded"] == "to_zero") {
+
+                    calcedVal = "0"
+
+                } else if (settings["extreme_exceeded"] == "to_one") {
+
+                    calcedVal = "1"
+
+                } else if (settings["extreme_exceeded"] == "to_extreme") {
+
+                    calcedVal = settings["accepted_min"]
+
+                } else if (settings["extreme_exceeded"] == "to_extreme_opposite") {
+
+                    if (settings["accepted_max"] == "") {
+
+                        calcedVal = "null"
+
+                    } else {
+
+                        calcedVal = settings["accepted_max"]
+
+                    }
+
+                }
+
+            } else if (calcedVal > parseFloat(settings["accepted_max"])) {
+
+                if (settings["extreme_exceeded"] == "to_null") {
+
+                    calcedVal = "null"
+
+                } else if (settings["extreme_exceeded"] == "to_zero") {
+
+                    calcedVal = "0"
+
+                } else if (settings["extreme_exceeded"] == "to_one") {
+
+                    calcedVal = "1"
+
+                } else if (settings["extreme_exceeded"] == "to_extreme") {
+
+                    calcedVal = settings["accepted_min"]
+
+                } else if (settings["extreme_exceeded"] == "to_extreme_opposite") {
+
+                    if (settings["accepted_max"] == "") {
+
+                        calcedVal = "null"
+
+                    } else {
+
+                        calcedVal = settings["accepted_max"]
+
+                    }
+
+                }
+
+            }
+
+            return `${calcedVal}`
+
+        }
+
+    }
+
+    // ---------------
+
+    // Setup functions for all panels
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+
+        setupRegistersPanel()
+        setupserialStreamPanel()
+        setupEthernetSearchPanel()
+        setupEthernetProbePanel()
+
+        $('#idsError, #searchPortError, #addrProbeError, #portProbeError, #deviceProbeError, #functionProbeError, #registerProbeError, #tagNameRequired, #uniqueTagName, #bWOrderIssue, #tagMapEmpty, #successfulSaveTagMap, #modelError').on('close.bs.alert', function (event) {
+
+            event.preventDefault();
+
+            this.style.display = "none";
+
+        });
+
+    })
+
+    function setupRegistersPanel () {
+
+        // Get formatted data when template is changed
+        document.getElementById("devTemp").onchange = function () {
+
+            updateSerialRegisters()
+
+        }
+
+        // When device type is changed, update templates
+        document.getElementById("devType").onchange = function () {
+
+            deviceTemplateSelect = document.getElementById("devTemp")
+
+            deviceTemplateSelect.innerHTML = ""
+
+            {% if True %}
+
+            document.getElementById("add_device_button").style.display = "none"
+
+            {% endif %}
+
+            if (this.value == "None") {
+
+                let optionToAdd = document.createElement('option')
+                optionToAdd.value = "None"
+                optionToAdd.innerHTML = "Choose..."
+
+                deviceTemplateSelect.appendChild(optionToAdd)
+
+            } else {
+
+                device_temp_list[document.getElementById("devType").value].forEach(function(entry){
+
+                    let optionToAdd = document.createElement('option')
+                    optionToAdd.value = entry
+                    optionToAdd.innerHTML = entry
+
+                    deviceTemplateSelect.appendChild(optionToAdd)
+
+                })
+
+                {% if True %}
+
+                document.getElementById("add_device_button").style.display = "block"
+
+                {% endif %}
+
+
+            }
+
+            // Update Data
+            updateData()
+
+            reset()
+
+        }
+
+        // When the device id is updated, disable
+        document.getElementById("devID").onchange = function () {
+
+            if (!(this.value == "None")) {
+
+                newOptions = "<option value = 'None'>Choose...</option>"
+
+                deviceTypes = Object.keys(device_types_list)
+
+                for (let i = 0; i < deviceTypes.length; i++) {
+
+                    newOptions += `<option value = "${deviceTypes[i]}">${deviceTypes[i]}</option>`
+
+                }
+
+                document.getElementById("devType").innerHTML = newOptions
+
+                document.getElementById("devType").disabled = false;
+                document.getElementById("devTemp").disabled = false;
+                document.getElementById("serialCounterLabel").style.display = "flex";
+                document.getElementById("afterSpacer").style.display = "block";
+
+            } else {
+
+                document.getElementById("devType").disabled = "disabled";
+                document.getElementById("devTemp").disabled = "disabled";
+                document.getElementById("serialCounterLabel").style.display = "none";
+                document.getElementById("afterSpacer").style.display = "none";
+                document.getElementById("devType").innerHTML = "<option value = 'None'>Choose...</option>"
+
+            }
+
+            selected = []
+
+            for (i = 0; i < ids.length; i++) {
+
+                if (ids[i][0] == this.value) {
+
+                    selected = ids[i]
+
+                    break
+
+                }
+
+            }
+
+            var deviceTypeSelect = document.getElementById("devType")
+            var deviceTemplateSelect = document.getElementById("devTemp")
+
+            if (selected[4]) {
+
+                deviceTypeSelect.value = selected[5]
+                deviceTypeSelect.disabled = "disabled";
+
+                deviceTemplateSelect.innerHTML = ""
+
+                {% if True %}
+
+                document.getElementById("add_device_button").style.display = "none"
+
+                {% endif %}
+
+                if (deviceTypeSelect.value == "None") {
+
+                    let optionToAdd = document.createElement('option')
+                    optionToAdd.value = "None"
+                    optionToAdd.innerHTML = "Choose..."
+
+                    deviceTemplateSelect.appendChild(optionToAdd)
+
+                } else {
+
+                    device_temp_list[deviceTypeSelect.value].forEach(function(entry){
+
+                        let optionToAdd = document.createElement('option')
+                        optionToAdd.value = entry
+                        optionToAdd.innerHTML = entry
+
+                        deviceTemplateSelect.appendChild(optionToAdd)
+
+                    })
+
+                    {% if True %}
+
+                    document.getElementById("add_device_button").style.display = "block"
+
+                    {% endif %}
+
+                }
+
+                deviceTemplateSelect.value = selected[6]
+                deviceTemplateSelect.disabled = "disabled";
+
+                {% if True %}
+
+                document.getElementById("add_btn").style.display = "none";
+
+                {% endif %}
+
+            } else {
+
+                deviceTypeSelect.value = "None"
+                deviceTypeSelect.disabled = false;
+
+                deviceTemplateSelect.innerHTML = ""
+
+                {% if True %}
+
+                document.getElementById("add_device_button").style.display = "none"
+
+                {% endif %}
+
+                if (deviceTypeSelect.value == "None") {
+
+                    let optionToAdd = document.createElement('option')
+                    optionToAdd.value = "None"
+                    optionToAdd.innerHTML = "Choose..."
+
+                    deviceTemplateSelect.appendChild(optionToAdd)
+
+                } else {
+
+                    device_temp_list[deviceTypeSelect.value].forEach(function(entry){
+
+                        let optionToAdd = document.createElement('option')
+                        optionToAdd.value = entry
+                        optionToAdd.innerHTML = entry
+
+                        deviceTemplateSelect.appendChild(optionToAdd)
+
+                    })
+
+                    {% if True %}
+
+                    document.getElementById("add_device_button").style.display = "block"
+
+                    {% endif %}
+
+                }
+
+                deviceTemplateSelect.value = "None"
+                deviceTemplateSelect.disabled = false;
+
+                {% if True %}
+
+                document.getElementById("add_btn").style.display = "flex";
+
+                {% endif %}
+
+            }
+
+            if (!(this.value == "None")) {
+
+                document.getElementById("serialCounterLabel").style.display = "flex"
+                document.getElementById("afterSpacer").style.display = "block";
+
+                // Update Data
+                updateData()
+
+                start();
+
+            } else {
+
+                stop();
+
+                document.getElementById("dataTableBody").innerHTML = "<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>"
+
+                document.getElementById("serialCounterLabel").style.display = "none"
+                document.getElementById("afterSpacer").style.display = "none";
+
+            }
+
+        }
+
+        {% if True %}
+
+        $("#add_device_button").click(function(event){
+
+            let id = null;
+            let port = null;
+
+            for (let i = 0; i < ids.length; i++) {
+
+                if (ids[i][0] == document.getElementById("devID").value){
+
+                    id = ids[i][1]
+                    port = ids[i][2]
+
+                }
+
+            }
+
+            $("#device_info_partial_modal_content").html("Loading Form...");
+            $("#device_info_partial_modal_content").load( "/new_device_partial", {"id": id, "port": port, "deviceType": document.getElementById("devType").value, "deviceTemplate": document.getElementById("devTemp").value});
+
+            $("#device_info_partial_modal").modal('show');
+
+        });
+
+        {% endif %}
+
+        {% if form is defined %}
+
+            $("#devID").val("{{ form.comm_id.data }}{{ form.wiretapped.data }}")
+
+            $("#devType").val("{{ form.device_type.data }}")
+
+            device_temp_list[$("#devType").val()].forEach(function(entry){
+
+                $("#devTemp").append($("<option value='" + entry  +"'>" + entry + "</option>"))
+
+            })
+
+            $("#devTemp").val("{{ form.daq_template.data }}")
+
+            // Update Data
+            updateData()
+
+            start();
+
+            $("#device_info_partial_modal").modal('show');
+            
+        {% endif %}
+
+
+    }
+
+    function setupserialStreamPanel () {
+
+        document.getElementById("startSerialStreamRead").onclick = function () {
+
+            if (this.value == "start") {
+
+                this.value = "stop"
+
+                this.innerHTML = "Stop"
+
+                this.classList.remove("btn-success");
+                this.classList.remove("btn-outline-success");
+
+                this.classList.add("btn-danger");
+
+                // Update Data
+                updateData()
+
+                start();
+
+            } else {
+
+                this.value = "start"
+
+                this.innerHTML = "Start"
+
+                this.classList.remove("btn-danger");
+
+                this.classList.add("btn-success");
+                this.classList.add("btn-outline-success");
+
+                stop();
+
+            }
+
+        }
+
+    }
+
+    function setupEthernetSearchPanel () {
+
+        document.getElementById("ethernetSearchTableToggleBtn").onclick = function () {
+
+            if (searchTableType == "filtered") {
+            
+                document.getElementById("ethernetSearchTableToggleBtn").innerHTML = "Show Filtered Result"
+
+                searchTableType = "full"
+
+                document.getElementById("ethernetSearchBody").style.display = "none";
+                document.getElementById("ethernetSearchBodyFull").style.display = "block";
+
+            } else {
+
+                document.getElementById("ethernetSearchTableToggleBtn").innerHTML = "Show Full Result"
+
+                searchTableType = "filtered"
+
+                document.getElementById("ethernetSearchBody").style.display = "block";
+                document.getElementById("ethernetSearchBodyFull").style.display = "none";
+
+            }
+
+        }
+
+        document.getElementById("ethernetSearchToggle").onclick = function () {
+
+            if (this.value == "start") {
+
+                startData = {'ips': document.getElementById("ethernetSearchIP").value, 
+                             'port': document.getElementById("ethernetSearchPort").value}
+
+                $.ajax({
+
+                    url:'/ip_discovery',
+                    type:"POST",
+                    contentType:"application/json; charset=utf-8",
+                    data: JSON.stringify(startData),
+                    dataType:"json",
+                    success: function(response_data){
+
+                        if (Object.keys(response_data).includes("errors")) {
+
+                            document.getElementById("ethernetSearchStatus").style.display = "none";
+                            document.getElementById("ethernetBreak").style.display = "none";
+
+                            searched = ["none", "none", document.getElementById("ethernetSearchTableToggle").style.display]
+
+                            if (response_data["errors"] == "badPort") {
+
+                                document.getElementById("searchPortError").style.display = "block"
+
+                            } else {
+
+                                idsErrorList = document.getElementById("idsErrorList")
+                                idsErrorList.innerHTML = response_data["errors"]
+                                document.getElementById("idsError").style.display = "block"
+
+                            }
+
+                        } else {
+
+                            document.getElementById("ethernetSearchStatus").style.display = "flex";
+                            document.getElementById("ethernetBreak").style.display = "block";
+                            document.getElementById("ethernetSearchTableToggle").style.display = "flex";
+
+                            searched = ["flex", "block", "flex"]
+
+                            document.getElementById('idsError').style.display = "none";
+
+                            document.getElementById("ethernetSearchToggle").value = "stop"
+                            document.getElementById("ethernetSearchToggle").innerHTML = "Stop Search"
+                            document.getElementById("ethernetSearchToggle").classList.add("btn-danger")
+                            document.getElementById("ethernetSearchToggle").classList.add("btn-outline-danger")
+                            document.getElementById("ethernetSearchToggle").style.marginTop = "28%";
+
+                            document.getElementById("ethernetSearchToggle").classList.remove("btn-success")
+                            document.getElementById("ethernetSearchToggle").classList.remove("btn-outline-success")
+
+                            ethernetSearchTable = document.getElementById("ethernetSearchTable");
+                            ethernetSearchTableFull = document.getElementById("ethernetSearchTableFull");
+
+                            ethernetSearchTable.innerHTML = "<thead><tr><th>IP Address</th><th>Host Up</th><th>Port Open</th><th>Probe</th></tr></thead><tbody><tr><td>-</td><td>-</td><td>-</td><td>-</td></tr></tbody>";
+                            ethernetSearchTableFull.innerHTML = "<thead><tr><th>IP Address</th><th>Host Up</th><th>Port Open</th><th>Probe</th></tr></thead><tbody><tr><td>-</td><td>-</td><td>-</td><td>-</td></tr></tbody";
+
+                            document.getElementById("ethernetSearchStatusDisplay").innerHTML = `<div class = "progress" style = "width: 100%; background: var(--bs-gray)"><div class = "progress-bar progress-bar-striped progress-bar-animated" role = "progressbar" style = "width: 100%" aria-valuenow = "10" aria-valuemin = "0" aria-valuemax = "100"><span style = "padding-left: 5px">Initializing - 0%</span></div></div>`
+
+                            start();
+
+                        }
+
+                    }
+
+                })
+
+            } else {
+
+                document.getElementById("ethernetSearchStatus").style.display = "none";
+                document.getElementById("ethernetBreak").style.display = "none";
+
+                searched = ["none", "none", document.getElementById("ethernetSearchTableToggle").style.display]
+
+                $.ajax({
+
+                    url:'/kill_ip_discovery',
+                    type:"POST",
+                    contentType:"application/json; charset=utf-8",
+                    dataType:"json",
+                    success: function(response_data){
+
+                    }
+
+                })
+
+                this.value = "start"
+                this.innerHTML = "Search"
+                this.classList.add("btn-success")
+                this.classList.add("btn-outline-success")
+
+                this.classList.remove("btn-danger")
+                this.classList.remove("btn-outline-danger")
+
+                stop()
+
+            }
+
+        }
+
+    }
+
+    function setupEthernetProbePanel () {
+
+        {% if True %}
+
+        changeMeasureOptions()
+
+        document.getElementById("startTagMapBase").addEventListener('click', function () {
+
+            if (document.getElementById("ethernetProbeTagMapNameModal").value.trim() == "") {
+
+                document.getElementById("ethernetProbeTagMapNameModal_errors").style.display = "block"
+
+            } else {
+
+                document.getElementById("ethernetProbeTagMapNameModal_errors").style.display = "none"
+
+                document.getElementById("ethernetProbeTagMapName").value = document.getElementById("ethernetProbeTagMapNameModal").value
+
+                if (!(document.getElementById("ethernetProbeDeviceType").value == document.getElementById("ethernetProbeDeviceTypeModal").value)) {
+
+                    document.getElementById("ethernetProbeTagMapping").innerHTML = "<thead><tr><th>Tag</th><th>Measure</th><th>Function</th><th>Address</th><th>Date Type</th><th>Quantity</th><th>Slope</th><th>Offset</th><th>Preview</th><th>Unit</th><th>Settings</th><th>Delete</th></tr></thead><tbody><tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr></tbody>"
+
+                    tagMap = []
+
+                    functions = Object.keys(currentProbeSettings)
+
+                    for (let i = 0; i < functions.length; i++) {
+
+                        registers = Object.keys(currentProbeSettings[functions[i]])
+
+                        for (let j = 0; j < registers.length; j++) {
+
+                            currentProbeSettings[functions[i]][registers[j]]["measure"] = "-"
+                            currentProbeSettings[functions[i]][registers[j]]["settings"]["unit"] = "-"
+
+                        }
+
+                    }
+
+                    setUnitOptions()
+
+                }
+
+                document.getElementById("ethernetProbeDeviceType").value = document.getElementById("ethernetProbeDeviceTypeModal").value
+
+                changeMeasureOptions()
+
+                $("#start_tag_map_modal").modal("hide")
+
+                tagMapStarted = true
+
+                document.getElementById("startMapCreationButton").style.display = "none"
+                document.getElementById("tagMapSaveButton").style.display = "block"
+                document.getElementById("ethernetProbeTagMapNameDiv").style.display = "block"
+                document.getElementById("ethernetProbeDeviceTypeDiv").style.display = "block"
+
+                document.getElementById("tagCreationTools").style.display = "block"
+
+                document.querySelectorAll("#ethernetProbeTable > tbody > tr > td > .mypv_create_btn").forEach(function (el) {
+
+                    el.classList.remove("btn-secondary")
+                    el.classList.add("btn-success")
+
+                })
+
+            }
+
+        })
+
+        document.getElementById("ethernetProbeTagMapName").oninput = function () {
+
+            if (document.getElementById("ethernetProbeTagMapName").value.trim() == "") {
+
+                document.getElementById("ethernetProbeTagMapName_errors").style.display = "block"
+
+                document.getElementById("tagMapSaveButton").style.marginTop = "13%";
+                document.getElementById("tagMapSaveButton").parentElement.classList.remove("align-items-end")
+                document.getElementById("tagMapSaveButton").parentElement.classList.add("align-items-start")
+
+            } else {
+
+                document.getElementById("ethernetProbeTagMapName_errors").style.display = "none"
+
+                document.getElementById("tagMapSaveButton").style.marginTop = "0%";
+                document.getElementById("tagMapSaveButton").parentElement.classList.add("align-items-end")
+                document.getElementById("tagMapSaveButton").parentElement.classList.remove("align-items-start")
+
+            }
+
+        }
+
+        document.getElementById("ethernetProbeDeviceType").addEventListener('change', function () {
+
+            changeMeasureOptions()
+
+        })
+
+        document.getElementById("startMapCreationButton").addEventListener('click', function () {
+
+            document.getElementById("ethernetProbeTagMapNameModal").value = document.getElementById("ethernetProbeTagMapName").value
+            document.getElementById("ethernetProbeDeviceTypeModal").value = document.getElementById("ethernetProbeDeviceType").value
+
+            $("#start_tag_map_modal").modal("show")
+
+        })
+
+        {% endif %}
+
+        document.getElementById("ethernetProbeByteWordOrder").onchange = function () {
+
+            bWOrder = document.getElementById("ethernetProbeByteWordOrder").value
+
+            document.querySelectorAll(".int16ProbeRes").forEach(function (el) {
+
+                el.innerHTML = currentProbeSettings[el.getAttribute('function')][el.getAttribute('register')]["data"]["int16"][bWOrder]
+
+            })
+
+            document.querySelectorAll(".uint16ProbeRes").forEach(function (el) {
+
+                el.innerHTML = currentProbeSettings[el.getAttribute('function')][el.getAttribute('register')]["data"]["uint16"][bWOrder]
+
+            })
+
+            document.querySelectorAll(".int32ProbeRes").forEach(function (el) {
+
+                el.innerHTML = currentProbeSettings[el.getAttribute('function')][el.getAttribute('register')]["data"]["int32"][bWOrder]
+
+            })
+
+            document.querySelectorAll(".uint32ProbeRes").forEach(function (el) {
+
+                el.innerHTML = currentProbeSettings[el.getAttribute('function')][el.getAttribute('register')]["data"]["uint32"][bWOrder]
+
+            })
+
+            document.querySelectorAll(".float32ProbeRes").forEach(function (el) {
+
+                el.innerHTML = currentProbeSettings[el.getAttribute('function')][el.getAttribute('register')]["data"]["float32"][bWOrder]
+
+            })
+
+        }
+
+        {% if True %}
+
+        document.getElementById("tagMapSaveButton").addEventListener('click', function () {
+
+            $.ajax({
+
+                url:'/make_tag_map',
+                type:"POST",
+                contentType:"application/json; charset=utf-8",
+                dataType:"json",
+                data: JSON.stringify({"map_name": document.getElementById("ethernetProbeTagMapName").value, "byteWord": document.getElementById("ethernetProbeByteWordOrder").value, "devType": document.getElementById("ethernetProbeDeviceType").value, "tagMap": tagMap}),
+                success: function(response_data) {
+
+                    if (response_data["status"] == "Error") {
+
+                        if (response_data["error"] == "dupName") {
+
+                            document.getElementById("uniqueTagName").style.display = "block"
+
+                        } else if (response_data["error"] == "bWOrder") {
+
+                            document.getElementById("bWOrderIssue").style.display = "block"
+
+                        } else if (response_data["error"] == "noName") {
+
+                            document.getElementById("tagNameRequired").style.display = "block"
+
+                        } else if (response_data["error"] == "tagMapEmpty") {
+
+                            document.getElementById("tagMapEmpty").style.display = "block"
+
+                        }
+
+                    } else if (response_data["status"] == "Success") {
+
+                        updateTypeTempInfo()
+
+                        document.getElementById("successfulSaveTagMap").style.display = "block"
+
+                        tagMapStarted = false
+
+                        document.getElementById("startTagMapBase").innerHTML = "Start Tag Map"
+                        document.getElementById("startMapCreationButton").innerHTML = "Start Tag Map"
+
+                        document.getElementById("ethernetProbeTagMapping").innerHTML = "<thead><tr><th>Tag</th><th>Measure</th><th>Function</th><th>Address</th><th>Date Type</th><th>Quantity</th><th>Slope</th><th>Offset</th><th>Preview</th><th>Unit</th><th>Settings</th><th>Delete</th></tr></thead><tbody><tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr></tbody>"
+
+                        tagMap = []
+
+                        document.getElementById("ethernetProbeTagMapName").value = ""
+
+                        
+
+                        document.getElementById("tagCreationTools").style.display = "none"
+
+                        document.querySelectorAll("#ethernetProbeTable > tbody > tr > td > .mypv_create_btn").forEach(function (el) {
+
+                            el.classList.remove("btn-success")
+                            el.classList.add("btn-secondary")
+
+                        })
+
+                    }
+
+                }
+
+            })
+
+        })
+
+        {% endif %}
+
+        document.getElementById("ethernetProbeToggle").onclick = function () {
+
+            if (this.value == "start") {
+
+                startData = {'address': document.getElementById("ethernetProbeIP").value, 
+                            'port': document.getElementById("ethernetProbePort").value,
+                            'devId': document.getElementById("ethernetProbeDevice").value,
+                            'function': document.getElementById("ethernetProbeReadType").value,
+                            'registers': document.getElementById("ethernetProbeRegisters").value}
+
+                $.ajax({
+
+                    url:'/tcp_probe_start',
+                    type:"POST",
+                    contentType:"application/json; charset=utf-8",
+                    data: JSON.stringify(startData),
+                    dataType:"json",
+                    success: function(response_data){
+
+                        if (response_data["error"] == "Bad Address") {
+
+                            document.getElementById("addrProbeError").style.display = "block"
+
+                            document.getElementById("ethernetProbeStatus").style.display = "none";
+                            document.getElementById("ethernetBreak").style.display = "none";
+
+                            probed = ["none", "none", document.getElementById("ethernetProbeOptions").style.display]
+
+                        } else if (response_data["error"] == "Bad Port") {
+
+                            document.getElementById("portProbeError").style.display = "block"
+
+                            document.getElementById("ethernetProbeStatus").style.display = "none";
+                            document.getElementById("ethernetBreak").style.display = "none";
+
+                            probed = ["none", "none", document.getElementById("ethernetProbeOptions").style.display]
+
+                        } else if (response_data["error"] == "Bad Function") {
+
+                            document.getElementById("functionProbeError").style.display = "block"
+
+                            document.getElementById("ethernetProbeStatus").style.display = "none";
+                            document.getElementById("ethernetBreak").style.display = "none";
+
+                            probed = ["none", "none", document.getElementById("ethernetProbeOptions").style.display]
+
+                        } else if (response_data["error"] == "Bad Registers") {
+
+                            document.getElementById("registerProbeError").style.display = "block"
+
+                            document.getElementById("ethernetProbeStatus").style.display = "none";
+                            document.getElementById("ethernetBreak").style.display = "none";
+
+                            probed = ["none", "none", document.getElementById("ethernetProbeOptions").style.display]
+
+                        } else if (response_data["error"] == "Bad Device") {
+
+                            document.getElementById("deviceProbeError").style.display = "block"
+
+                            document.getElementById("ethernetProbeStatus").style.display = "none";
+                            document.getElementById("ethernetBreak").style.display = "none";
+
+                            probed = ["none", "none", document.getElementById("ethernetProbeOptions").style.display]
+
+                        } else {
+
+                            document.getElementById("ethernetProbeStatus").style.display = "flex";
+                            document.getElementById("ethernetBreak").style.display = "block";
+                            document.getElementById("ethernetProbeOptions").style.display = "flex";
+
+                            probed = ["flex", "block", "flex"]
+
+                            document.getElementById("addrProbeError").style.display = "none"
+                            document.getElementById("portProbeError").style.display = "none"
+                            document.getElementById("functionProbeError").style.display = "none"
+                            document.getElementById("registerProbeError").style.display = "none"
+                            document.getElementById("deviceProbeError").style.display = "none"
+
+                            document.getElementById("ethernetProbeToggle").value = "stop"
+                            document.getElementById("ethernetProbeToggle").innerHTML = "Stop Probe"
+                            document.getElementById("ethernetProbeToggle").classList.add("btn-danger")
+                            document.getElementById("ethernetProbeToggle").classList.add("btn-outline-danger")
+
+                            document.getElementById("ethernetProbeToggle").classList.remove("btn-success")
+                            document.getElementById("ethernetProbeToggle").classList.remove("btn-outline-success")
+
+                            ethernetProbeTable = document.getElementById("ethernetProbeTable");
+
+                            document.getElementById("probeStatusProgress").style.width = "0%"
+
+                            document.getElementById("probeStatusProgress").innerHTML = "<span style = 'padding-left: 5px'>Started</span>"
+
+                            start();
+
+                        }
+
+                    }
+
+                })
+
+            } else {
+
+                document.getElementById("ethernetProbeStatus").style.display = "none";
+                document.getElementById("ethernetBreak").style.display = "none";
+
+                probed = ["none", "none", document.getElementById("ethernetProbeOptions").style.display]
+
+                $.ajax({
+
+                    url:'/tcp_probe_kill',
+                    type:"POST",
+                    contentType:"application/json; charset=utf-8",
+                    dataType:"json",
+                    success: function(response_data){
+
+                    }
+
+                })
+
+                this.value = "start"
+                this.innerHTML = "Probe"
+                this.classList.add("btn-success")
+                this.classList.add("btn-outline-success")
+
+                this.classList.remove("btn-danger")
+                this.classList.remove("btn-outline-danger")
+
+                stop()
+
+            }
+
+        }
+
+    }
+
+    {% if True %}
+
+    // Modal Control
+
+    chart = null
+    unit_choices = {{ unit_choices|tojson|safe }}
+    measure_mappings = {{ measure_mappings|tojson|safe }}
+
+    console.log(unit_choices);
+    console.log(measure_mappings);
+
+    function redoGraph () {
+
+        [].forEach.call(document.getElementsByClassName('minMaxWarnInt'), function (el) {
+            
+            el.style.display = "none"
+
+        });
+
+        [].forEach.call(document.getElementsByClassName('minMaxWarnRawPoint'), function (el) {
+            
+            el.style.display = "none"
+
+        });
+
+        [].forEach.call(document.getElementsByClassName('minMaxWarnTargetPoint'), function (el) {
+            
+            el.style.display = "none"
+
+        });
+
+        scale_mode = document.getElementById("scale_mode").value
+
+        caps = []
+        cont = []
+
+        max = parseFloat(document.getElementById("accepted_max").value)
+        min = parseFloat(document.getElementById("accepted_min").value)
+
+        if (!(isNaN(max) || isNaN(min)) && (min > max)) {
+
+            [].forEach.call(document.getElementsByClassName('minMaxWarnInt'), function (el) {
+        
+                el.style.display = "block"
+
+            });
+
+            return
+
+        }
+
+        if (scale_mode == "slope_intercept") {
+
+            slope = parseFloat(document.getElementById("slope").value)
+            offset = parseFloat(document.getElementById("offset").value)
+
+            chart.yAxis[0].removePlotLine('minimum');
+            chart.yAxis[0].removePlotLine('maximum');
+
+            chart.yAxis[0].removePlotLine('minimumt');
+            chart.yAxis[0].removePlotLine('maximumt');
+
+            chart.xAxis[0].removePlotLine('minimuma');
+            chart.xAxis[0].removePlotLine('maximuma');
+
+            yIntersectMax = null
+            yIntersectMin = null
+
+            dataNew = [[-20, (-20 * slope + offset)], [20, (20 * slope + offset)]]
+
+            if (!(isNaN(max))) {
+
+                chart.yAxis[0].addPlotLine({
+
+                value: max,
+                color: 'black',
+                width: 1,
+                dashStyle: 'Dash',
+                id: 'maximum',
+                zIndex: 1
+
+            })
+
+                yIntersectMax = (max - offset) / slope
+
+                dataNew[1] = [yIntersectMax, max]
+                caps.push([yIntersectMax, max])
+
+            } else {
+
+                cont.push(dataNew[1])
+
+            }
+
+            if (!(isNaN(min))) {
+
+                chart.yAxis[0].addPlotLine({
+
+                    value: min,
+                    color: 'black',
+                    width: 1,
+                    dashStyle: 'Dash',
+                    id: 'minimum',
+                    zIndex: 1
+
+                })
+
+                yIntersectMin = (min - offset) / slope
+
+                dataNew[0] = [yIntersectMin, min]
+                caps.push([yIntersectMin, min])
+
+            } else {
+
+                cont.push(dataNew[0])
+
+            }
+
+            show = dataNew
+
+        } else if (scale_mode == "point_slope") {
+
+            raw_min = parseFloat(document.getElementById("value_min").value)
+            raw_max = parseFloat(document.getElementById("value_max").value)
+            target_min = parseFloat(document.getElementById("target_min").value)
+            target_max = parseFloat(document.getElementById("target_max").value)
+
+            slope = ((target_max - target_min) / (raw_max - raw_min))
+            offset = target_max - slope * raw_max
+
+            if (raw_min > raw_max) {
+
+                [].forEach.call(document.getElementsByClassName('minMaxWarnRawPoint'), function (el) {
+
+                    el.style.display = "block"
+
+                });
+
+                return
+
+            }
+
+            if (target_min > target_max) {
+
+                [].forEach.call(document.getElementsByClassName('minMaxWarnTargetPoint'), function (el) {
+
+                    el.style.display = "block"
+
+                });
+
+                return
+
+            }
+
+            chart.yAxis[0].removePlotLine('minimum');
+            chart.yAxis[0].removePlotLine('maximum');
+
+            chart.yAxis[0].removePlotLine('minimumt');
+            chart.yAxis[0].removePlotLine('maximumt');
+
+            chart.xAxis[0].removePlotLine('minimuma');
+            chart.xAxis[0].removePlotLine('maximuma');
+
+            chart.xAxis[0].addPlotLine({
+
+                value: raw_min,
+                className: 'minLine',
+                width: 2,
+                dashStyle: 'Dash',
+                id: 'minimuma',
+                zIndex: 1
+
+            })
+
+            chart.yAxis[0].addPlotLine({
+
+                value: target_min,
+                className: 'minLine',
+                width: 2,
+                dashStyle: 'Dash',
+                id: 'minimumt',
+                zIndex: 1
+
+            })
+
+            chart.xAxis[0].addPlotLine({
+
+                value: raw_max,
+                className: 'maxLine',
+                width: 2,
+                dashStyle: 'Dash',
+                id: 'maximuma',
+                zIndex: 1
+
+            })
+
+            chart.yAxis[0].addPlotLine({
+
+                value: target_max,
+                className: 'maxLine',
+                width: 2,
+                dashStyle: 'Dash',
+                id: 'maximumt',
+                zIndex: 1
+
+            })
+
+            dataNew = [[raw_min, target_min], [raw_max, target_max]]
+
+            show = [[raw_min, target_min], [raw_max, target_max]]
+
+            if (!(isNaN(max))) {
+
+                chart.yAxis[0].addPlotLine({
+
+                    value: max,
+                    color: 'black',
+                    width: 1,
+                    dashStyle: 'Dash',
+                    id: 'maximum',
+                    zIndex: 1
+
+                })
+
+                yIntersectMax = (max - offset) / slope
+
+                dataNew[1] = [yIntersectMax, max]
+                caps.push([yIntersectMax, max])
+
+            } else {
+
+                cont.push(dataNew[1])
+
+            }
+
+            if (!(isNaN(min))) {
+
+                chart.yAxis[0].addPlotLine({
+
+                    value: min,
+                    color: 'black',
+                    width: 1,
+                    dashStyle: 'Dash',
+                    id: 'minimum',
+                    zIndex: 1
+
+                })
+
+                yIntersectMin = (min - offset) / slope
+
+                dataNew[0] = [yIntersectMin, min]
+                caps.push([yIntersectMin, min])
+
+            } else {
+
+                cont.push(dataNew[0])
+
+            }
+
+        }
+
+        chart.series[1].setData([]);
+        chart.series[2].setData([]);
+
+        chart.update({
+
+            series: [{
+
+                data: dataNew
+
+            }, {
+
+                data: caps
+
+            }, {
+
+                data: cont
+
+            }, {
+
+                data: show
+
+            }]
+
+        });
+
+    }
+
+    function setUnitOptions () {
+
+        unitToFind = null
+        measureSelected = document.getElementById("measure").value
+        let devType = document.getElementById("ethernetProbeDeviceType").value
+
+        for (let i = 0; i < measure_mappings[devType].length; i++) {
+
+            if (measure_mappings[devType][i][0] == measureSelected) {
+
+                unitToFind = measure_mappings[devType][i][1]
+
+                break
+
+            }
+
+        }
+
+        if (!(unitToFind == null)) {
+
+            found = false
+
+            for (let i = 0; i < unit_choices.length; i++) {
+
+                let units = []
+
+                for (let j = 0; j < unit_choices[i][1].length; j++) {
+
+                    units.push(unit_choices[i][1][j][0])
+
+                }
+
+                if (units.includes(unitToFind)) {
+
+                    if (units.includes('bool')) {
+
+                        document.getElementById('flipBoolDiv').style.display = 'block'
+                        document.getElementById('lowerHalf').style.display = 'none'
+
+                    } else {
+
+                        document.getElementById('flipBoolDiv').style.display = 'none'
+                        document.getElementById('lowerHalf').style.display = 'flex'
+
+                    }
+
+                    let newOptions = `<optgroup label = "${unit_choices[i][0]}">`
+
+                    for (let j = 0; j < unit_choices[i][1].length; j++) {
+
+                        newOptions += `<option value = "${unit_choices[i][1][j][0]}">${unit_choices[i][1][j][1]}</option>`
+
+                    }
+
+                    newOptions += "</optgroup>"
+
+                    document.getElementById("unit").innerHTML = newOptions
+
+                    found = true
+
+                    break
+
+                }
+
+            }
+
+            if (!(found)) {
+
+                document.getElementById("unit").innerHTML = `<option value = "${unitToFind}">${unitToFind}</option>`
+
+                document.getElementById('flipBoolDiv').style.display = 'none'
+                document.getElementById('lowerHalf').style.display = 'flex'
+
+            }
+
+        } else {
+
+            if (measureSelected == "-") {
+
+                document.getElementById("unit").innerHTML = `<option value = "-">-</option>`
+
+                document.getElementById('flipBoolDiv').style.display = 'none'
+                document.getElementById('lowerHalf').style.display = 'none'
+
+            } else {
+
+                document.getElementById("unit").innerHTML = ""
+
+                document.getElementById('flipBoolDiv').style.display = 'none'
+                document.getElementById('lowerHalf').style.display = 'none'
+
+            }
+
+        }
+
+    }
+
+    function evalSlopeFields() {
+
+        if ($("#scale_mode").val() == "slope_intercept"){
+            $("#mb_tag_scaling_slope_intercept").show();
+            $("#mb_tag_scaling_point_slope").hide();
+        }
+        else if ($("#scale_mode").val() == "point_slope"){
+            $("#mb_tag_scaling_slope_intercept").hide();
+            $("#mb_tag_scaling_point_slope").show();
+        }
+
+    }
+
+    function toggleExtremaHandling () {
+
+        accepted_min = document.getElementById("accepted_min").value
+        accepted_max = document.getElementById("accepted_max").value
+
+        if (!(accepted_min == "") || !(accepted_max == "")) {
+
+            document.getElementById("extrema_exceeded_group").style.display = "block"
+
+        } else {
+
+            document.getElementById("extrema_exceeded_group").style.display = "none"
+
+        }
+
+    }
+
+    function createAddressAlias () {
+
+        address = document.getElementById("register").value
+
+        if (address != "") {
+
+            if (parseInt(address) <= 9999) {
+
+                funct = document.getElementById("function_code").value
+
+                if (funct == "read-coils") {
+
+                    document.getElementById("addressAlias").innerHTML = address
+
+                } else if (funct == "read-discrete-inputs") {
+
+                    document.getElementById("addressAlias").innerHTML = `${10000 + parseInt(address)}`
+
+                } else if (funct == "read-holding-registers") {
+
+                    document.getElementById("addressAlias").innerHTML = `${40000 + parseInt(address)}`
+
+                } else if (funct == "read-input-registers") {
+
+                    document.getElementById("addressAlias").innerHTML = `${30000 + parseInt(address)}`
+
+                } else {
+
+                    document.getElementById("addressAlias").innerHTML = address
+
+                }
+
+            } else {
+
+                document.getElementById("addressAlias").innerHTML = address
+
+            }
+
+        } else {
+
+            document.getElementById("addressAlias").innerHTML = "-"
+
+        }
+
+    }
+
+    $( document ).ready(function() {
+
+        toggleExtremaHandling()
+
+        evalSlopeFields()
+        
+        createAddressAlias()
+
+        chart = Highcharts.chart('functionApplied', {
+
+            chart: {
+
+                type: 'scatter'
+
+            },
+            title: {
+
+                text: null
+
+            },
+            tooltip: {
+
+                enabled: false
+
+            },
+            xAxis: {
+
+                title: {
+
+                    text: 'Input Value'
+
+                },
+                gridLineWidth: 1,
+                plotLines: [{
+
+                    color: "#000000",
+                    value: 0,
+                    width: 2
+
+                }]
+
+            },
+            yAxis: {
+
+                title: {
+
+                    text: 'Scaled Value'
+
+                },
+                gridLineWidth: 1,
+                plotLines: [{
+
+                    color: "#000000",
+                    value: 0,
+                    width: 2
+
+                }]
+
+            },
+            legend: {
+
+                enabled: false
+
+            },
+            exporting: {
+
+                enabled: false
+
+            },
+            plotOptions: {
+
+                series: {
+
+                    lineWidth: 1,
+                    states: {
+
+                        hover: {
+
+                            enabled: false
+
+                        },
+                        inactive: {
+            
+                            opacity: 1,
+        
+                        }
+
+                    }
+
+                }
+
+            },
+            series: [{
+
+                type: "line",
+                data: [[-20, -20], [20, 20]],
+                marker: {
+
+                    enabled: false,
+                    states: {
+
+                        hover: {
+
+                            enabled: false
+
+                        }
+
+                    }
+
+                },
+                enableMouseTracking: false
+
+            }, {
+
+                data: [],
+                marker: {
+
+                    symbol: 'circle',
+                    states: {
+
+                        hover: {
+
+                            enabled: false
+
+                        }
+
+                    }
+
+                },
+                color: 'var(--danger)',
+                enableMouseTracking: false,
+                lineWidth: 0
+
+            }, {
+
+                data: [[-20, -20], [20, 20]],
+                marker: {
+
+                    symbol: 'triangle',
+                    radius: 5,
+                    states: {
+
+                        hover: {
+
+                            enabled: false
+
+                        }
+
+                    }
+
+                },
+                color: 'var(--success)',
+                enableMouseTracking: false,
+                lineWidth: 0
+
+            }, {
+
+                data: [[-20, -20], [20, 20]],
+                marker: {
+
+                    enabled: false,
+                    states: {
+
+                        hover: {
+
+                            enabled: false
+
+                        }
+
+                    }
+
+                },
+                enableMouseTracking: false,
+                lineWidth: 0
+
+            }],
+            credits: {
+
+                enabled: false
+            }
+
+        });
+
+        redoGraph()
+        setUnitOptions()
+
+    });
+
+    $("#scale_mode").change(function () {
+
+        toggleExtremaHandling()
+        evalSlopeFields()
+        redoGraph()
+        
+    })
+
+    function checkWarning () {
+
+        if (parseFloat(document.getElementById("slope").value) == 0) {
+
+            document.getElementById("zeroSlopeWarning").parentElement.style.display = "block"
+
+        } else {
+
+            document.getElementById("zeroSlopeWarning").parentElement.style.display = "none"
+
+        }
+
+    }
+
+    $("#slope").on('input', function () {checkWarning(); redoGraph()})
+    $("#offset").on('input', function () {redoGraph()})
+    $("#value_min").on('input', function () {redoGraph()})
+    $("#value_max").on('input', function () {redoGraph()})
+    $("#target_min").on('input', function () {redoGraph()})
+    $("#target_max").on('input', function () {redoGraph()})
+    $("#accepted_min").on('input', function () {toggleExtremaHandling(); redoGraph()})
+    $("#accepted_max").on('input', function () {toggleExtremaHandling(); redoGraph()})
+
+    $("#measure").on('change', function () {setUnitOptions()})
+
+    document.getElementById("saveSettings").addEventListener('click', function () {
+
+        saveProbeSettings()
+        addTag(document.getElementById("probe_item_settings_modal").getAttribute('function'), document.getElementById("probe_item_settings_modal").getAttribute('register'))
+
+    })
+
+    {% endif %}
+
+</script>
+
+{% endblock %}

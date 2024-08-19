@@ -1,0 +1,312 @@
+{%- extends 'mypv_base.html' -%}
+
+{%- block content -%}
+
+<style>
+
+    .launch_title {
+        padding-top: 1%;
+        font-size: 15px;
+        font-weight: 500;
+     }
+
+     .launch_image {
+        padding-top: 20%;
+        padding-left: 42%;
+     }
+     .launch_header{
+        padding-top: 2%;
+        font-size: 24px;
+        padding-left: 42%;
+        font-weight: 600;
+     }
+     .header1{
+      padding-top: 10%;
+      text-align: center;
+      font-size:medium;
+      font-weight: 600;
+     }
+
+     .header2{
+      padding-top: 5%;
+      text-align: left;
+      font-size:20px;
+      font-weight: 600;
+      margin-bottom: unset;
+     }
+
+     .header3{
+      text-align: left;
+      font-size:20px;
+      font-weight: 600;
+      margin-bottom: 2rem!important;
+     }
+     .home_cols{
+      /* padding-top: 10%; */
+      padding-top: 3%;
+      text-align: center;
+      padding-right: 0px;
+      padding-left: 0px;
+
+     }
+
+     .black-with-opacity {
+    background-color: rgba(0, 0, 0, 0.3); /* Black color with 30% opacity */
+}
+
+
+.text1 {
+    opacity: 0;
+    padding-top: 1%;
+        font-size: 15px;
+        font-weight: 500;
+}
+
+.image-container_one:hover .text1 {
+    opacity: 1;
+    
+}
+
+.div_line{
+  display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    margin: 20px;
+    border-top: 2px solid black;
+}
+/* slider */
+
+.slider-container {
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .slider {
+    display: flex;
+    /* transition: transform 0.10s ease; */
+    transition: opacity 0.5s ease;
+    margin-right: 0; /* Remove default margin */
+    margin-left: 0;
+  padding-left: 0; /* Remove default padding */
+  }
+  
+  .slide {
+    flex: 0 0 33%; 
+    margin-right: -110px;
+  }
+  
+  .slide iframe {
+    width: 100%;
+    /* height: 300px;  */
+    margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+
+  }
+  
+  .prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #4d4b4b;
+    border-radius: 50px;
+    padding: 4px 1px 4px 12px;
+    z-index: 1;
+
+    font-size: 22px;
+    width: 39px;
+  height: 42px; 
+  }
+  
+  .prev {
+    left:  5px;
+  }
+  
+  .next {
+    right:  5px;
+  }
+
+     
+</style>
+
+
+
+
+<main role="main">
+  <div class="container">
+    <!-- <h5 class="header1">What Would You Like To Do?</h5> -->
+    <h5 class="header2">DISCOVER MODBUS DEVICES</h5>
+    
+    <div class="row" style="height: 50%;" >
+      
+      
+      <div class="col home_cols image-container_one" >
+
+        <div class="row">
+          <div class="col">
+            <a href="/discover"><img src="{{ url_for('static', filename='Wiretap_Icon_DiscoverScanNetwork_Black.svg') }}" height="150px"></a>
+          </div>
+        </div>
+      
+      
+        <div class="row launch_title text1">
+          <div class="col">
+              Discover & Scan<br>
+              Network Connected<br>
+              MODBUS TCP/IP Devices
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col home_cols image-container_one" style="padding-top: 0%;">
+
+        <div class="row">
+          <div class="col">
+            <!--<a href="/discover_wiretap">-->
+              <div class="text1" style = "color: rgba(0, 0, 0, 0.3);font-size: 1.3rem;font-weight: 600;">COMING SOON</div><img src="{{ url_for('static', filename='Wiretap_Icon_DiscoverScanSerial_Black.svg') }}" style = "color: rgba(0, 0, 0, 0.3);" height="150px"><!--</a>-->
+          </div>
+        </div>
+      
+        <div class="row launch_title text1">
+          <div class="col" style = "color: rgba(0, 0, 0, 0.3);">
+            Discover & Scan<br>
+            Serial RS-485 Connected<br>
+            MODBUS RTU Devices<br>
+            
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col home_cols image-container_one">
+
+        <div class="row">
+          <div class="col">
+            <a href="/discover_wiretap"><img src="{{ url_for('static', filename='Wiretap_Icon_DiscoverWiretap_Black.svg') }}" height="150px"></a>
+          </div>
+        </div>
+
+        
+        <div class="row launch_title text1">
+          <div class="col">
+            Discover & Wiretap<br>
+            Existing MODBUS RTU<br>
+            Devices Monitored by Others<br>
+          </div>
+        </div>
+
+      </div>
+
+      
+  </div>
+  <div class="div_line"></div>
+  <h5 class="header3">MODBUS & WIRETAP TUTORIALS</h5>
+
+  <div class="row"  style="height: 50%;">
+
+    <div class="slider-container">
+      <div class="slider">
+      </div>
+      <div class="prev" onclick="prevSlide()">&#10094;</div>
+      <div class="next" onclick="nextSlide()">&#10095;</div>
+    </div>
+    
+
+    
+    
+  </div>
+
+    
+
+  </div>
+
+  
+  </div>
+</main>
+
+<script>
+
+
+
+  const videoIds = [
+  "DFtedWnLeP0?si=zdbl7OJdYBT1OBOr",
+  "tFwJk863lJE?si=UOdHVqUGOxm2A8mY",
+  "-6IpqN-zZhc?si=jGqVvNJFYner5yTj",
+  "V1Fq59QGgmg?si=w0ECbuXDcyAhdABl"
+]
+
+const slider = document.querySelector('.slider');
+
+// Function to generate iframe elements for YouTube videos
+function generateIframes(videoIds) {
+  videoIds.forEach(videoId => {
+    const div_slide = document.createElement('div');
+    div_slide.className = 'slide';
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0`; // Add ?rel=0 to disable related videos
+    iframe.frameborder = '0';
+    iframe.allowfullscreen = true;
+    
+    iframe.width = '320';
+    iframe.height = '250';
+    
+    // Append the iframe to the slider
+    div_slide.appendChild(iframe);
+    slider.appendChild(div_slide);
+  });
+}
+
+// Call the function to generate iframes
+generateIframes(videoIds);
+
+
+let slideIndex = 0;
+  
+  function showSlides() {
+    const slides = document.querySelectorAll('.slide');
+    if (slideIndex >= slides.length) {
+      slideIndex = 0;
+      // slideIndex = slides.length - 1;
+    }
+    if (slideIndex < 0) {
+      slideIndex = slides.length - 1;
+      // slideIndex = 0
+    }
+    slides.forEach((slide, index) => {
+      const offset = index - slideIndex;
+      const translateX = offset * 33; // Adjust based on number of videos displayed
+      slide.style.transform = `translateX(${translateX}%)`;
+    });
+  }
+  
+  function nextSlide() {
+    slideIndex++;
+    showSlides();
+  }
+  
+  function prevSlide() {
+    slideIndex--;
+    showSlides();
+  }
+  
+  showSlides();
+
+  
+
+
+
+
+  
+
+
+  
+
+</script>
+
+{%- endblock -%}
+
+

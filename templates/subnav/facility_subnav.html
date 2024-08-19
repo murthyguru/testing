@@ -1,0 +1,17 @@
+{%- from '/subnav/_macros.html' import subnav_link -%}
+
+<div class="d-flex acu-subnav">
+  <div class="mr-auto acu-subnav-header">Facility</div>
+  <div>
+    {{ subnav_link(href='/project', text='Description') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/statusindicators', text='Status Indicators') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/colorconfig', text='Colors') }}
+  </div>
+  <div>
+    {{ subnav_link(href='/project_model', text='Energy Model') }}
+  </div>
+</div>

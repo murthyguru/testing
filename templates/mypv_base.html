@@ -1,0 +1,486 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+
+  <title> aderis Wiretap</title>
+  <link rel='icon' href="{{ url_for('static', filename='aderis_favicon.ico') }}">
+
+
+  {% if plant_config.get('mode') == "offline" -%}
+
+  {#- JQuery -#}
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/jquery/1.12.1/jquery-1.12.1.min.js') }}"></script>
+
+  {# Golden Layout -#}
+  {# These are config pages, we don't need golden layout -#}
+  {#
+  <script type="text/javascript" src="{{ url_for('static', filename='goldenlayout.min.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='goldenlayout-base.css') }}" />
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='mypv_goldenlayout.css') }}" />
+  -#}
+
+  {# JQuery UI -#}
+  <script type="text/javascript" src="{{ url_for('static', filename='lib/jquery-ui/1.12.1/jquery-ui.min.js') }}"></script>
+
+  {# Bootstrap CSS -#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap/4.1.3/bootstrap.min.css') }}">
+
+  {# Bundled Popper.js and Bootstrap JS -#}
+  <script src="{{ url_for('static', filename='lib/bootstrap/4.1.3/bootstrap.bundle.min.js') }}"></script>
+
+  {# Chartist 
+  <link rel="stylesheet" href="../static/chartist.min.css">
+  <script src="../static/chartist.min.js"></script>
+  -#}
+
+  {# Bootstrap DatePicker -#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap-datepicker/1.3.0/bootstrap-datepicker.min.css') }}"/>
+  <script src="{{ url_for('static', filename='lib/bootstrap-datepicker/1.3.0/bootstrap-datepicker.min.js') }}"></script>
+
+  {# FlatPickr-#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/flatpickr/4.6.5/style_month.min.css') }}"/>
+  <script src="{{ url_for('static', filename='lib/flatpickr/4.6.5/flatpickr_month.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/flatpickr/4.6.5/flatpickr.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/flatpickr/4.6.5/rangePlugin.min.js') }}"></script>
+
+  {# ChartJS -#}
+  <script src="{{ url_for('static', filename='lib/chartjs/2.8.0/Chart.bundle.min.js') }}"></script>
+
+  {# Draggable -#}
+  <script src="{{ url_for('static', filename='lib/plain-draggable/2.5.12/plain-draggable.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/leader-line/1.0.5/leader-line.min.js') }}"></script>
+
+  {# HighCharts -#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/highcharts/9.3.1/highcharts.css') }}"/>
+  <script src="{{ url_for('static', filename='lib/highcharts/9.3.1/highcharts.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/highcharts/9.3.1/boost.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/highcharts/9.1.1/xrange.js') }}"></script>
+
+  {# HighCharts 3rd Party Plugins -#}
+  <script src="{{ url_for('static', filename='lib/highcharts-grouped-categories/1.2.0/highcharts-grouped-categories.min.js') }}"></script>
+  {# HighCharts Official Plugins -#}
+  <script src="{{ url_for('static', filename='lib/highcharts/9.3.1/highcharts-more.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/highcharts/10.1.0/accessibility.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/highcharts/10.1.0/export-data.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/highcharts/10.1.0/exporting.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/highcharts/10.1.0/solid-gauge.js') }}"></script>
+
+  {# MomentJS #}
+  <!-- <script src="{{ url_for('static', filename='lib/moment/2.29.4/moment.js') }}"></script> -->
+  
+  {# Moment-TimezoneJS #}
+  <!-- <script src="{{ url_for('static', filename='lib/moment-timezone/0.5.43/moment-timezone.js') }}"></script> -->
+  
+  {# Bootstrap Select -#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap-select/1.13.1/bootstrap-select.min.css') }}">
+  <script src="{{ url_for('static', filename='lib/bootstrap-select/1.13.1/bootstrap-select.min.js') }}"></script>
+
+
+  {#
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedcolumns/3.3.1/css/fixedColumns.dataTables.min.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedcolumns/3.3.1/js/dataTables.fixedColumns.min.js"></script>
+  -#}
+
+  {%- else -%}
+
+  {# JQuery -#}
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+
+
+  {# Golden Layout -#}
+  {# These are config pages, we don't need golden layout -#}
+  {#
+  <script type="text/javascript" src="https://golden-layout.com/files/latest/js/goldenlayout.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://golden-layout.com/files/latest/css/goldenlayout-base.css" />
+  -#}
+
+  {# JQuery UI -#}
+  <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+  {# Bootstrap CSS -#}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  
+  {# Bundled Popper.js and Bootstrap JS -#}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=" crossorigin="anonymous"></script>
+  
+  {# Chartist 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+  <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+  -#}
+
+  {# DatePicker -#}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css"/>
+  
+  {# HighCharts -#}
+  <link rel="stylesheet" href="https://code.highcharts.com/9.3.1/css/highcharts.css"/>
+  <script src="https://code.highcharts.com/9.3.1/highcharts.js"></script>
+  <script src="https://code.highcharts.com/9.1.1/modules/xrange.js"></script>
+  <script src="https://code.highcharts.com/9.3.1/modules/boost.js"></script>
+  {# HighCharts 3rd Party Plugins -#}
+  <script src="https://cdn.jsdelivr.net/npm/highcharts-grouped-categories@1.2.0/grouped-categories.min.js"></script>
+  {# HighCharts Official Plugins -#}
+  <script src="https://code.highcharts.com/9.3.1/highcharts-more.js"></script>
+  <script src="https://code.highcharts.com/10.1.0/modules/solid-gauge.js"></script>
+  <script src="https://code.highcharts.com/10.1.0/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/10.1.0/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/10.1.0/modules/accessibility.js"></script>
+
+  {# FlatPickr -#}
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.5/dist/plugins/monthSelect/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.5/dist/flatpickr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.5/dist/plugins/rangePlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.5/dist/plugins/monthSelect/index.min.js"></script>
+
+  {# ChartJS -#}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.bundle.min.js"></script>
+
+  {# Draggable -#}
+  <script src="https://cdn.jsdelivr.net/npm/plain-draggable@2.5.12/plain-draggable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leader-line@1.0.5/leader-line.min.js"></script>
+
+  {# MomentJS #}
+  <!-- <script src="{{ url_for('static', filename='lib/moment/2.29.4/moment.js') }}"></script> -->
+  
+  {# Moment-TimezoneJS #}
+  <!-- <script src="{{ url_for('static', filename='lib/moment-timezone/0.5.43/moment-timezone.js') }}"></script> -->
+
+
+  {# Bootstrap Select -#}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedcolumns/3.3.1/css/fixedColumns.dataTables.min.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedcolumns/3.3.1/js/dataTables.fixedColumns.min.js"></script>
+  {% endif -%}
+
+
+  {# Don't need golden layout when looking at config pages
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='mypv_goldenlayout.css') }}" />
+  -#}
+
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='mypv_themes.css') | lmt_bust_cache }}">
+
+  {# Custom FlatPickr CSS -#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='flatpicker_sos.css') | lmt_bust_cache }}">
+
+  {# Acuity FontAwesome Icon Kit -#}
+  {#<script src="https://kit.fontawesome.com/ea7cc6ab7f.js" crossorigin="anonymous"></script>-#}
+  <script src="{{ url_for('static', filename='myPV-Style-Reference/fa-kit-6_1_1.js') | lmt_bust_cache }}" type="application/javascript"></script>
+  
+  {# Acuity Style Reference Styles -#}
+  <link rel="stylesheet" href="{{ url_for('static', filename='myPV-Style-Reference/style.css') | lmt_bust_cache }}" type="text/css">
+
+  {# Acuity Global Styles -#}
+  <link  rel="stylesheet" href="{{ url_for('static', filename='css/acuity.css') | lmt_bust_cache }}" type="text/css">
+
+  {# Acuity Config Pages Styles -#}
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='mypv_config_style.css') | lmt_bust_cache }}" />
+
+  <style> 
+
+    .mypv-loader {
+      box-sizing: border-box;
+      display: inline-block;
+      border-top: 3px solid #212529;
+      border-right: 3px solid transparent;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: mypv-loader-rotation 1s linear infinite;
+    }
+
+    @keyframes mypv-loader-rotation {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    } 
+
+
+    @media print{
+      body { background-color: #FFFFFF; color: #000000; }
+      .navbar { display: none; }
+    }
+
+    .mypv-small-check {
+      width: 15px;
+    }
+
+    .mypv-small-check-template {
+      margin-top: 13px;
+      width: 15px;
+      height: 15px !important;
+    }
+
+
+span.color_scale{
+  padding: 0 0 0 0;
+  display: inline-block;
+  margin: 0;
+  width: 2px;
+}
+
+td.color_scale {
+  padding: 0 0 0 0;
+  min-width: 1px;
+}
+
+    .dropdown-submenu {
+      position: relative;
+    }
+
+    .dropdown-submenu a::after {
+      position: absolute;
+      top: .8em;
+      right: 6px;
+      transform: rotate(-90deg);
+    }
+
+    .dropdown-submenu .dropdown-menu {
+      top: 0;
+      left: 100%;
+      margin-left: .1rem;
+      margin-right: .1rem;
+    }
+
+
+    span.color_scale{
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+      width: 2px;
+    }
+
+    td.color_scale { 
+      padding: 0; 
+      min-width: 1px;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <script src="{{ url_for('static', filename='js/svg_registry.js') | lmt_bust_cache }}" type="application/javascript"></script>
+
+  <script>
+     plant_config = {{plant_config|tojson|safe}}
+    function zeroPad(num, width=2) {
+      return `${num}`.padStart(width, "0");
+    }
+
+    var IsoFormatter = (() => {
+      
+      /** @param {Date|number|string} [d] */
+      const toDate = (d=null) => {
+        return (d == null) ? new Date() : new Date(d);
+      }
+
+      /** @param {Date|number|string} [d] */
+      const isoDate = (d=null) => {
+        d = toDate(d);
+        return [d.getUTCFullYear(), d.getUTCMonth()+1, d.getUTCDate()]
+                  .map(n => zeroPad(n)).join("-");
+      }
+
+      /** @param {Date|number|string?} d */
+      const isoTime = (d=null) => {
+        d = toDate(d);
+        return [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()]
+                  .map(n => zeroPad(n)).join(":");
+      }
+
+      /** @param {Date|number|string?} d  @param {string} sep */
+      function isoDatetime(d=null, sep=" ") {
+        return `${isoDate(d)}${sep}${isoTime(d)}`;
+      }
+
+      // expands to { isoDate: isoDate, ... }
+      return { isoDate, isoTime, isoDatetime };
+    })();
+
+
+    var plantUtcOffset = (function() {
+      const utc_offset = +"{{ utc_offset }}";
+
+      return function() {
+        return utc_offset;
+      }
+    })();
+
+    function plantUtcNow() {
+      const d = new Date();
+      return new Date(d.setUTCHours(d.getUTCHours() + plantUtcOffset()));
+    }
+
+    function getPlantOffset() {
+      //console.log("UTC"+{{utc_offset}})
+      return `UTC${plantUtcOffset()}`;
+    }
+
+    function getPlantTime() {
+      let today = new Date();
+      let utc = today.getTime() + today.getTimezoneOffset() * 60_000;
+      return new Date(utc + (3_600_000 * plantUtcOffset()));
+    }
+    // function getStatusData(){
+      
+    //   return new Promise((resolve, reject) => {
+    //      $.ajax("/getlights").done((responce) => {
+    //    $.post("/getalarms", {
+    //    data: JSON.stringify({
+    //      filter: {},
+    //    }),
+    //  }).done((alarm_response) => {
+    //    this._walarm_data = alarm_response["data"];
+    //    this._walarm_data = this._walarm_data.filter(
+    //      (device) => device.status === "raised" && device.acknowledged === null
+    //    );
+    //    $.post("/device_network_status").done((res_data) => {
+    //      this._network_data = res_data;
+    //      var count = 0;
+    //      var inv_count = 0;
+    //      for (let dev in res_data) {
+    //        if (
+    //          res_data[dev]["data"] != "unknown" &&
+    //          res_data[dev]["data"] != "offline"
+    //        ) {
+    //          count++;
+    //        }
+    //      }
+    //      this._data_percent = count / Object.keys(res_data).length;
+    //      $.post("/get_devices_by_type", { device_type: "Inverter" }).done(
+    //        (data) => {
+    //          this._inverters = data;
+    //          for (let i in this._inverters) {
+    //            if (res_data[this._inverters[i].daq_name].data == "online") {
+    //              inv_count++;
+    //            }
+    //          }
+    //          this._inv_percent = inv_count / this._inverters.length;
+ 
+    //          data = responce["data"];
+    //          data["alarm"] = {data: this._walarm_data.length, tooltip: `${this._walarm_data.length} Active Alarms`, color: this._walarm_data.length == 0 ? 'gray' : 'red'}
+    //          data["data"] = {
+    //            data: Math.floor(this._data_percent * 100),
+    //            color:
+    //              this._data_percent * 100 >=
+    //              plant_config["badge_indicators"]["data_ok"]
+    //                ? "green"
+    //                : this._data_percent * 100 >=
+    //                  plant_config["badge_indicators"]["data_warning"]
+    //                ? "yellow"
+    //                : "red",
+    //            tooltip: `${count}/${
+    //              Object.keys(res_data).length
+    //            } Devices (${Math.floor(this._data_percent * 100)}%)`,
+    //          };
+    //          data["grid"] = {
+    //            data: Math.floor(this._inv_percent * 100),
+    //            color:
+    //              this._inv_percent * 100 >=
+    //              plant_config["badge_indicators"]["invt_ok"]
+    //                ? "green"
+    //                : this._inv_percent * 100 >=
+    //                  plant_config["badge_indicators"]["invt_warning"]
+    //                ? "yellow"
+    //                : "red",
+    //            tooltip: `${inv_count}/${
+    //              this._inverters.length
+    //            } INVTS (${Math.floor(this._inv_percent * 100)}%)`,
+    //          };
+    //          resolve(data)
+    //        })
+    //      })
+    //    })
+    //  })
+       
+    //    })
+    //  }
+     
+    $(document).ready(function() {
+      // const updateNavbarDatetime = ((dateDiv, timeDiv) => {
+
+      //   return () => {
+      //     const now = get_timezone_utc_now();      
+      //     dateDiv.innerHTML = now.format('YYYY-MM-DD');
+      //     timeDiv.innerHTML = now.format('HH:mm:ss');
+      //     window.navPlantDtTimeout = setTimeout(updateNavbarDatetime, 500);
+      //   }
+      // })(document.getElementById("date_div"), document.getElementById("time_div"));
+      // updateNavbarDatetime();
+    });
+
+
+    function checkTime(i) {
+      return zeroPad(i); // add zero in front of numbers < 10
+    }
+
+    let local_tz = {{iana_utc_offset|tojson|safe}}
+    // Returns moment.js object
+    function get_timezone_utc_now(hour_offset=0, minute_offset=0, day_offset=0) {
+      try {
+      let now = new Date();
+      let ret = moment();
+      ret.set('hour', now.getHours() + hour_offset);
+      ret.set('date', now.getDate() + day_offset);
+      ret.set('minute', now.getMinutes() + minute_offset);
+      return ret.tz(local_tz);
+      } catch (err){
+        console.log(err)
+      }
+    }
+
+    function get_timezone_utc_date(date_string="") {
+      // Passed date_string must be in format 2023-12-18T10:52:00+00:00 YYYY-MM-DDTHH:mm:SS+ZZ:ZZ (UTC)
+      const re = RegExp("\S*[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}\S*");
+
+      if ( !re.test(date_string) ) {
+        console.log(`Requested Date String: ${date_string} does not conform to YYYY-MM-DDTHH:mm:SS+ZZ:ZZ (UTC)`);
+        return null;
+      }
+      try {
+      let dt = new Date(Date.parse(date_string));
+      let ret = moment(dt);
+      return ret.tz(local_tz);
+
+      } catch (err) {
+        console.log(err);
+        return null;
+      }
+
+    }
+    var csrf_token = "{{ csrf_token() }}";
+  </script>
+
+  {%- block ajax_csrf -%}
+    <script src="{{ url_for('static', filename='js/ajax_csrf.js') | lmt_bust_cache }}" type="application/javascript"></script>
+  {% endblock %}
+
+  <hr>
+  {% include 'navbar.partial.html' -%}
+
+  {% block content -%}{% endblock -%}
+
+  {% include 'footer.partial.html' -%}
+
+  {% block scripts -%}{% endblock -%}
+
+</body>
+</html>
+
+
